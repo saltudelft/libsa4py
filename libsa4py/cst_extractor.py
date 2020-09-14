@@ -10,7 +10,7 @@ from libsa4py.cst_visitor import Visitor
 from libsa4py.representations import ModuleInfo
 from libsa4py.cst_transformers import TypeAdder, SpaceAdder, StringRemover, CommentAndDocStringRemover, NumberRemover,\
     TypeAnnotationRemover
-from libsa4py.nlp_preprocessing import NLPreprocessor
+from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.exceptions import ParseError
 
 NLP_P = NLPreprocessor()
