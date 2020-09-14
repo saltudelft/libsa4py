@@ -9,9 +9,9 @@ import time
 
 if __name__ == '__main__':
 
-    example_py_src = open("/Users/amir/projects/ML4SE/data/full_data/kennethreitz/requests-html/requests_html.py", 'r').read()
+    #example_py_src = open("/Users/amir/projects/ML4SE/data/full_data/kennethreitz/requests-html/requests_html.py", 'r').read()
     #example_py_src = open('/Users/amir/projects/ML4SE/data/full_data/snorkel-team/snorkel/setup.py', 'r').read()
-    #example_py_src = open('example.py', 'r').read()
+    example_py_src = open('example.py', 'r').read()
     start_t = time.time()
     fns = Extractor().extract(example_py_src)
     print("Finished in extraction in %.2f in sec." % (time.time() - start_t))

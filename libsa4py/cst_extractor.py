@@ -6,7 +6,7 @@ import json
 import numpy as np
 
 from tqdm import tqdm
-from libsa4py.cst_visitor import ExtendedVisitorCST
+from libsa4py.cst_visitor import Visitor
 from libsa4py.representations import ModuleInfo
 from libsa4py.cst_transformers import TypeAdder, SpaceAdder, StringRemover, CommentAndDocStringRemover, NumberRemover,\
     TypeAnnotationRemover
@@ -29,7 +29,7 @@ class Extractor:
         except Exception as e:
             raise ParseError(str(e))
 
-        v: ExtendedVisitorCST = ExtendedVisitorCST()
+        v: Visitor = Visitor()
         parsed_program.visit(v)
 
         # Transformers
