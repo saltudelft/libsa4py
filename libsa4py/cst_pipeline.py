@@ -5,12 +5,12 @@ import time
 import traceback
 import logging
 
+from os.path import isdir, join
 from joblib import delayed
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import filter_directory, read_file, list_files
-from libsa4py.utils import ParallelExecutor
+from libsa4py.utils import filter_directory, read_file, list_files, ParallelExecutor, mk_dir_not_exist
 
 
 # Create output directory
@@ -23,20 +23,30 @@ class Pipeline:
     This is the new pipeline that converts a project to the output JSON of LibCST analysis
     """
 
-    def __init__(self, repos_dir, output_dir, err_log_dir, avl_types_dir=None, nlp_tansf: bool = True,
-                 use_cache: bool = True):
+    def __init__(self, repos_dir, output_dir, nlp_transf: bool = True, use_cache: bool = True):
         self.repos_dir = repos_dir
         self.output_dir = output_dir
-        self.err_log_dir = err_log_dir
-        self.avl_types_dir = avl_types_dir
-        self.nlp_transf = nlp_tansf
+        self.processed_projects = None
+        self.err_log_dir = None
+        self.avl_types_dir = None
+        self.nlp_transf = nlp_transf
+        self.use_cache = use_cache
+        self.nlp_prep = NLPreprocessor()
 
-        logging.basicConfig(filename=os.path.join(self.err_log_dir, "pipline_erros.log"), level=logging.DEBUG,
+        self.__make_output_dirs()
+        logging.basicConfig(filename=join(self.err_log_dir, "pipline_errors.log"), level=logging.DEBUG,
                             format='%(asctime)s %(name)s %(message)s')
         self.logger = logging.getLogger(__name__)
-        self.use_cache = use_cache
 
-        self.nlp_prep = NLPreprocessor()
+    def __make_output_dirs(self):
+        mk_dir_not_exist(self.output_dir)
+
+        self.processed_projects = join(self.output_dir, "processed_projects")
+        self.avl_types_dir = join(self.output_dir, "extracted_visible_types")
+        self.err_log_dir = join(self.output_dir, "error_logs")
+        mk_dir_not_exist(self.processed_projects)
+        mk_dir_not_exist(self.avl_types_dir)
+        mk_dir_not_exist(self.err_log_dir)
 
     def get_project_filename(self, project) -> str:
         """
@@ -44,7 +54,7 @@ class Pipeline:
         :param project: the project dict
         :return: return filename
         """
-        return os.path.join(self.output_dir, f"{project['author']}{project['repo']}.json")
+        return join(self.processed_projects, f"{project['author']}{project['repo']}.json")
 
     def apply_nlp_transf(self, extracted_module: dict):
         """
@@ -89,8 +99,7 @@ class Pipeline:
             project['files'] = []
 
             print(f'Filtering for {project_id}...')
-            filtered_project_directory = filter_directory(os.path.join(self.repos_dir, project["author"],
-                                                                       project["repo"]))
+            filtered_project_directory = filter_directory(join(self.repos_dir, project["author"], project["repo"]))
 
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
@@ -122,7 +131,7 @@ class Pipeline:
 
             if self.avl_types_dir is not None:
                 if extracted_avl_types:
-                    with open(os.path.join(self.avl_types_dir, f'{project["author"]}_{project["repo"]}_avltypes.txt'),
+                    with open(join(self.avl_types_dir, f'{project["author"]}_{project["repo"]}_avltypes.txt'),
                               'w') as f:
                         for t in extracted_avl_types:
                             f.write("%s\n" % t)

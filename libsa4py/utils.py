@@ -1,5 +1,7 @@
+from typing import List
 from tqdm import tqdm
 from joblib import Parallel
+from os.path import join, isdir
 import time
 import os
 
@@ -71,3 +73,23 @@ def read_file(filename: str) -> str:
     """
     with open(filename) as file:
         return file.read()
+
+
+def find_repos_list(projects_path: str) -> List[dict]:
+    """
+    Finds a list of author/repo from a Python dataset.
+    """
+
+    repos_list: List[dict] = []
+
+    for author in os.listdir(projects_path):
+        if not author.startswith('.') and isdir(join(projects_path, author)):
+            for repo in os.listdir(join(projects_path, author)):
+                repos_list.append({"author": author, "repo": repo})
+
+    return repos_list
+
+
+def mk_dir_not_exist(path: str):
+    if not isdir(path):
+        os.mkdir(path)
