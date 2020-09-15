@@ -83,11 +83,11 @@ class Pipeline:
 
         def fn_nlp_transf(fn_d: dict, nlp_prep: NLPreprocessor):
             fn_d['name'] = nlp_prep.process_identifier(fn_d['name'])
-            fn_d['params'] = {nlp_prep.process_identifier(p): t for p, t in fn_d['params']}
+            fn_d['params'] = {nlp_prep.process_identifier(p): t for p, t in fn_d['params'].items()}
             fn_d['ret_exprs'] = [nlp_prep.process_identifier(r.replace('return ', '')) for r in fn_d['ret_exprs']]
             fn_d['params_occur'] = {p: [nlp_prep.process_sentence(j) for i in o for j in i] for p, o in
-                                    fn_d['params_occur']}
-            fn_d['variables'] = {nlp_prep.process_identifier(v): t for v, t in fn_d['variables']}
+                                    fn_d['params_occur'].items()}
+            fn_d['variables'] = {nlp_prep.process_identifier(v): t for v, t in fn_d['variables'].items()}
             fn_d['params_descr'] = {nlp_prep.process_identifier(p): nlp_prep.process_sentence(fn_d['params_descr'][p]) \
                                     for p in fn_d['params_descr'].keys()}
             fn_d['docstring']['func'] = nlp_prep.process_sentence(fn_d['docstring']['func'])
@@ -95,10 +95,10 @@ class Pipeline:
             fn_d['docstring']['long_descr'] = nlp_prep.process_sentence(fn_d['docstring']['long_descr'])
             return fn_d
 
-        extracted_module['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in extracted_module['variables']}
+        extracted_module['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in extracted_module['variables'].items()}
 
         for c in extracted_module['classes']:
-            c['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in c['variables']}
+            c['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in c['variables'].items()}
             c['funcs'] = [fn_nlp_transf(f, self.nlp_prep) for f in c['funcs']]
 
         extracted_module['funcs'] = [fn_nlp_transf(f, self.nlp_prep) for f in extracted_module['funcs']]
@@ -143,10 +143,10 @@ class Pipeline:
                     # fail the entire project processing.
                     # TODO: A better workaround would be to have a specialized exception thrown
                     # by the extractor, so that this exception is specialized.
-                    # print(f"Could not process file {filename}")
+                    print(f"Could not process file {filename}")
                     traceback.print_exc()
-                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                    logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
             print(f'Saving available type hints for {project_id}...')
 
