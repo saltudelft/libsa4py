@@ -63,7 +63,17 @@ class TypeAnnotationRemover(cst.CSTTransformer):
     def leave_AnnAssign(self, original_node: cst.AnnAssign, updated_node: cst.AnnAssign) -> Union[
         cst.BaseSmallStatement,
         cst.RemovalSentinel]:
-        updated_node = cst.Assign(targets=[cst.AssignTarget(target=original_node.target)], value=original_node.value)
+
+        # It handles a special case where a type-annotated variable has not initialized, e.g. foo: str
+        # This case will be converted to foo = ... so that nodes traversal won't encounter exceptions later on
+        if match.matches(original_node,
+                         match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                         annotation=match.Annotation(annotation=match.Name(value=match.DoNotCare())), value=None)):
+            updated_node = cst.Assign(targets=[cst.AssignTarget(target=original_node.target)],
+                                      value=cst.Ellipsis())
+        else:
+            updated_node = cst.Assign(targets=[cst.AssignTarget(target=original_node.target)], value=original_node.value)
+
         return updated_node
 
 
