@@ -40,7 +40,7 @@ def ParallelExecutor(use_bar='tqdm', **joblib_args):
     return aprun
 
 
-def filter_directory(self, directory: str, extension: str = '.py') -> str:
+def filter_directory(directory: str, extension: str = '.py') -> str:
     """
     Delete all files within the given directory with filenames not ending in the given extension
     """

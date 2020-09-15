@@ -16,11 +16,11 @@ def main():
     arg_parser.set_defaults(no_nlp=False)
 
     args = arg_parser.parse_args()
-    input_repos = find_repos_list(args.p)
-    print(args)
+    input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
+    print(len(input_repos))
 
-    p = Pipeline(input_repos, args.o, not args.no_nlp)
-    #p.run(input_repos, args.j)
+    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp)
+    p.run(input_repos, args.j)
 
 
 if __name__ == '__main__':

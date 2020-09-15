@@ -3,7 +3,6 @@ import json
 import os
 import time
 import traceback
-import logging
 
 from os.path import isdir, join
 from joblib import delayed
@@ -12,6 +11,8 @@ from libsa4py.exceptions import ParseError
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import filter_directory, read_file, list_files, ParallelExecutor, mk_dir_not_exist
 
+import logging
+import logging.config
 
 # Create output directory
 if not os.path.isdir('./output'):
@@ -23,8 +24,10 @@ class Pipeline:
     This is the new pipeline that converts a project to the output JSON of LibCST analysis
     """
 
-    def __init__(self, repos_dir, output_dir, nlp_transf: bool = True, use_cache: bool = True):
-        self.repos_dir = repos_dir
+    def __init__(self, projects_path, input_projects, output_dir, nlp_transf: bool = True,
+                 use_cache: bool = True):
+        self.projects_path = projects_path
+        self.input_projects = input_projects
         self.output_dir = output_dir
         self.processed_projects = None
         self.err_log_dir = None
@@ -34,9 +37,12 @@ class Pipeline:
         self.nlp_prep = NLPreprocessor()
 
         self.__make_output_dirs()
-        logging.basicConfig(filename=join(self.err_log_dir, "pipline_errors.log"), level=logging.DEBUG,
+
+        # TODO: Fix the logger issue not outputing the logs into the file.
+        logging.basicConfig(filename=join(self.err_log_dir, "pipeline_errors.log"), level=logging.DEBUG,
                             format='%(asctime)s %(name)s %(message)s')
-        self.logger = logging.getLogger(__name__)
+        self.logger = logger = logging.getLogger(__name__)
+        # self.logger = self.__setup_pipeline_logger(join(self.err_log_dir, "pipeline_errors.log"))
 
     def __make_output_dirs(self):
         mk_dir_not_exist(self.output_dir)
@@ -47,6 +53,20 @@ class Pipeline:
         mk_dir_not_exist(self.processed_projects)
         mk_dir_not_exist(self.avl_types_dir)
         mk_dir_not_exist(self.err_log_dir)
+
+    # def __setup_pipeline_logger(self, log_dir: str):
+    #     logger = logging.getLogger(__name__)
+    #     logger.setLevel(logging.DEBUG)
+    #
+    #     logger_handler = logging.FileHandler(filename=log_dir)
+    #     logger_handler.setLevel(logging.DEBUG)
+    #
+    #     logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
+    #     logger_handler.setFormatter(logger_formatter)
+    #
+    #     logger.addHandler(logger_handler)
+    #
+    #     return logger
 
     def get_project_filename(self, project) -> str:
         """
@@ -99,8 +119,8 @@ class Pipeline:
             project['files'] = []
 
             print(f'Filtering for {project_id}...')
-            filtered_project_directory = filter_directory(join(self.repos_dir, project["author"], project["repo"]))
-
+            print(join(self.output_dir, project["author"], project["repo"]))
+            filtered_project_directory = filter_directory(join(self.projects_path, project["author"], project["repo"]))
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
             for filename in list_files(filtered_project_directory):
@@ -126,6 +146,7 @@ class Pipeline:
                     # print(f"Could not process file {filename}")
                     traceback.print_exc()
                     self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
             print(f'Saving available type hints for {project_id}...')
 
@@ -140,7 +161,8 @@ class Pipeline:
         except Exception as err:
             print(f'Running pipeline for project {i} failed')
             traceback.print_exc()
-            self.logger.error("project: %s | Exception: %s" % (project_id, err))
+            self.logger.debug("project: %s | Exception: %s" % (project_id, err))
+            #logging.error("project: %s | Exception: %s" % (project_id, err))
         finally:
             try:
                 with open(self.get_project_filename(project), 'w') as p_json_f:
@@ -150,47 +172,8 @@ class Pipeline:
                     "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
 
     def run(self, repos_list, jobs, start=0):
-        ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
-            delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
+        # ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
+        #     delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
+        for i, project in enumerate(repos_list, start=start):
+            self.process_project(i, project)
 
-
-# Parse command line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('--projects_file',
-                    help='json file containing GitHub projects',
-                    type=str,
-                    default='../resources/mypy-dependents-by-stars.json')
-parser.add_argument('--limit',
-                    help='limit the number of projects for which the pipeline should run',
-                    type=int,
-                    default=0)
-parser.add_argument("--jobs",
-                    help="number of jobs to use for pipeline.",
-                    type=int,
-                    default=-1)
-parser.add_argument("--output_dir",
-                    help="output dir for the pipeline",
-                    type=str,
-                    default=os.path.join('../output', str(int(time.time()))))
-parser.add_argument('--start',
-                    help='start position within projects list',
-                    type=int,
-                    default=0)
-
-if __name__ == '__main__':
-    # Parse args
-    args = parser.parse_args()
-
-    # Create output dir
-    OUTPUT_DIRECTORY = args.output_dir
-    if not os.path.exists(OUTPUT_DIRECTORY):
-        os.mkdir(OUTPUT_DIRECTORY)
-
-    # Open projects file and run pipeline
-    with open(args.projects_file) as json_file:
-        projects = json.load(json_file)
-
-        if args.limit > 0:
-            projects = projects[:args.limit]
-
-        # run_pipeline(projects)
