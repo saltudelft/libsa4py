@@ -46,7 +46,6 @@ class Extractor:
         v_untyped = v_untyped.visit(v_type)
 
         # Replaces identifiers with their type annotations
-        # TODO: Fix NoneType error for TypeAdder transformer
         v_typed = v_untyped.visit(v_type_add)
 
         # Adding space for better tokenization

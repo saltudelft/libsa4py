@@ -172,8 +172,5 @@ class Pipeline:
                     "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
 
     def run(self, repos_list, jobs, start=0):
-        # ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
-        #     delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
-        for i, project in enumerate(repos_list, start=start):
-            self.process_project(i, project)
-
+        ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
+            delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
