@@ -1,11 +1,11 @@
-import argparse
 import json
 import os
-import time
 import traceback
+import random
 
-from os.path import isdir, join
+from os.path import join
 from joblib import delayed
+from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError
 from libsa4py.nl_preprocessing import NLPreprocessor
@@ -25,7 +25,7 @@ class Pipeline:
     """
 
     def __init__(self, projects_path, input_projects, output_dir, nlp_transf: bool = True,
-                 use_cache: bool = True):
+                 use_cache: bool = True, dups_files_path=None):
         self.projects_path = projects_path
         self.input_projects = input_projects
         self.output_dir = output_dir
@@ -37,6 +37,14 @@ class Pipeline:
         self.nlp_prep = NLPreprocessor()
 
         self.__make_output_dirs()
+
+        if dups_files_path is not None:
+            clusters_rand_files = [l.pop(random.randrange(len(l))) for l in load_jsonl_gz(dups_files_path)]
+            self.duplicate_files = [f for l in load_jsonl_gz(dups_files_path) for f in l]
+            self.duplicate_files = set(self.duplicate_files).difference(set(clusters_rand_files))
+            self.is_file_duplicate = lambda x: True if x in self.duplicate_files else False
+        else:
+            self.is_file_duplicate = lambda x: False
 
         # TODO: Fix the logger issue not outputing the logs into the file.
         logging.basicConfig(filename=join(self.err_log_dir, "pipeline_errors.log"), level=logging.DEBUG,
@@ -124,29 +132,32 @@ class Pipeline:
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
             for filename in list_files(filtered_project_directory):
-                try:
+                if not self.is_file_duplicate(filename):
+                    try:
 
-                    project_analyzed_files[project_id]["src_files"][filename] = \
-                        self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
-                            else Extractor.extract(read_file(filename))
-                    extracted_avl_types = project_analyzed_files[project_id]["src_files"][filename]['imports'] + \
-                                          [c['name'] for c in
-                                           project_analyzed_files[project_id]["src_files"][filename]['classes']]
-                except ParseError as err:
-                    # print(f"Could not parse file {filename}")
-                    traceback.print_exc()
-                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                except UnicodeDecodeError:
-                    print(f"Could not read file {filename}")
-                except Exception as err:
-                    # Other unexpected exceptions; Failure of single file should not
-                    # fail the entire project processing.
-                    # TODO: A better workaround would be to have a specialized exception thrown
-                    # by the extractor, so that this exception is specialized.
-                    print(f"Could not process file {filename}")
-                    traceback.print_exc()
-                    #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                    #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                        project_analyzed_files[project_id]["src_files"][filename] = \
+                            self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
+                                else Extractor.extract(read_file(filename))
+                        extracted_avl_types = project_analyzed_files[project_id]["src_files"][filename]['imports'] + \
+                                              [c['name'] for c in
+                                               project_analyzed_files[project_id]["src_files"][filename]['classes']]
+                    except ParseError as err:
+                        # print(f"Could not parse file {filename}")
+                        traceback.print_exc()
+                        self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    except UnicodeDecodeError:
+                        print(f"Could not read file {filename}")
+                    except Exception as err:
+                        # Other unexpected exceptions; Failure of single file should not
+                        # fail the entire project processing.
+                        # TODO: A better workaround would be to have a specialized exception thrown
+                        # by the extractor, so that this exception is specialized.
+                        print(f"Could not process file {filename}")
+                        traceback.print_exc()
+                        #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                        #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                else:
+                    print(f"Ignore duplicate file {filename}")
 
             print(f'Saving available type hints for {project_id}...')
 
