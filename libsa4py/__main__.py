@@ -12,15 +12,17 @@ def main():
     arg_parser.add_argument("--d", "--deduplicate", required=False, type=str, help="Path to duplicate files")
     arg_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
     arg_parser.add_argument("--l", required=False, type=int, help="Number of projects to process")
+    arg_parser.add_argument("--c", "--cache", dest='use_cache', action='store_true', help="Whether to ignore processed projects")
     arg_parser.add_argument("--no-nlp", dest='no_nlp', action='store_true', help="Whether to apply standard NLP "
                                                                                  "techniques to extracted identifiers")
     arg_parser.set_defaults(no_nlp=False)
+    arg_parser.set_defaults(use_cache=False)
 
     args = arg_parser.parse_args()
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
     print(len(input_repos))
 
-    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, True, args.d)
+    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, args.use_cache, args.d)
     p.run(input_repos, args.j)
 
 
