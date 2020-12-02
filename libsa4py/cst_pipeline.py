@@ -119,11 +119,6 @@ class Pipeline:
         project_analyzed_files: dict = {project_id: {"src_files": {}}}
         try:
             print(f'Running pipeline for project {i} {project_id}')
-
-            if os.path.exists(self.get_project_filename(project)) and self.use_cache:
-                print(f"Found cached copy for project {project_id}")
-                return
-
             project['files'] = []
 
             print(f'Filtering for {project_id}...')
@@ -185,5 +180,10 @@ class Pipeline:
                     "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
 
     def run(self, repos_list, jobs, start=0):
+
+        print(f"Number of projects to be processed: {len(repos_list)}")
+        repos_list = [p for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
+        print(f"Number of projects to be processed after considering cache: {len(repos_list)}")
+
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
