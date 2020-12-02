@@ -131,33 +131,35 @@ class Pipeline:
             filtered_project_directory = filter_directory(join(self.projects_path, project["author"], project["repo"]))
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
-            for filename in list_files(filtered_project_directory):
-                if not self.is_file_duplicate(filename):
-                    try:
 
-                        project_analyzed_files[project_id]["src_files"][filename] = \
-                            self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
-                                else Extractor.extract(read_file(filename))
-                        extracted_avl_types = project_analyzed_files[project_id]["src_files"][filename]['imports'] + \
-                                              [c['name'] for c in
-                                               project_analyzed_files[project_id]["src_files"][filename]['classes']]
-                    except ParseError as err:
-                        # print(f"Could not parse file {filename}")
-                        traceback.print_exc()
-                        self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                    except UnicodeDecodeError:
-                        print(f"Could not read file {filename}")
-                    except Exception as err:
-                        # Other unexpected exceptions; Failure of single file should not
-                        # fail the entire project processing.
-                        # TODO: A better workaround would be to have a specialized exception thrown
-                        # by the extractor, so that this exception is specialized.
-                        print(f"Could not process file {filename}")
-                        traceback.print_exc()
-                        #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                        #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                else:
-                    print(f"Ignore duplicate file {filename}")
+            project_files = list_files(filtered_project_directory)
+            print(f"{project_id} has {len(project_files)} files before deduplication")
+            project_files = [f for f in project_files if not self.is_file_duplicate(f)]
+            print(f"{project_id} has {len(project_files)} files after deduplication")
+
+            for filename in project_files:
+                try:
+                    project_analyzed_files[project_id]["src_files"][filename] = \
+                        self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
+                            else Extractor.extract(read_file(filename))
+                    extracted_avl_types = project_analyzed_files[project_id]["src_files"][filename]['imports'] + \
+                                            [c['name'] for c in
+                                            project_analyzed_files[project_id]["src_files"][filename]['classes']]
+                except ParseError as err:
+                    # print(f"Could not parse file {filename}")
+                    traceback.print_exc()
+                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                except UnicodeDecodeError:
+                    print(f"Could not read file {filename}")
+                except Exception as err:
+                    # Other unexpected exceptions; Failure of single file should not
+                    # fail the entire project processing.
+                    # TODO: A better workaround would be to have a specialized exception thrown
+                    # by the extractor, so that this exception is specialized.
+                    print(f"Could not process file {filename}")
+                    traceback.print_exc()
+                    #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
             print(f'Saving available type hints for {project_id}...')
 
