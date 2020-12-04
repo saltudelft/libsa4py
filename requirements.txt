@@ -1,5 +1,6 @@
 libcst
 numpy
+pandas
 joblib
 tqdm
 dpu_utils

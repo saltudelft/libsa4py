@@ -1,9 +1,11 @@
 from typing import Tuple, Union, List, Optional, Dict, Pattern, Match
 from io import BytesIO
+from os.path import join
 
 import libcst as cst
 import json
 import numpy as np
+import pandas as pd
 
 from tqdm import tqdm
 from libsa4py.cst_visitor import Visitor
@@ -11,6 +13,7 @@ from libsa4py.representations import ModuleInfo
 from libsa4py.cst_transformers import TypeAdder, SpaceAdder, StringRemover, CommentAndDocStringRemover, NumberRemover,\
     TypeAnnotationRemover
 from libsa4py.nl_preprocessing import NLPreprocessor
+from libsa4py.utils import list_files
 from libsa4py.exceptions import ParseError
 
 NLP_P = NLPreprocessor()
@@ -61,7 +64,7 @@ def merge_jsons_to_dict(json_files: list) -> dict:
     """
 
     all_projects_dict = {'projects': {}}
-    for f in tqdm(json_files, total=len(json_files)):
+    for f in tqdm(json_files, total=len(json_files), desc="Merging JSONs"):
         with open(f, 'r') as json_f:
             try:
                 d = json.load(json_f)
@@ -78,7 +81,7 @@ def extract_fns(projects: dict) -> list:
     """
 
     fns = []
-    for p in tqdm(list(projects['projects'].keys()), total=len(projects['projects'].keys())):
+    for p in tqdm(list(projects['projects'].keys()), total=len(projects['projects'].keys()), desc="Extracting all functions"):
         p_fns = {'author': '', 'repo': '', 'files': {}}
         p_fns['author'], p_fns['repo'] = p.split("/")
         for f in projects['projects'][p]['src_files'].keys():
@@ -104,3 +107,15 @@ def extract_fns(projects: dict) -> list:
                             len([t for t in list(fn['params'].values()) if t != ''])])
 
     return fns
+
+def create_dataframe_fns(output_path: str):
+    """
+    Creates a single dataframe that contains all the extracted functions and type hints for further processing
+    """
+
+    fns = extract_fns(merge_jsons_to_dict(list_files(join(output_path, 'processed_projects'))))
+    df_fns = pd.DataFrame(fns, columns=['author', 'repo', 'file', 'name', 'has_type', 'docstring', 'func_descr',
+                                        'arg_names', 'arg_types', 'arg_descrs', 'return_type', 'return_expr',
+                                        'args_occur', 'return_descr', 'variables', 'variables_types', 'aval_types',
+                                        'arg_names_len', 'arg_types_len'])
+    df_fns.to_csv(join(output_path, 'all_fns.csv'), index=False)
