@@ -4,6 +4,7 @@ import traceback
 import random
 
 from os.path import join
+from pathlib import Path
 from joblib import delayed
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
@@ -133,13 +134,14 @@ class Pipeline:
             print(f"{project_id} has {len(project_files)} files after deduplication")
 
             for filename in project_files:
+                f_relative = str(Path(filename).relative_to(Path(self.projects_path).parent))
                 try:
-                    project_analyzed_files[project_id]["src_files"][filename] = \
+                    project_analyzed_files[project_id]["src_files"][f_relative] = \
                         self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
                             else Extractor.extract(read_file(filename))
-                    extracted_avl_types = project_analyzed_files[project_id]["src_files"][filename]['imports'] + \
+                    extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
                                             [c['name'] for c in
-                                            project_analyzed_files[project_id]["src_files"][filename]['classes']]
+                                            project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
                 except ParseError as err:
                     # print(f"Could not parse file {filename}")
                     traceback.print_exc()
