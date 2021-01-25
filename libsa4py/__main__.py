@@ -8,7 +8,7 @@ from libsa4py.cst_extractor import create_dataframe_fns
 def process_projects(args):
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
     print(len(input_repos))
-    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, args.use_cache, args.d)
+    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, args.use_cache, args.d, args.s)
     p.run(input_repos, args.j)
 
 def merge_projects(args):
@@ -23,6 +23,7 @@ def main():
     process_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
     process_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     process_parser.add_argument("--d", "--deduplicate", required=False, type=str, help="Path to duplicate files")
+    process_parser.add_argument("--s", "--split", required=False, type=str, help="Path to the dataset split files")
     process_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
     process_parser.add_argument("--l", required=False, type=int, help="Number of projects to process")
     process_parser.add_argument("--c", "--cache", dest='use_cache', action='store_true', help="Whether to ignore processed projects")

@@ -154,7 +154,8 @@ class ModuleInfo:
                 "typed_seq": create_output_seq(ModuleInfo.normalize_module_code(self.typed_seq)),
                 "imports": self.import_names, "variables": self.variables,
                 "classes": [c.to_dict() for c in self.classes],
-                "funcs": [f.to_dict() for f in self.funcs]}
+                "funcs": [f.to_dict() for f in self.funcs],
+                "set": None}
 
     @staticmethod
     def normalize_module_code(m_code: str) -> str:

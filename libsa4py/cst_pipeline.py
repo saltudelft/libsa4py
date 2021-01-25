@@ -2,6 +2,7 @@ import json
 import os
 import traceback
 import random
+import csv
 
 from os.path import join
 from pathlib import Path
@@ -26,7 +27,7 @@ class Pipeline:
     """
 
     def __init__(self, projects_path, input_projects, output_dir, nlp_transf: bool = True,
-                 use_cache: bool = True, dups_files_path=None):
+                 use_cache: bool = True, dups_files_path=None, split_files_path=None):
         self.projects_path = projects_path
         self.input_projects = input_projects
         self.output_dir = output_dir
@@ -46,6 +47,8 @@ class Pipeline:
             self.is_file_duplicate = lambda x: True if x in self.duplicate_files else False
         else:
             self.is_file_duplicate = lambda x: False
+
+        self.split_dataset_files = {f:s for s, f in csv.reader(open(split_files_path, 'r'))} if split_files_path is not None else {}
 
         # TODO: Fix the logger issue not outputing the logs into the file.
         logging.basicConfig(filename=join(self.err_log_dir, "pipeline_errors.log"), level=logging.DEBUG,
@@ -133,12 +136,15 @@ class Pipeline:
             project_files = [f for f in project_files if not self.is_file_duplicate(f)]
             print(f"{project_id} has {len(project_files)} files after deduplication")
 
-            for filename in project_files:
-                f_relative = str(Path(filename).relative_to(Path(self.projects_path).parent))
+            project_files = [(f, str(Path(f).relative_to(Path(self.projects_path).parent))) for f in project_files]
+            project_files = [(f, f_r, self.split_dataset_files[f_r] if f_r in self.split_dataset_files else None) for f, f_r in project_files]
+
+            for filename, f_relative, f_split in project_files:
                 try:
                     project_analyzed_files[project_id]["src_files"][f_relative] = \
                         self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
                             else Extractor.extract(read_file(filename))
+                    project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
                     extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
                                             [c['name'] for c in
                                             project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
