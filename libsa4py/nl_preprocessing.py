@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 from functools import reduce
 from typing import Optional
 
-from libsa4py.extractor import Function
 import re
 import nltk
 
@@ -16,26 +15,6 @@ all_cap_regex = re.compile('([a-z0-9])([A-Z])')
 
 
 class NLPreprocessor:
-    def preprocess(self, function: Function) -> Function:
-        """
-        Preprocess a function's comments and identifiers by removing punctuating, removing stopwords and lemmatization
-        """
-
-        return Function(
-            name=self.process_identifier(function.name),
-            docstring=self.process_sentence(function.docstring),
-            func_descr=self.process_sentence(function.func_descr),
-            arg_names=[self.process_identifier(arg_name) for arg_name in function.arg_names],
-            arg_types=function.arg_types,
-            arg_descrs=[self.process_sentence(arg_descr) for arg_descr in function.arg_descrs],
-            args_occur=[self.process_sentence(args_occur) for args_occur in function.args_occur],
-            return_type=function.return_type,
-            return_expr=[self.process_identifier(expr.replace('return ', '')) for expr in function.return_expr],
-            return_descr=self.process_sentence(function.return_descr),
-            variables=[self.process_identifier(var_name) for var_name in function.variables],
-            variables_types=function.variables_types
-        )
-
     def process_sentence(self, sentence: str) -> Optional[str]:
         """
         Process a natural language sentence
