@@ -1,8 +1,8 @@
-# light-sa-type-inf
-A light-weight static analysis-based code representation to do ML-based type inference for Python
+# LibSA4Py
+It is a static analysis library for Python, which extracts type hints and features for training ML-based type inference models.
 
 # Usage
-## Prcossing projects
+## Processing projects
 Given Python repositories, run the following command to process source code files and generate JSON-formatted outputs:
 ```
 libsa4py process --p $REPOS_PATH --o $OUTPUT_PATH --d $DUPLICATE_PATH --j $WORKERS_COUNT --l $LIMIT --c --no-nlp
@@ -12,7 +12,8 @@ Description:
 - `--p $REPOS_PATH`: The path to the Python corpus or dataset.
 - `--o $OUTPUT_PATH`: Path to store processed projects.
 - `--d $DUPLICATE_PATH`: Path to duplicate files of the given dataset (i.e. jsonl.gz file produced by the [CD4Py](https://github.com/saltudelft/CD4Py) tool). [**Optional**]
-- `--j $WORKERS_COUNT`: Number of workers for processing projects. [**Optional**]
+- `--s`: Path to the CSV file for splitting the given dataset. [**Optional**]
+- `--j $WORKERS_COUNT`: Number of workers for processing projects. [**Optional**, default=no. of available CPU cores]
 - `--l $LIMIT`: Number of projects to be processed. [**Optional**]
 - `--c`: Whether to ignore processed projects. [**Optional**, default=False]
 - `--no-nlp`: Whether to apply standard NLP techniques to extracted identifiers. [**Optional**, default=True]
