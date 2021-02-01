@@ -7,6 +7,7 @@ from typing import Optional, List
 PI = 3.14
 x, y, z = 12, 0.5, 34
 TEST_CONSTANT: int = 404
+a, (b, c) = 1, (2, 3)
 
 LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. Phasellus volutpat euismod gravida.
  Proin condimentum mattis consequat. Integer lobortis orci et risus iaculis mattis. Fusce at urna semper, lobortis
@@ -121,6 +122,11 @@ class Test:
             return True
         else:
             return False
+
+    def walrus_op(self):
+
+        while (n := 4):
+            print(n)
 
     def numpy_docstring(self, param1: int, param2: str) -> bool:
         """

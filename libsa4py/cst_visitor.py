@@ -208,7 +208,6 @@ class Visitor(cst.CSTVisitor):
 
     def visit_AssignTarget(self, node: cst.AssignTarget):
         extracted_names = self.__extract_variable_name(node)
-
         if extracted_names is not None:
             # Only extract if in function
             if len(self.stack) > 0:
@@ -338,7 +337,7 @@ class Visitor(cst.CSTVisitor):
             return ""
 
     def __extract_variable_name(self, node: cst.AssignTarget):
-        return match.extract(node, match.AssignTarget(  # Assignment operator
+        extracted_var_names = match.extract(node, match.AssignTarget(  # Assignment operator
             target=match.OneOf(  # Two cases exist
                 match.Name(  # Single target
                     value=match.SaveMatchedNode(  # Save result
@@ -352,28 +351,34 @@ class Visitor(cst.CSTVisitor):
                         "names"
                     )
                 ),
-
-                # match.SaveMatchedNode(  # Save result
-                #     match.DoNotCare(),  # Type of list
-                #     "names"
-                # )
-
                 # This extracts variables inside __init__ without type annotation (e.g. self.x=2)
                 match.Attribute(
                     value=match.Name(value=match.SaveMatchedNode(
                         match.MatchRegex(r'(.)+'),
                         "obj_name"  # Object name
-                    )
+                        )
                     ),
                     attr=match.Name(match.SaveMatchedNode(
                         match.MatchRegex(r'(.)+'),
                         "name"
-                    )
+                        )
                     ),
                 )
             )
+            )
         )
-                             )
+
+        if extracted_var_names is not None and "names" in extracted_var_names:
+            e_all = []
+            for e in extracted_var_names['names']:
+                # Adds variables in a tuple in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
+                if match.matches(e, match.Element(value=match.Tuple(elements=match.DoNotCare()))):
+                    e_all.extend(match.extract(e, match.Element(value=match.Tuple(elements=match.SaveMatchedNode(match.DoNotCare(), "tuple"))))['tuple'])
+                else:
+                    e_all.append(e)
+            return {'names': e_all}
+        else:
+            return extracted_var_names
 
     def __extract_variable_name_type(self, node: cst.AnnAssign):
         """
