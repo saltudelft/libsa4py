@@ -31,7 +31,7 @@ setup(
     keywords='libsa4py static analysis features type hints type inference machine learning python pipeline light-weight',
     packages=['libsa4py'],
     python_requries='>=3.5',
-    install_requires=['libcst', 'numpy', 'pandas', 'joblib', 'tqdm', 'dpu_utils'],
+    install_requires=['libcst', 'numpy', 'pandas', 'nltk', 'joblib', 'tqdm', 'docstring_parser', 'dpu_utils'],
     entry_points={
         'console_scripts': [
             'libsa4py = libsa4py.__main__:main',

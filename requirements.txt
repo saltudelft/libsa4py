@@ -1,6 +1,8 @@
 libcst
 numpy
 pandas
+nltk
 joblib
 tqdm
+docstring_parser
 dpu_utils
