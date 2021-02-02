@@ -3,9 +3,11 @@ import os
 import traceback
 import random
 import csv
+import time
 
 from os.path import join
 from pathlib import Path
+from datetime import timedelta
 from joblib import delayed
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
@@ -193,5 +195,7 @@ class Pipeline:
         repos_list = [p for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
         print(f"Number of projects to be processed after considering cache: {len(repos_list)}")
 
+        start_t = time.time()
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
+        print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start))))
