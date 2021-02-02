@@ -8,6 +8,7 @@ PI = 3.14
 x, y, z = 12, 0.5, 34
 TEST_CONSTANT: int = 404
 a, (b, c) = 1, (2, 3)
+d, ((e, f), (g, h)) = 4, ((5, 6), (6, 7))
 
 LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. Phasellus volutpat euismod gravida.
  Proin condimentum mattis consequat. Integer lobortis orci et risus iaculis mattis. Fusce at urna semper, lobortis

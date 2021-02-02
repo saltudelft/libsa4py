@@ -369,14 +369,8 @@ class Visitor(cst.CSTVisitor):
         )
 
         if extracted_var_names is not None and "names" in extracted_var_names:
-            e_all = []
-            for e in extracted_var_names['names']:
-                # Adds variables in a tuple in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
-                if match.matches(e, match.Element(value=match.Tuple(elements=match.DoNotCare()))):
-                    e_all.extend(match.extract(e, match.Element(value=match.Tuple(elements=match.SaveMatchedNode(match.DoNotCare(), "tuple"))))['tuple'])
-                else:
-                    e_all.append(e)
-            return {'names': e_all}
+            # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
+            return {'names': match.findall(node, match.Element(value=match.Name(value=match.DoNotCare())))}
         else:
             return extracted_var_names
 
