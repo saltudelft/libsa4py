@@ -11,7 +11,7 @@ from datetime import timedelta
 from joblib import delayed
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
-from libsa4py.exceptions import ParseError
+from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import filter_directory, read_file, list_files, ParallelExecutor, mk_dir_not_exist
 
@@ -183,8 +183,13 @@ class Pipeline:
             #logging.error("project: %s | Exception: %s" % (project_id, err))
         finally:
             try:
-                with open(self.get_project_filename(project), 'w') as p_json_f:
-                    json.dump(project_analyzed_files, p_json_f, indent=4)
+                if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
+                    with open(self.get_project_filename(project), 'w') as p_json_f:
+                        json.dump(project_analyzed_files, p_json_f, indent=4)
+                else:
+                    raise NullProjectException(project_id)
+            except NullProjectException as err:
+                    self.logger.error(err)
             except Exception as err:
                 self.logger.error(
                     "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
