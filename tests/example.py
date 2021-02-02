@@ -33,7 +33,9 @@ class Test:
         y: float = 3.14
         u: List[str] = ['hi', 'world']
         z = 3
+        foo: str
         self.b, self.c = 45, 'blah'
+        self.error: List
 
     def add(self, y: int) -> int:
         """This function adds some number to y"""
