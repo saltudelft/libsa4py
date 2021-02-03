@@ -58,12 +58,9 @@ def list_files(directory: str) -> list:
     filenames = []
 
     for root, dirs, files in os.walk(directory):
-        # Ignore .git dir
-        if ".git" in dirs:
-            dirs.remove(".git")
-
         for filename in files:
-            filenames.append(os.path.join(root, filename))
+            if filename.endswith('.py'):
+                filenames.append(os.path.join(root, filename))
 
     return filenames
 
