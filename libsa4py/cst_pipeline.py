@@ -203,4 +203,4 @@ class Pipeline:
         start_t = time.time()
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
-        print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start))))
+        print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
