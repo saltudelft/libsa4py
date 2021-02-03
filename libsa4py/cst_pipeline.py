@@ -53,10 +53,10 @@ class Pipeline:
         self.split_dataset_files = {f:s for s, f in csv.reader(open(split_files_path, 'r'))} if split_files_path is not None else {}
 
         # TODO: Fix the logger issue not outputing the logs into the file.
-        logging.basicConfig(filename=join(self.err_log_dir, "pipeline_errors.log"), level=logging.DEBUG,
-                            format='%(asctime)s %(name)s %(message)s')
-        self.logger = logger = logging.getLogger(__name__)
-        # self.logger = self.__setup_pipeline_logger(join(self.err_log_dir, "pipeline_errors.log"))
+        # logging.basicConfig(filename=join(self.err_log_dir, "pipeline_errors.log"), level=logging.DEBUG,
+        #                     format='%(asctime)s %(name)s %(message)s')
+        # self.logger = logging.getLogger(__name__)
+        self.logger = self.__setup_pipeline_logger(join(self.err_log_dir, "pipeline_errors.log"))
 
     def __make_output_dirs(self):
         mk_dir_not_exist(self.output_dir)
@@ -68,19 +68,24 @@ class Pipeline:
         mk_dir_not_exist(self.avl_types_dir)
         mk_dir_not_exist(self.err_log_dir)
 
-    # def __setup_pipeline_logger(self, log_dir: str):
-    #     logger = logging.getLogger(__name__)
-    #     logger.setLevel(logging.DEBUG)
-    #
-    #     logger_handler = logging.FileHandler(filename=log_dir)
-    #     logger_handler.setLevel(logging.DEBUG)
-    #
-    #     logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(message)s')
-    #     logger_handler.setFormatter(logger_formatter)
-    #
-    #     logger.addHandler(logger_handler)
-    #
-    #     return logger
+    def __setup_pipeline_logger(self, log_dir: str):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+
+        logger_ch = logging.StreamHandler()
+        logger_ch.setLevel(logging.DEBUG)
+    
+        logger_fh = logging.FileHandler(filename=log_dir)
+        logger_fh.setLevel(logging.DEBUG)
+    
+        logger_formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(message)s')
+        logger_ch.setFormatter(logger_formatter)
+        logger_fh.setFormatter(logger_formatter)
+
+        logger.addHandler(logger_ch)
+        logger.addHandler(logger_fh)
+    
+        return logger
 
     def get_project_filename(self, project) -> str:
         """
@@ -161,9 +166,9 @@ class Pipeline:
                     # fail the entire project processing.
                     # TODO: A better workaround would be to have a specialized exception thrown
                     # by the extractor, so that this exception is specialized.
-                    print(f"Could not process file {filename}")
+                    #print(f"Could not process file {filename}")
                     traceback.print_exc()
-                    #self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
                     #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
             print(f'Saving available type hints for {project_id}...')
@@ -179,8 +184,7 @@ class Pipeline:
         except Exception as err:
             print(f'Running pipeline for project {i} failed')
             traceback.print_exc()
-            self.logger.debug("project: %s | Exception: %s" % (project_id, err))
-            #logging.error("project: %s | Exception: %s" % (project_id, err))
+            self.logger.error("project: %s | Exception: %s" % (project_id, err))
         finally:
             try:
                 if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
@@ -204,3 +208,4 @@ class Pipeline:
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
         print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
+        logging.shutdown()
