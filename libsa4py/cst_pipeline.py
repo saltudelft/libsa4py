@@ -13,7 +13,7 @@ from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import filter_directory, read_file, list_files, ParallelExecutor, mk_dir_not_exist
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist
 
 import logging
 import logging.config
@@ -132,13 +132,10 @@ class Pipeline:
             print(f'Running pipeline for project {i} {project_id}')
             project['files'] = []
 
-            print(f'Filtering for {project_id}...')
-            print(join(self.output_dir, project["author"], project["repo"]))
-            filtered_project_directory = filter_directory(join(self.projects_path, project["author"], project["repo"]))
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
 
-            project_files = list_files(filtered_project_directory)
+            project_files = list_files(join(self.projects_path, project["author"], project["repo"]))
             print(f"{project_id} has {len(project_files)} files before deduplication")
             project_files = [f for f in project_files if not self.is_file_duplicate(f)]
             print(f"{project_id} has {len(project_files)} files after deduplication")
