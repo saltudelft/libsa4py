@@ -18,10 +18,6 @@ from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_e
 import logging
 import logging.config
 
-# Create output directory
-if not os.path.isdir('./output'):
-    os.mkdir('./output')
-
 
 class Pipeline:
     """
