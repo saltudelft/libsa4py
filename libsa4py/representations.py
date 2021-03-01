@@ -120,6 +120,18 @@ class FunctionInfo:
         else:
             return
 
+    def get_type_annot_cove(self) -> float:
+        try:
+            return (sum([1 for k, v in self.variables.items() if v] +
+                        [1 for k, v in self.parameters.items() if v]) +
+                    (1 if self.return_type else 0)) / (len(self.variables.keys()) +
+                        (len(self.parameters.keys()) - 1 if 'self' in self.parameters.keys()
+                             else len(self.parameters.keys())) + (1 if len(self.return_exprs) or
+                                                                       self.return_type == "None" else 0))
+        except ZeroDivisionError:
+            # For functions with no parameters, variables and return
+            return 0.0
+
 
 class ClassInfo:
     """
@@ -133,6 +145,10 @@ class ClassInfo:
 
     def to_dict(self) -> dict:
         return {"name": self.name, "variables": self.variables, "funcs": [f.to_dict() for f in self.funcs]}
+
+    def get_type_annot_cove(self) -> float:
+        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
+               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 2
 
 
 class ModuleInfo:
@@ -155,7 +171,8 @@ class ModuleInfo:
                 "imports": self.import_names, "variables": self.variables,
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
-                "set": None}
+                "set": None,
+                "type_annot_cove": round(self.get_type_annot_cove(), 2)}
 
     @staticmethod
     def normalize_module_code(m_code: str) -> str:
@@ -171,6 +188,11 @@ class ModuleInfo:
         m_code = regex.sub(lambda mo: special_tks[mo.string[mo.start():mo.end()]], m_code)
 
         return m_code.strip()
+
+    def get_type_annot_cove(self):
+        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
+               (sum([c.get_type_annot_cove() for c in self.classes]) / len(self.classes) if len(self.classes) else 0) +
+               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 3
 
 
 def create_output_seq(typed_seq: str, type_sep_symb="$") -> str:

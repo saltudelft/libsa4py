@@ -123,7 +123,7 @@ class Pipeline:
     def process_project(self, i, project):
 
         project_id = f'{project["author"]}/{project["repo"]}'
-        project_analyzed_files: dict = {project_id: {"src_files": {}}}
+        project_analyzed_files: dict = {project_id: {"src_files": {}, "type_annot_cove": 0.0}}
         try:
             print(f'Running pipeline for project {i} {project_id}')
             project['files'] = []
@@ -165,7 +165,6 @@ class Pipeline:
                     #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
             print(f'Saving available type hints for {project_id}...')
-
             if self.avl_types_dir is not None:
                 if extracted_avl_types:
                     with open(join(self.avl_types_dir, f'{project["author"]}_{project["repo"]}_avltypes.txt'),
@@ -181,6 +180,10 @@ class Pipeline:
         finally:
             try:
                 if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
+                    project_analyzed_files[project_id]["type_annot_cove"] = \
+                        round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
+                             project_analyzed_files[project_id]["src_files"].keys()]) / len(
+                            project_analyzed_files[project_id]["src_files"].keys()), 2)
                     with open(self.get_project_filename(project), 'w') as p_json_f:
                         json.dump(project_analyzed_files, p_json_f, indent=4)
                 else:
