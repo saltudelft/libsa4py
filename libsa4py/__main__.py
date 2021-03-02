@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 from multiprocessing import cpu_count
 from libsa4py.utils import find_repos_list
 from libsa4py.cst_pipeline import Pipeline
-from libsa4py.cst_extractor import create_dataframe_fns
+from libsa4py.merge import merge_projects
 
 
 def process_projects(args):
@@ -11,8 +11,6 @@ def process_projects(args):
     p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, args.use_cache, args.d, args.s)
     p.run(input_repos, args.j)
 
-def merge_projects(args):
-    create_dataframe_fns(args.o)
 
 def main():
 
@@ -39,6 +37,7 @@ def main():
 
     args = arg_parser.parse_args()
     args.func(args)
-    
+
+
 if __name__ == '__main__':
     main()

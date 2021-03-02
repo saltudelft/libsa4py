@@ -2,7 +2,7 @@
 This module contains a set of helper functions to merge processed projects into a Dataframe or a single JSON
 """
 
-from libsa4py.utils import list_files
+from libsa4py.utils import list_files, save_json
 from libsa4py.nl_preprocessing import NLPreprocessor
 from tqdm import tqdm
 from os.path import join
@@ -64,14 +64,23 @@ def extract_fns(projects: dict) -> list:
     return fns
 
 
-def create_dataframe_fns(output_path: str):
+def create_dataframe_fns(output_path: str, merged_jsons: dict):
     """
     Creates a single dataframe that contains all the extracted functions and type hints for further processing
     """
 
-    fns = extract_fns(merge_jsons_to_dict(list_files(join(output_path, 'processed_projects'))))
+    fns = extract_fns(merged_jsons)
     df_fns = pd.DataFrame(fns, columns=['author', 'repo', 'file', 'name', 'has_type', 'docstring', 'func_descr',
                                         'arg_names', 'arg_types', 'arg_descrs', 'return_type', 'return_expr',
                                         'args_occur', 'return_descr', 'variables', 'variables_types', 'aval_types',
                                         'arg_names_len', 'arg_types_len'])
     df_fns.to_csv(join(output_path, 'all_fns.csv'), index=False)
+
+
+def merge_projects(args):
+    """
+    Saves merged projects into a single JSON file and a Dataframe
+    """
+    merged_jsons = merge_jsons_to_dict(list_files(join(args.o, 'processed_projects')))
+    save_json(join(args.o, 'merged_projects.json'), merged_jsons)
+    create_dataframe_fns(args.o, merged_jsons)
