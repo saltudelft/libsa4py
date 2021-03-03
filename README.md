@@ -1,9 +1,16 @@
 # LibSA4Py
 It is a static analysis library for Python, which extracts type hints and features for training ML-based type inference models.
 
+- [Requirements](#requirements)
+- [Quick Installation](#quick-installation)
+- [Usage](#usage)
+  - [Processing projects](#processing-projects)
+  - [Merging projects](#merging-projects)
+- [JSON Output](#json-output)
+
 # Requirements
 
-- Python 3.5 or newer
+- Python 3.5 or newer (Python 3.8 is recommended)
 - MacOS or Linux systems
 
 # Quick Installation
@@ -12,7 +19,6 @@ It is a static analysis library for Python, which extracts type hints and featur
 git clone https://github.com/saltudelft/libsa4py.git
 cd libsa4py && pip install .
 ```
-
 
 # Usage
 ## Processing projects
