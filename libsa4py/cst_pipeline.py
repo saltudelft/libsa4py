@@ -13,7 +13,7 @@ from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
 
 import logging
 import logging.config
@@ -184,8 +184,8 @@ class Pipeline:
                         round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
                              project_analyzed_files[project_id]["src_files"].keys()]) / len(
                             project_analyzed_files[project_id]["src_files"].keys()), 2)
-                    with open(self.get_project_filename(project), 'w') as p_json_f:
-                        json.dump(project_analyzed_files, p_json_f, indent=4)
+
+                    save_json(self.get_project_filename(project), project_analyzed_files)
                 else:
                     raise NullProjectException(project_id)
             except NullProjectException as err:

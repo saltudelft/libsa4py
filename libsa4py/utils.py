@@ -4,6 +4,7 @@ from joblib import Parallel
 from os.path import join, isdir
 import time
 import os
+import json
 
 
 def text_progessbar(seq, total=None):
@@ -51,7 +52,7 @@ def ParallelExecutor(use_bar='tqdm', **joblib_args):
 #     return directory
 
 
-def list_files(directory: str) -> list:
+def list_files(directory: str, file_ext: str = ".py") -> list:
     """
     List all files in the given directory (recursively)
     """
@@ -59,7 +60,7 @@ def list_files(directory: str) -> list:
 
     for root, dirs, files in os.walk(directory):
         for filename in files:
-            if filename.endswith('.py'):
+            if filename.endswith(file_ext):
                 filenames.append(os.path.join(root, filename))
 
     return filenames
@@ -71,6 +72,14 @@ def read_file(filename: str) -> str:
     """
     with open(filename) as file:
         return file.read()
+
+
+def save_json(filename: str, dict_obj: dict):
+    """
+    Dumps a dict object into a JSON file
+    """
+    with open(filename, 'w') as json_f:
+        json.dump(dict_obj, json_f, indent=4)
 
 
 def find_repos_list(projects_path: str) -> List[dict]:
