@@ -7,8 +7,7 @@ from libsa4py.merge import merge_projects
 
 def process_projects(args):
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
-    print(len(input_repos))
-    p = Pipeline(args.p, input_repos, args.o, not args.no_nlp, args.use_cache, args.d, args.s)
+    p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.d, args.s)
     p.run(input_repos, args.j)
 
 

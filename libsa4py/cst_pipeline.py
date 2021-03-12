@@ -5,6 +5,7 @@ import random
 import csv
 import time
 
+from typing import List, Dict
 from os.path import join
 from pathlib import Path
 from datetime import timedelta
@@ -24,10 +25,9 @@ class Pipeline:
     This is the new pipeline that converts a project to the output JSON of LibCST analysis
     """
 
-    def __init__(self, projects_path, input_projects, output_dir, nlp_transf: bool = True,
+    def __init__(self, projects_path, output_dir, nlp_transf: bool = True,
                  use_cache: bool = True, dups_files_path=None, split_files_path=None):
         self.projects_path = projects_path
-        self.input_projects = input_projects
         self.output_dir = output_dir
         self.processed_projects = None
         self.err_log_dir = None
@@ -194,7 +194,7 @@ class Pipeline:
                 self.logger.error(
                     "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
 
-    def run(self, repos_list, jobs, start=0):
+    def run(self, repos_list: List[Dict], jobs, start=0):
 
         print(f"Number of projects to be processed: {len(repos_list)}")
         repos_list = [p for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
