@@ -15,8 +15,8 @@ LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. P
   massa in, fringilla ante. Morbi sed tortor bibendum, venenatis diam in, interdum odio. Lorem ipsum dolor sit amet,
    consectetur adipiscing elit. Quisque volutpat sapien sed odio eleifend elementum."""
 
-def add_special(self, name): ...
 
+def add_special(self, name): ...
 
 
 class Test:
@@ -30,8 +30,9 @@ class Test:
     def __init__(self, x: int) -> None:
         self.x: int = x
         self.u = "Test"
+        self.j = 12.3
         y: float = 3.14
-        u: List[str] = ['hi', 'world']
+        w: List[str] = ['hi', 'world']
         z = 3
         foo: str
         self.b, self.c = 45, 'blah'
@@ -126,10 +127,10 @@ class Test:
         else:
             return False
 
-    def walrus_op(self):
-
-        while (n := 4):
-            print(n)
+    # def walrus_op(self):
+    #
+    #     while (n := 4):
+    #         print(n)
 
     def numpy_docstring(self, param1: int, param2: str) -> bool:
         """
@@ -179,9 +180,17 @@ class Test:
         y = 3.2
         print(f"The calculated number is {x * y} and ...")
 
+    def ext_names_tuple(self):
+        t_1, (t_2, t_3) = 1, (2, 3)
+
+    def test_pyre_types(self):
+        l = [1, 2, 3]
+
+        return ['test']
+
 
 class Test2:
-    x = 5
+    f_odd = 5
     y: float = 3.14
 
     def no_params():
