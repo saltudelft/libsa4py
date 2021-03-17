@@ -10,6 +10,8 @@ class Visitor(cst.CSTVisitor):
     This class performs light-weight static analysis on a source code file
     """
 
+    METADATA_DEPENDENCIES = (cst.metadata.PositionProvider, cst.metadata.TypeInferenceProvider)
+
     def __init__(self):
         super().__init__()
 
@@ -215,30 +217,31 @@ class Visitor(cst.CSTVisitor):
                 self.__process_extracted_assign_names(extracted_names)
 
             elif len(self.cls_stack) > 0:
+                # Add class variables
                 if 'name' in extracted_names:
-                    self.cls_stack[-1].variables[extracted_names['name']] = ''
-                    self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = ''
+                    self.cls_stack[-1].variables[extracted_names['name']] = extracted_names['type']
+                    self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     self.cls_stack[-1].variables = {**self.cls_stack[-1].variables,
-                                                    **{n.value.value: '' for n in extracted_names['names']}}
+                                                    **{n.value.value: self.__get_type_from_metadata(n.value) for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(self.cls_stack[-1].name, None, n.value.value): '' for n in
-                                                      extracted_names['names']}}
+                                                   **{(self.cls_stack[-1].name, None, n.value.value): \
+                                                       self.__get_type_from_metadata(n.value) for n in extracted_names['names']}}
 
             else:
                 # Adds module-level variables
                 if 'name' in extracted_names:
-                    self.module_variables[extracted_names['name']] = ''
-                    self.module_all_annotations[(None, None, extracted_names['name'])] = ''
+                    self.module_variables[extracted_names['name']] = extracted_names['type']
+                    self.module_all_annotations[(None, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     self.module_variables = {**self.module_variables,
-                                             **{n.value.value: '' for n in extracted_names['names']}}
+                                             **{n.value.value: self.__get_type_from_metadata(n.value) \
+                                                for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(None, None, n.value.value): '' for n in
-                                                      extracted_names['names']}}
+                                                   **{(None, None, n.value.value): self.__get_type_from_metadata(n.value) \
+                                                      for n in extracted_names['names']}}
 
     def visit_AnnAssign(self, node: cst.AnnAssign):
-        # print(node)
         extracted_assign = self.__extract_variable_name_type(node)
 
         if extracted_assign is not None:
@@ -368,9 +371,13 @@ class Visitor(cst.CSTVisitor):
             )
         )
 
-        if extracted_var_names is not None and "names" in extracted_var_names:
-            # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
-            return {'names': match.findall(node, match.Element(value=match.Name(value=match.DoNotCare())))}
+        if extracted_var_names is not None:
+            if "name" in extracted_var_names:
+                extracted_var_names['type'] = self.__get_type_from_metadata(node.target)
+                return extracted_var_names
+            elif "names" in extracted_var_names:
+                # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
+                return {'names': match.findall(node, match.Element(value=match.Name(value=match.DoNotCare())))}
         else:
             return extracted_var_names
 
@@ -488,10 +495,10 @@ class Visitor(cst.CSTVisitor):
             extracted_name = extracted_names["name"]
 
             # Add the variable to function
-            self.__add_variable_to_function(extracted_name, None)
+            self.__add_variable_to_function(extracted_name, extracted_names['type'])
 
             self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                         self.stack[-1].name, extracted_name)] = ''
+                                         self.stack[-1].name, extracted_name)] = extracted_names['type']
 
         elif "names" in extracted_names:
             # Multi-names extracted
@@ -525,9 +532,10 @@ class Visitor(cst.CSTVisitor):
 
                 # If name could be extracted, add it to current function
                 if extracted_name is not None:
-                    self.__add_variable_to_function(extracted_name["name"], None)
+                    self.__add_variable_to_function(extracted_name["name"], self.__get_type_from_metadata(name.value))
                     self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                                 self.stack[-1].name, extracted_name["name"])] = ''
+                                                 self.stack[-1].name, extracted_name["name"])] =  \
+                        self.__get_type_from_metadata(name.value)
 
     def __find_fn_args_use(self, fn_args: list, fn_may_args_use: list) -> dict:
 
@@ -571,3 +579,17 @@ class Visitor(cst.CSTVisitor):
 
         # Return empty string if docstring undefined
         return docstring if docstring is not None else ""
+
+    def __get_type_from_metadata(self, node: cst.Name) -> str:
+        """
+        Extracts type of a `Name` node if `TypeInferenceProvider` given.
+        """
+        try:
+            ext_type = self.get_metadata(cst.metadata.TypeInferenceProvider, node)
+            # A workaround for pyre's weird inferred integers
+            if bool(re.match("^typing_extensions.Literal\[[0-9]+\]$", ext_type)):
+                return "int"
+            else:
+                return ext_type
+        except KeyError:
+            return ''

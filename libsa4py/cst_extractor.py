@@ -13,15 +13,21 @@ class Extractor:
     """
 
     @staticmethod
-    def extract(program: str) -> dict:
+    def extract(program: str,
+                program_types: cst.metadata.type_inference_provider.PyreData = None) -> dict:
 
         try:
             parsed_program = cst.parse_module(program)
         except Exception as e:
             raise ParseError(str(e))
 
-        v: Visitor = Visitor()
-        parsed_program.visit(v)
+        v = Visitor()
+        if program_types is not None:
+            mw = cst.metadata.MetadataWrapper(parsed_program,
+                                             cache={cst.metadata.TypeInferenceProvider: program_types})
+            mw.visit(v)
+        else:
+            parsed_program.visit(v)
 
         # Transformers
         v_cm_doc = CommentAndDocStringRemover()

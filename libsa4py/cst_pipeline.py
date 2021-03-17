@@ -1,4 +1,3 @@
-import json
 import os
 import traceback
 import random
@@ -14,7 +13,8 @@ from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json,\
+    pyre_server_init, pyre_file_types
 
 import logging
 import logging.config
@@ -131,6 +131,9 @@ class Pipeline:
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
 
+            print(f"Running pyre for {project_id}")
+            pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+
             project_files = list_files(join(self.projects_path, project["author"], project["repo"]))
             print(f"{project_id} has {len(project_files)} files before deduplication")
             project_files = [f for f in project_files if not self.is_file_duplicate(f)]
@@ -142,7 +145,8 @@ class Pipeline:
             for filename, f_relative, f_split in project_files:
                 try:
                     project_analyzed_files[project_id]["src_files"][f_relative] = \
-                        self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
+                        self.apply_nlp_transf(Extractor().extract(read_file(filename), \
+                        pyre_file_types(join(self.projects_path, project["author"], project["repo"]), filename))) if self.nlp_transf \
                             else Extractor.extract(read_file(filename))
                     project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
                     extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
