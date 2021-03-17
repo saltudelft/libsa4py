@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from tqdm import tqdm
 from joblib import Parallel
 from libcst.metadata.type_inference_provider import run_command, PyreData
@@ -109,7 +109,11 @@ def pyre_server_init(project_path: str):
     stdout, stderr, r_code = run_command("cd %s; echo -ne '.\n' | pyre init; pyre start" % project_path)
 
 
-def pyre_file_types(project_path: str, file_path: str) -> PyreData:
+def pyre_file_types(project_path: str, file_path: str) -> Union[PyreData, None]:
     stdout, stderr, r_code = run_command('''cd %s; pyre query "types(path='%s')"''' % (project_path,
                                                                                str(Path(file_path).relative_to(Path(project_path)))))
-    return json.loads(stdout)["response"][0]
+    if r_code == 0:
+        return json.loads(stdout)["response"][0]
+    else:
+        print("PYRE_ERROR: ", stderr)
+        return None
