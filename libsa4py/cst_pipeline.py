@@ -26,7 +26,7 @@ class Pipeline:
     """
 
     def __init__(self, projects_path, output_dir, nlp_transf: bool = True,
-                 use_cache: bool = True, dups_files_path=None, split_files_path=None):
+                 use_cache: bool = True, use_pyre: bool = False, dups_files_path=None, split_files_path=None):
         self.projects_path = projects_path
         self.output_dir = output_dir
         self.processed_projects = None
@@ -34,6 +34,7 @@ class Pipeline:
         self.avl_types_dir = None
         self.nlp_transf = nlp_transf
         self.use_cache = use_cache
+        self.use_pyre = use_pyre
         self.nlp_prep = NLPreprocessor()
 
         self.__make_output_dirs()
@@ -131,8 +132,9 @@ class Pipeline:
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
 
-            print(f"Running pyre for {project_id}")
-            pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+            if self.use_pyre:
+                print(f"Running pyre for {project_id}")
+                pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
 
             project_files = list_files(join(self.projects_path, project["author"], project["repo"]))
             print(f"{project_id} has {len(project_files)} files before deduplication")
@@ -144,11 +146,15 @@ class Pipeline:
 
             for filename, f_relative, f_split in project_files:
                 try:
+                    pyre_data_file = pyre_file_types(join(self.projects_path, project["author"], project["repo"]),
+                                                     filename) if self.use_pyre else None
+
                     project_analyzed_files[project_id]["src_files"][f_relative] = \
-                        self.apply_nlp_transf(Extractor().extract(read_file(filename), \
-                        pyre_file_types(join(self.projects_path, project["author"], project["repo"]), filename))) if self.nlp_transf \
-                            else Extractor.extract(read_file(filename))
+                        self.apply_nlp_transf(Extractor().extract(read_file(filename), pyre_data_file)) if self.nlp_transf \
+                            else Extractor.extract(read_file(filename), pyre_data_file)
+
                     project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
+
                     extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
                                             [c['name'] for c in
                                             project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
