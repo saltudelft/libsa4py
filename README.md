@@ -12,7 +12,8 @@
 
 # Requirements
 
-- Python 3.5 or newer (Python 3.8 is recommended)
+- Python 3.6 or newer (Python 3.8 is recommended)
+- [Watchman](https://facebook.github.io/watchman/) (for running [pyre](https://pyre-check.org/))
 - MacOS or Linux systems
 
 # Quick Installation
@@ -26,7 +27,7 @@ cd libsa4py && pip install .
 ## Processing projects
 Given Python repositories, run the following command to process source code files and generate JSON-formatted outputs:
 ```
-libsa4py process --p $REPOS_PATH --o $OUTPUT_PATH --d $DUPLICATE_PATH --j $WORKERS_COUNT --l $LIMIT --c --no-nlp
+libsa4py process --p $REPOS_PATH --o $OUTPUT_PATH --d $DUPLICATE_PATH --j $WORKERS_COUNT --l $LIMIT --c --no-nlp --pyre
 ```
 
 Description:
@@ -38,6 +39,7 @@ Description:
 - `--l $LIMIT`: Number of projects to be processed. [**Optional**]
 - `--c`: Whether to ignore processed projects. [**Optional**, default=False]
 - `--no-nlp`: Whether to apply standard NLP techniques to extracted identifiers. [**Optional**, default=True]
+- `--pyre`: Whether to run `pyre` to infer the types of variables for given projects. [**Optional**, default=False]
 
 ## Merging projects
 To merge all the processed JSON-formatted projects into a single dataframe, run the following command:
