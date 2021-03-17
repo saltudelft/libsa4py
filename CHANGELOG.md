@@ -2,6 +2,9 @@
 All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) tool will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Integrated [pyre](https://pyre-check.org/) into the pipeline for infering the types of variables in source code files of given projects
+
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.
 
