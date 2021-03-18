@@ -585,10 +585,12 @@ class Visitor(cst.CSTVisitor):
         Extracts type of a `Name` node if `TypeInferenceProvider` given.
         """
         try:
-            ext_type = self.get_metadata(cst.metadata.TypeInferenceProvider, node)
+            ext_type = self.__clean_string_whitespace(self.get_metadata(cst.metadata.TypeInferenceProvider, node))
             # A workaround for pyre's weird inferred integers
             if bool(re.match("^typing_extensions.Literal\[[0-9]+\]$", ext_type)):
                 return "int"
+            elif bool(re.match("^typing_extensions.Literal\[.+\]$", ext_type)):
+                return "str"
             else:
                 return ext_type
         except KeyError:
