@@ -13,8 +13,8 @@ from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json,\
-    pyre_server_init, pyre_file_types
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
+from libsa4py.pyre import pyre_server_init, pyre_file_types, pyre_server_shutdown
 
 import logging
 import logging.config
@@ -189,6 +189,9 @@ class Pipeline:
             self.logger.error("project: %s | Exception: %s" % (project_id, err))
         finally:
             try:
+                if self.use_pyre:
+                    pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
+
                 if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
                     project_analyzed_files[project_id]["type_annot_cove"] = \
                         round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
