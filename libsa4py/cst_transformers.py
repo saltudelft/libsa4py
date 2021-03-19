@@ -390,7 +390,10 @@ class SpaceAdder(cst.CSTTransformer):
         )
 
     def leave_Equal(self, node, updated_node):
-        return updated_node.with_changes()
+        return updated_node.with_changes(
+            whitespace_after=cst.SimpleWhitespace(' '),
+            whitespace_before = cst.SimpleWhitespace(' '),
+        )
 
     def leave_FloorDivide(self, node, updated_node):
         return updated_node.with_changes(
