@@ -14,7 +14,7 @@ from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
-from libsa4py.pyre import pyre_server_init, pyre_file_types, pyre_server_shutdown
+from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers
 
 import logging
 import logging.config
@@ -146,8 +146,8 @@ class Pipeline:
 
             for filename, f_relative, f_split in project_files:
                 try:
-                    pyre_data_file = pyre_file_types(join(self.projects_path, project["author"], project["repo"]),
-                                                     filename) if self.use_pyre else None
+                    pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
+                                                      filename) if self.use_pyre else None
 
                     project_analyzed_files[project_id]["src_files"][f_relative] = \
                         self.apply_nlp_transf(Extractor().extract(read_file(filename), pyre_data_file)) if self.nlp_transf \
@@ -217,4 +217,6 @@ class Pipeline:
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
         print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
+
+        pyre_kill_all_servers()
         logging.shutdown()

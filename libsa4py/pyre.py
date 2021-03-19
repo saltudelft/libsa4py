@@ -30,7 +30,12 @@ def pyre_server_shutdown(project_path: str):
         print("Stopped pyre server with pid ", server_pid)
 
 
-def pyre_file_types(project_path: str, file_path: str) -> Optional[PyreData]:
+def pyre_kill_all_servers():
+    run_command("pyre kill")
+    print("Killed all instances of pyre's servers")
+
+
+def pyre_query_types(project_path: str, file_path: str) -> Optional[PyreData]:
     stdout, stderr, r_code = run_command('''cd %s; pyre query "types(path='%s')"''' % (project_path,
                                          str(Path(file_path).relative_to(Path(project_path)))))
     if r_code == 0:
