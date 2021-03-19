@@ -3,7 +3,11 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 
 ## [Unreleased]
 ### Added
-- Integrated [pyre](https://pyre-check.org/) into the pipeline for infering the types of variables in source code files of given projects
+- Integrated [pyre](https://pyre-check.org/) into the pipeline for inferring the types of variables in source code files of given projects
+
+### Fixed
+- Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.
+- Malformed output sequence for the Equal operator (i.e. `==`) in comparisons
 
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.
