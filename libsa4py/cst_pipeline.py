@@ -103,6 +103,8 @@ class Pipeline:
             fn_d['params_occur'] = {p: [nlp_prep.process_sentence(j) for i in o for j in i] for p, o in
                                     fn_d['params_occur'].items()}
             fn_d['variables'] = {nlp_prep.process_identifier(v): t for v, t in fn_d['variables'].items()}
+            fn_d['fn_var_occur'] = {v: [nlp_prep.process_sentence(j) for i in o for j in i] for v, o in
+                                    fn_d['fn_var_occur'].items()}
             fn_d['params_descr'] = {nlp_prep.process_identifier(p): nlp_prep.process_sentence(fn_d['params_descr'][p]) \
                                     for p in fn_d['params_descr'].keys()}
             fn_d['docstring']['func'] = nlp_prep.process_sentence(fn_d['docstring']['func'])
@@ -111,9 +113,13 @@ class Pipeline:
             return fn_d
 
         extracted_module['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in extracted_module['variables'].items()}
+        extracted_module['mod_var_occur'] = {v: [self.nlp_prep.process_sentence(j) for i in o for j in i] for v,
+                                             o in extracted_module['mod_var_occur'].items()}
 
         for c in extracted_module['classes']:
             c['variables'] = {self.nlp_prep.process_identifier(v): t for v, t in c['variables'].items()}
+            c['cls_var_occur'] = {v: [self.nlp_prep.process_sentence(j) for i in o for j in i] for v,
+                                  o in c['cls_var_occur'].items()}
             c['funcs'] = [fn_nlp_transf(f, self.nlp_prep) for f in c['funcs']]
 
         extracted_module['funcs'] = [fn_nlp_transf(f, self.nlp_prep) for f in extracted_module['funcs']]
