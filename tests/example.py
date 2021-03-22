@@ -5,10 +5,7 @@ This is an example script for testing LibCST extractor
 from typing import Optional, List
 
 PI = 3.14
-x, y, z = 12, 0.5, 34
 TEST_CONSTANT: int = 404
-a, (b, c) = 1, (2, 3)
-d, ((e, f), (g, h)) = 4, ((5, 6), (6, 7))
 
 LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. Phasellus volutpat euismod gravida.
  Proin condimentum mattis consequat. Integer lobortis orci et risus iaculis mattis. Fusce at urna semper, lobortis
@@ -17,7 +14,6 @@ LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. P
 
 
 def add_special(self, name): ...
-
 
 class Test:
 
@@ -188,6 +184,29 @@ class Test:
 
         return ['test']
 
+    def tuple_assigns(self):
+        x, y, z = 12, 0.5, 34
+        a, (b, c) = 1, (2, 3)
+        d, ((e, f), (g, h)) = 4, ((5, 6), (6, 7))
+
+    def class_var_usage(self, y):
+
+        if Test.scientific_num + y < 3.0:
+            pass
+
+        for i in range(0, Test.out_x):
+            pass
+
+    def module_var_usage(self, add_something):
+        if PI + add_something > 3.0:
+            pass
+
+        for i in range(0, int(PI)):
+            pass
+
+        while PI + TEST_CONSTANT > 1.0:
+            PI =- 1 + add_something
+
 
 class Test2:
     f_odd = 5
@@ -221,9 +240,9 @@ class Test2:
 
         list_comp = [i for i in range(x ** y * z)]
 
-        if x * TEST_CONSTANT == 2:
+        if Test2.x * TEST_CONSTANT == 2:
             pass
-        elif y % TEST_CONSTANT < 5:
+        elif Test2.y % TEST_CONSTANT < 5:
             pass
 
         while y * x * z * TEST_CONSTANT // 2:
