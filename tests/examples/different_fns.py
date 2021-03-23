@@ -52,7 +52,6 @@ def with_inner():
 
 # This function has varargs
 def varargs(*xs: int) -> int:
-    """This function has args as well as varargs"""
     sum: int = 0
     for x in xs:
         sum += x
@@ -73,7 +72,7 @@ def kwarg_method(a: int, *b: int, **c: float):
 
 
 # An async function
-async def add_async(y: int) -> int:
+async def async_fn(y: int) -> int:
     return await y
 
 
