@@ -11,7 +11,7 @@ class TestImports(unittest.TestCase):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def setUp(cls):
+    def setUpClass(cls):
         cls.processed_f = Extractor().extract(open('./examples/imports.py', 'r').read())
 
     def test_import_single_module(self):
