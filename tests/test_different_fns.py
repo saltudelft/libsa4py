@@ -11,8 +11,9 @@ class TestDifferentFns(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def setUp(self):
-        self.processed_f = Extractor().extract(open('./examples/different_fns.py', 'r').read())
+    @classmethod
+    def setUpClass(cls):
+        cls.processed_f = Extractor().extract(open('./examples/different_fns.py', 'r').read())
 
     def test_typical_fn(self):
         fn_expected = FN_DICT_REPR.copy()

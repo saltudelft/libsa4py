@@ -11,8 +11,9 @@ class TestDocstrings(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def setUp(self):
-        self.processed_f = Extractor().extract(open('./examples/docstrings.py', 'r').read())
+    @classmethod
+    def setUpClass(cls):
+        cls.processed_f = Extractor().extract(open('./examples/docstrings.py', 'r').read())
 
     def test_basic_docstring(self):
         fn_expected = FN_DICT_REPR.copy()

@@ -11,8 +11,9 @@ class TestAssignments(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def setUp(self):
-        self.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read())
+    @classmethod
+    def setUpClass(cls):
+        cls.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read())
 
     def test_module_vars(self):
         module_vars_expected = {'PI': '', 'CONSTANT': 'int', 'LONG_STRING': ''}
@@ -35,6 +36,6 @@ class TestAssignments(unittest.TestCase):
         tuple_assigns_expected = {'x': '', 'y': '', 'z': '', 'a': '', 'b': '', 'c': '', 'd': '', 'e': '', 'f': '',
                                   'g': '', 'h': ''}
         self.assertDictEqual(tuple_assigns_expected, self.processed_f['classes'][0]['funcs'][2]['variables'])
-        
+
     def test_walrus_op(self):
         pass  # TODO: run the test conditionally based on the Python version

@@ -11,8 +11,9 @@ class TestVarsArgsOccur(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def setUp(self):
-        self.processed_f = Extractor().extract(open('./examples/vars_args_occur.py', 'r').read())
+    @classmethod
+    def setUpClass(cls):
+        cls.processed_f = Extractor().extract(open('./examples/vars_args_occur.py', 'r').read())
 
     def test_module_vars_use(self):
         mod_vars_use_expected = {'PI': [['PI', 'add_something'], ['range', 'int', 'PI'], ['PI', 'MOD_CONSTANT'],
