@@ -57,10 +57,22 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(processed_f['set'], None)
 
     def test_mod_untyped_seq(self):
-        pass  # TODO
+        mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] CONSTANT =" \
+                          " [string] [EOL] [EOL] [EOL] class MyClass : [EOL] cls_var = [number] [EOL] [EOL] " \
+                          "def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : " \
+                          "[EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] " \
+                          "[EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn " \
+                          "( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] print ( [string] ) " \
+                          "[EOL]"
+
+        self.assertEqual(mod_untyped_seq, processed_f['untyped_seq'])
 
     def test_mod_typed_seq(self):
-        pass  # TODO
+        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0" \
+                        " 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" \
+                        " 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0"
+
+        self.assertEqual(mod_typed_seq, processed_f['typed_seq'])
 
     def test_mod_type_annot_cove(self):
         # TODO: Write for a module type annotation coverage
