@@ -3,9 +3,9 @@ from tests.constans import FN_DICT_REPR
 import unittest
 
 
-class TestExtractor(unittest.TestCase):
+class TestDifferentFns(unittest.TestCase):
     """
-    It tests extracted attributes and type hints from a Python source code file.
+    It tests extracted attributes and type hints from Python functions.
     """
 
     def __init__(self, *args, **kwargs):
