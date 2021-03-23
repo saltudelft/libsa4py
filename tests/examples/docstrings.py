@@ -1,10 +1,10 @@
-def basic_string_docstring(x, y):
+def basic_docstring():
     """This is a basic docstring"""
-    return x + y
+    pass
 
 
 # A function with Google-style docstring
-def google_docstring(param1: int, param2: str) -> bool:
+def google_docstring(param1, param2):
     """Summary line.
 
     Extended description of function.
@@ -23,13 +23,13 @@ def google_docstring(param1: int, param2: str) -> bool:
 
 
 # A function with a reST docstring
-def rest_docstring(param1: int, param2: str) -> bool:
+def rest_docstring(param1, param2):
     """
     Summary line.
 
     Description of function.
 
-    :param int param1:  The first parameter.
+    :param int param1: The first parameter.
     :param str param2: The second parameter.
     :type param1: int
     :return: Description of return value
@@ -42,9 +42,9 @@ def rest_docstring(param1: int, param2: str) -> bool:
 
 
 # A function with a NumPy-style docstring
-def numpy_docstring(param1: int, param2: str) -> bool:
+def numpy_docstring(param1 , param2):
     """
-     Summary line.
+    Summary line.
 
     Extended description of function.
 
@@ -76,5 +76,5 @@ def numpy_docstring(param1: int, param2: str) -> bool:
 
 
 # A function with no docstring
-def no_docstring(param1):
-    return param1
+def no_docstring():
+    return None
