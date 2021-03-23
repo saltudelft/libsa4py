@@ -2,8 +2,10 @@
 This example file contains different kinds of functions for testing the cst_extractor module
 """
 
+from typing import Optional
 
-# A function witn both typed args and return type
+
+# A function with both typed args and return type
 def add(x: int, y: int) -> int:
     return x + y
 
@@ -26,6 +28,13 @@ def noreturn(x: int):
 # This function returns None
 def return_none(x: int) -> None:
     print(x)
+
+
+# This functions returns Optional
+def return_optional(y: list) -> Optional[int]:
+    if len(y) == 0:
+        return None
+    return y
 
 
 # This function has untyped input arguments
@@ -61,3 +70,12 @@ def untyped_varargs(*xs) -> int:
 # A function with keyword args
 def kwarg_method(a: int, *b: int, **c: float):
     return c
+
+
+# An async function
+async def add_async(y: int) -> int:
+    return await y
+
+
+# An abstract function with typed args
+def abstract_fn(name: str) -> str: ...
