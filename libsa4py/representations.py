@@ -39,6 +39,8 @@ class FunctionInfo:
         self.variables_occur = fn_dict_repr['fn_var_occur']
         self.docstring = fn_dict_repr['docstring']
 
+        return self
+
     def __get_params_descr(self):
         params_descr = self.__extract_docstring_descriptions(self.docstring)
         return {"params_descr": {p: params_descr['params'][p] if p in params_descr['params'] else '' for p in
@@ -158,6 +160,12 @@ class ClassInfo:
     def to_dict(self) -> dict:
         return {"name": self.name, "variables": self.variables, "cls_var_occur": self.variables_use_occur,
                 "funcs": [f.to_dict() for f in self.funcs]}
+
+    def from_dict(self, cls_repr_dict: dict):
+        self.name = cls_repr_dict['name']
+        self.variables = cls_repr_dict['variables']
+        self.variables_use_occur = cls_repr_dict['cls_var_occur']
+        self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
 
     def get_type_annot_cove(self) -> float:
         return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
