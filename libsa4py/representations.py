@@ -29,6 +29,16 @@ class FunctionInfo:
                    "params_occur": self.parameters_occur, "ret_type": self.return_type, "variables": self.variables,
                    "fn_var_occur": self.variables_occur, **self.__get_params_descr()}}
 
+    def from_dict(self, fn_dict_repr: dict):
+        self.name = fn_dict_repr['name']
+        self.parameters = fn_dict_repr['params']
+        self.parameters_occur = fn_dict_repr['params_occur']
+        self.return_exprs = fn_dict_repr['ret_exprs']
+        self.return_type = fn_dict_repr['ret_type']
+        self.variables = fn_dict_repr['variables']
+        self.variables_occur = fn_dict_repr['fn_var_occur']
+        self.docstring = fn_dict_repr['docstring']
+
     def __get_params_descr(self):
         params_descr = self.__extract_docstring_descriptions(self.docstring)
         return {"params_descr": {p: params_descr['params'][p] if p in params_descr['params'] else '' for p in
