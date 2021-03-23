@@ -3,7 +3,7 @@ from tests.constans import FN_DICT_REPR
 import unittest
 
 
-class TestAssignments(unittest.TestCase):
+class TestVarsArgsOccur(unittest.TestCase):
     """
     It tests various forms of contextual use for module-level, class-level, and local variables plus arguments.
     """
