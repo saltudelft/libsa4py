@@ -19,7 +19,7 @@ class TestVarArgOccur:
         self.x = x
         self.y = y
 
-    def fn_args_occur(self, param1: int, param2: int):
+    def fn_params_occur(self, param1: int, param2: int):
         z = param1 + param2
 
         add_x_y = add(param1, param2)
@@ -44,9 +44,9 @@ class TestVarArgOccur:
         yield z + param2
         return param1 + 2 + param2 / 5
 
-    def local_vars_usage(self):
+    def local_vars_usage(self, p):
         v: int = sum([1, 2, 3, 4])
-        v_1 = v + 10
+        v_1 = v + p + 10
 
         for i in range(0, v + v_1):
             i += v + 2
@@ -60,16 +60,16 @@ class TestVarArgOccur:
         else:
             print(v_1)
 
-        while v + v_1 < 100:
+        while v + v_1 < p:
             v *= 5 + v_1
 
-        with (v_1 * v // 2) as n:
+        with (v_1 + p // 2) as n:
             assert v != n
 
-        return v + v_1 + 20
+        return v + p + p + 20
 
     # Class variable usage in various context
-    def class_var_usage(self):
+    def class_vars_usage(self):
         c = self.x + TestVarArgOccur.num
 
         if TestVarArgOccur.num + c < 3.0:
@@ -84,12 +84,12 @@ class TestVarArgOccur:
         with (TestVarArgOccur.greeting + "World!") as f:
             pass
 
-        assert c != TestVarArgOccur.num
+        assert c != TestVarArgOccur.cls_constant
 
-        return TestVarArgOccur.num + c
+        return TestVarArgOccur.cls_constant + c
 
     # Module-level variable usage in various context
-    def module_var_usage(self, add_something):
+    def module_vars_usage(self, add_something):
         if PI + add_something > 3.0:
             pass
 
