@@ -19,5 +19,14 @@ class MyClass:
         return MyClass.cls_var + c / (2 + n)
 
 
+class Bar:
+    def __init__(self):
+        pass
+
+
 def my_fn(x: int) -> int:
     return x + 10
+
+
+def foo() -> None:
+    print("Foo")
