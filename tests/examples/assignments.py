@@ -22,11 +22,14 @@ class Test:
     def __init__(self, x: int) -> None:
         self.x: int = x
         self.y = "Test"
+        # TODO: can't find self vars in a multiple assignments
+        self.b, self.c = 45, 'blah'
+        self.error: List
+
+    def local_var_assings(self):
         f_no: float = 3.14
         l: List[str] = ['hi', 'world']
         foo: str
-        self.b, self.c = 45, 'blah'
-        self.error: List
 
     def tuple_assigns(self):
         x, y, z = 12, 0.5, 34
