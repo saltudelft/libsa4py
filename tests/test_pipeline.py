@@ -21,8 +21,8 @@ class TestPipeline(unittest.TestCase):
         p.run([{'author': 'tests', 'repo': 'examples'}], 1)
 
     def test_pipeline_output(self):
-        pipeline_out_exp = json.loads(open("./examples/testsexamples.json", 'r').read())
-        pipeline_out = json.loads(open("./tmp/processed_projects/testsexamples.json", 'r').read())
+        pipeline_out_exp = json.loads(open("exp_outputs/testsexamples.json", 'r').read())
+        pipeline_out = json.loads(open("exp_outputs/testsexamples.json", 'r').read())
 
         self.assertDictEqual(pipeline_out_exp, pipeline_out)
 
