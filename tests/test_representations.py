@@ -1,5 +1,7 @@
 from libsa4py.cst_extractor import Extractor
-from libsa4py.representations import FunctionInfo, ClassInfo
+from libsa4py.representations import FunctionInfo, ClassInfo, ModuleInfo, create_output_seq, validate_output_seq
+from libsa4py.exceptions import OutputSequenceException
+from libsa4py.utils import read_file
 import unittest
 
 processed_f = Extractor().extract(open('./examples/representations.py', 'r').read())
@@ -49,7 +51,7 @@ class TestModuleRepresentations(unittest.TestCase):
                             'params_descr': {'x': ''}, 'docstring': {'func': None, 'ret': None, 'long_descr': None}},
                            {'name': 'foo', 'params': {}, 'ret_exprs': [], 'params_occur': {}, 'ret_type': 'None',
                             'variables': {}, 'fn_var_occur': {}, 'params_descr': {},
-                            'docstring': {'func': None, 'ret': None, 'long_descr': None}}]
+                            'docstring': {'func': 'Foo docstring', 'ret': None, 'long_descr': None}}]
 
         self.assertListEqual(fn_repr_mod_exp, processed_f.to_dict()['funcs'])
 
@@ -57,20 +59,21 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(processed_f.to_dict()['set'], None)
 
     def test_mod_untyped_seq(self):
-        mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] CONSTANT =" \
-                          " [string] [EOL] [EOL] [EOL] class MyClass : [EOL] cls_var = [number] [EOL] [EOL] " \
-                          "def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : " \
-                          "[EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] " \
-                          "[EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn " \
-                          "( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] print ( [string] ) " \
-                          "[EOL]"
+        print(processed_f.to_dict()['untyped_seq'])
+        mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] " \
+                          "CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = " \
+                          "[number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] " \
+                          "def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / " \
+                          "( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass " \
+                          "[EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo " \
+                          "( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]"
 
         self.assertEqual(mod_untyped_seq, processed_f.to_dict()['untyped_seq'])
 
     def test_mod_typed_seq(self):
-        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0" \
-                        " 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" \
-                        " 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0"
+        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0" \
+                        " 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0" \
+                        " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
@@ -149,5 +152,47 @@ class TestOutputSequence(unittest.TestCase):
     """
 
     def test_normalized_module_code(self):
-        print(processed_f)
+        self.assertEqual(ModuleInfo.normalize_module_code(processed_f.untyped_seq),
+                         read_file('exp_outputs/normalized_mod_code.txt').strip())
 
+    def test_create_output_sequence(self):
+        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+
+        self.assertEqual(exp_out_seq, create_output_seq(ModuleInfo.normalize_module_code(processed_f.typed_seq)))
+
+    def test_invalid_type_alignment_with_name(self):
+        # Misses one type
+        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+
+        self.assertRaises(OutputSequenceException, validate_output_seq,
+                          ModuleInfo.normalize_module_code(processed_f.typed_seq), malformed_out_seq)
+
+    def test_invalid_non_name_alignment(self):
+        # Has an extra type
+        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+
+        self.assertRaises(OutputSequenceException, validate_output_seq,
+                          ModuleInfo.normalize_module_code(processed_f.typed_seq), malformed_out_seq)
+
+    def test_invalid_input_typed_seq(self):
+        valid_out_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
+                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+
+        # Don't have required spaces between tokens
+        invalid_in_typed_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] " \
+                               "[EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] " \
+                               "$int$ = [number] [comment] [EOL] [EOL] def $None$ ( self , y ) : [EOL] self . y = y " \
+                               "[EOL] [EOL] def $float$ ( self , $int$ ) : [EOL] n = $int$+[number] [EOL] " \
+                               "return MyClass . cls_var + $int$ / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : " \
+                               "[EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def $int$ ( x ) : [EOL] " \
+                               "return x + [number] [EOL] [EOL] [EOL] def $None$ ( ) : [EOL] [docstring] [EOL] print " \
+                               "( [string] ) [EOL]"
+
+        self.assertRaises(OutputSequenceException, validate_output_seq, invalid_in_typed_seq, valid_out_typed_seq)

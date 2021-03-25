@@ -5,11 +5,15 @@ This file is an example for testing representation of modules, classes, and func
 from os import path
 import math
 
+# Module-level constant
 CONSTANT = "Hello Python!"
 
 
 class MyClass:
-    cls_var: int = 10
+    """
+    My Class docstring
+    """
+    cls_var: int = 10  # A class variable
 
     def __init__(self, y: float) -> None:
         self.y = y
@@ -29,4 +33,7 @@ def my_fn(x: int) -> int:
 
 
 def foo() -> None:
+    """
+    Foo docstring
+    """
     print("Foo")
