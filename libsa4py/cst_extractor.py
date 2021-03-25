@@ -13,7 +13,7 @@ class Extractor:
     """
 
     @staticmethod
-    def extract(program: str) -> dict:
+    def extract(program: str) -> ModuleInfo:
 
         try:
             parsed_program = cst.parse_module(program)
@@ -44,4 +44,4 @@ class Extractor:
         v_typed = v_typed.visit(v_space)
 
         return ModuleInfo(v.imports, v.module_variables, v.module_variables_use, v.cls_list, v.fns,
-                          v_untyped.code, v_typed.code).to_dict()
+                          v_untyped.code, v_typed.code)
