@@ -13,7 +13,7 @@ class TestDifferentFns(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.processed_f = Extractor().extract(open('./examples/different_fns.py', 'r').read())
+        cls.processed_f = Extractor().extract(open('./examples/different_fns.py', 'r').read()).to_dict()
 
     def test_typical_fn(self):
         fn_expected = FN_DICT_REPR.copy()

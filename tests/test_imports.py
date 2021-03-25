@@ -12,7 +12,7 @@ class TestImports(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.processed_f = Extractor().extract(open('./examples/imports.py', 'r').read())
+        cls.processed_f = Extractor().extract(open('./examples/imports.py', 'r').read()).to_dict()
 
     def test_import_single_module(self):
         print(self.processed_f['imports'])

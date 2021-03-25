@@ -13,7 +13,7 @@ class TestDocstrings(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.processed_f = Extractor().extract(open('./examples/docstrings.py', 'r').read())
+        cls.processed_f = Extractor().extract(open('./examples/docstrings.py', 'r').read()).to_dict()
 
     def test_basic_docstring(self):
         fn_expected = FN_DICT_REPR.copy()

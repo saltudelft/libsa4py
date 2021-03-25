@@ -13,7 +13,7 @@ class TestAssignments(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read())
+        cls.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read()).to_dict()
 
     def test_module_vars(self):
         module_vars_expected = {'PI': '', 'CONSTANT': 'int', 'LONG_STRING': ''}

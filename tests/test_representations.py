@@ -16,7 +16,7 @@ class TestModuleRepresentations(unittest.TestCase):
     def test_mod_repr_dict_keys(self):
         mod_repr_dict_key_exp = ['untyped_seq', 'typed_seq', 'imports', 'variables', 'mod_var_occur', 'classes', 'funcs',
                                  'set', 'type_annot_cove']
-        self.assertListEqual(mod_repr_dict_key_exp, list(processed_f.keys()))
+        self.assertListEqual(mod_repr_dict_key_exp, list(processed_f.to_dict().keys()))
 
     def test_mod_repr_cls_dict(self):
         cls_repr_mod_exp = [{'name': 'MyClass', 'variables': {'cls_var': 'int'},
@@ -41,7 +41,7 @@ class TestModuleRepresentations(unittest.TestCase):
                                         'fn_var_occur': {}, 'params_descr': {'self': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}]}]
 
-        self.assertListEqual(cls_repr_mod_exp, processed_f['classes'])
+        self.assertListEqual(cls_repr_mod_exp, processed_f.to_dict()['classes'])
 
     def test_mod_repr_fn_dict(self):
         fn_repr_mod_exp = [{'name': 'my_fn', 'params': {'x': 'int'}, 'ret_exprs': ['return x + 10'],
@@ -51,10 +51,10 @@ class TestModuleRepresentations(unittest.TestCase):
                             'variables': {}, 'fn_var_occur': {}, 'params_descr': {},
                             'docstring': {'func': None, 'ret': None, 'long_descr': None}}]
 
-        self.assertListEqual(fn_repr_mod_exp, processed_f['funcs'])
+        self.assertListEqual(fn_repr_mod_exp, processed_f.to_dict()['funcs'])
 
     def test_mod_repr_set_dict(self):
-        self.assertEqual(processed_f['set'], None)
+        self.assertEqual(processed_f.to_dict()['set'], None)
 
     def test_mod_untyped_seq(self):
         mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] CONSTANT =" \
@@ -65,14 +65,14 @@ class TestModuleRepresentations(unittest.TestCase):
                           "( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] print ( [string] ) " \
                           "[EOL]"
 
-        self.assertEqual(mod_untyped_seq, processed_f['untyped_seq'])
+        self.assertEqual(mod_untyped_seq, processed_f.to_dict()['untyped_seq'])
 
     def test_mod_typed_seq(self):
         mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0" \
                         " 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" \
                         " 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0"
 
-        self.assertEqual(mod_typed_seq, processed_f['typed_seq'])
+        self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
     def test_mod_type_annot_cove(self):
         # TODO: Write for a module type annotation coverage
@@ -86,11 +86,11 @@ class TestClassRepresentation(unittest.TestCase):
 
     def test_cls_repr_dict_keys(self):
         cls_repr_dict_keys = ['name', 'variables', 'cls_var_occur', 'funcs']
-        self.assertListEqual(cls_repr_dict_keys, list((processed_f['classes'][0].keys())))
+        self.assertListEqual(cls_repr_dict_keys, list((processed_f.to_dict()['classes'][0].keys())))
 
     def test_cls_repr_name_dict(self):
         cls_repr_name = "MyClass"
-        self.assertEqual(cls_repr_name, processed_f['classes'][0]['name'])
+        self.assertEqual(cls_repr_name, processed_f.to_dict()['classes'][0]['name'])
 
     def test_cls_repr_fns_dict(self):
         fns_repr_cls_exp = [{'name': '__init__', 'params': {'self': '', 'y': 'float'}, 'ret_exprs': [],
@@ -106,11 +106,11 @@ class TestClassRepresentation(unittest.TestCase):
                              'params_descr': {'self': '', 'c': ''},
                              'docstring': {'func': None, 'ret': None, 'long_descr': None}}]
 
-        self.assertListEqual(fns_repr_cls_exp, processed_f['classes'][0]['funcs'])
+        self.assertListEqual(fns_repr_cls_exp, processed_f.to_dict()['classes'][0]['funcs'])
 
     def test_cls_type_annot_cove(self):
         cls_repr_dict = ClassInfo()
-        cls_repr_dict.from_dict(processed_f['classes'][0])
+        cls_repr_dict.from_dict(processed_f.to_dict()['classes'][0])
         # TODO: Buggy type annotation coverage
         print(cls_repr_dict.get_type_annot_cove())
 
@@ -125,8 +125,8 @@ class TestFunctionRepresentation(unittest.TestCase):
                              'params_descr', 'docstring']
         fn_doc_repr_dict_keys = ['func', 'ret', 'long_descr']
         self.assertListEqual(fn_repr_dict_keys + fn_doc_repr_dict_keys,
-                             list(processed_f['classes'][0]['funcs'][0].keys()) + \
-                             list(processed_f['classes'][0]['funcs'][0]['docstring'].keys()))
+                             list(processed_f.to_dict()['classes'][0]['funcs'][0].keys()) + \
+                             list(processed_f.to_dict()['classes'][0]['funcs'][0]['docstring'].keys()))
 
     def test_fn_repr_dict(self):
         fn_repr_dict = {'name': '__init__', 'params': {'self': '', 'y': 'float'}, 'ret_exprs': [],
@@ -134,10 +134,20 @@ class TestFunctionRepresentation(unittest.TestCase):
                         'ret_type': 'None', 'variables': {'y': ''}, 'fn_var_occur': {'y': [['self', 'y', 'y']]},
                         'params_descr': {'self': '', 'y': ''},
                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}
-        self.assertDictEqual(fn_repr_dict, processed_f['classes'][0]['funcs'][0])
+        self.assertDictEqual(fn_repr_dict, processed_f.to_dict()['classes'][0]['funcs'][0])
 
     def test_fn_type_annot_cove(self):
         fn = FunctionInfo('my_fn')
-        fn.from_dict(processed_f['funcs'][0])
+        fn.from_dict(processed_f.to_dict()['funcs'][0])
 
         self.assertEqual(fn.get_type_annot_cove(), 1.0)
+
+
+class TestOutputSequence(unittest.TestCase):
+    """
+    It tests the output sequence of Seq2Seq representation.
+    """
+
+    def test_normalized_module_code(self):
+        print(processed_f)
+
