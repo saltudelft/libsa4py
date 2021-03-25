@@ -16,9 +16,13 @@ class TestPipeline(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        p = Pipeline(Path(__file__).parent.absolute().parent,
-                     join(Path(__file__).parent.absolute(), 'tmp'))
-        p.run([{'author': 'tests', 'repo': 'examples'}], 1)
+        p_nlp = Pipeline(Path(__file__).parent.absolute().parent,
+                         join(Path(__file__).parent.absolute(), 'tmp'), nlp_transf=True)
+        p_nlp.run([{'author': 'tests', 'repo': 'examples'}], 1)
+
+        p_no_nlp = Pipeline(Path(__file__).parent.absolute().parent,
+                            join(Path(__file__).parent.absolute(), 'tmp_nonlp'), nlp_transf=False)
+        p_no_nlp.run([{'author': 'tests', 'repo': 'examples'}], 1)
 
     def test_pipeline_output(self):
         pipeline_out_exp = json.loads(open("exp_outputs/testsexamples.json", 'r').read())
@@ -26,6 +30,13 @@ class TestPipeline(unittest.TestCase):
 
         self.assertDictEqual(pipeline_out_exp, pipeline_out)
 
+    def test_pipeline_output_nonlp(self):
+        pipeline_out_nonlp_exp = json.loads(open("exp_outputs/testsexamples_nonlp.json", 'r').read())
+        pipeline_out_nonlp = json.loads(open("tmp_nonlp/processed_projects/testsexamples.json", 'r').read())
+
+        self.assertDictEqual(pipeline_out_nonlp_exp, pipeline_out_nonlp)
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree("./tmp/")
+        shutil.rmtree("./tmp_nonlp/")

@@ -1,0 +1,2570 @@
+{
+    "tests/examples": {
+        "src_files": {
+            "light-sa-type-inf/tests/examples/num_removal.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] x = [number] [EOL] y = [number] [EOL] s = [number] [EOL] c = [number] + 3j [EOL] b = [number] [EOL] o = [number] [EOL] h = [number] [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {
+                    "x": "",
+                    "y": "",
+                    "s": "",
+                    "c": "",
+                    "b": "",
+                    "o": "",
+                    "h": ""
+                },
+                "mod_var_occur": {
+                    "x": [],
+                    "y": [],
+                    "s": [],
+                    "c": [],
+                    "b": [],
+                    "o": [],
+                    "h": []
+                },
+                "classes": [],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
+            "light-sa-type-inf/tests/examples/comment_removal.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] [comment] [EOL] x = [number] [comment] [EOL] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [EOL] def delta ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] class Foo : [EOL] [docstring] [EOL] [EOL] def bar ( self ) : [EOL] [docstring] [EOL] [comment] [EOL] pass [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {
+                    "x": ""
+                },
+                "mod_var_occur": {
+                    "x": []
+                },
+                "classes": [
+                    {
+                        "name": "Foo",
+                        "variables": {},
+                        "cls_var_occur": {},
+                        "funcs": [
+                            {
+                                "name": "bar",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": "Docstring for class method",
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "delta",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": "Docstring for a function",
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
+            "light-sa-type-inf/tests/examples/types_prop.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] CONSTANT = [number] [EOL] CONSTANT_USED = [number] + CONSTANT [EOL] [EOL] def foo ( x ) : [EOL] y = x + [number] [comment] [EOL] print ( y + CONSTANT ) [comment] [EOL] [EOL] class Bar : [EOL] me = [number] [comment] [EOL] fox = [number] + me + CONSTANT [comment] [EOL] def __init__ ( self ) : [EOL] self . c = [number] + Bar . me [comment] [EOL] self . b = self . c + CONSTANT [comment]",
+                "typed_seq": "0 0 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 $float$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 $int$ 0",
+                "imports": [],
+                "variables": {
+                    "CONSTANT": "int",
+                    "CONSTANT_USED": ""
+                },
+                "mod_var_occur": {
+                    "CONSTANT": [
+                        [
+                            "CONSTANT_USED",
+                            "CONSTANT"
+                        ],
+                        [
+                            "print",
+                            "y",
+                            "CONSTANT"
+                        ],
+                        [
+                            "fox",
+                            "me",
+                            "CONSTANT"
+                        ],
+                        [
+                            "self",
+                            "b",
+                            "self",
+                            "c",
+                            "CONSTANT"
+                        ]
+                    ],
+                    "CONSTANT_USED": []
+                },
+                "classes": [
+                    {
+                        "name": "Bar",
+                        "variables": {
+                            "me": "float",
+                            "fox": ""
+                        },
+                        "cls_var_occur": {
+                            "me": [
+                                [
+                                    "self",
+                                    "c",
+                                    "float",
+                                    "Bar",
+                                    "me"
+                                ]
+                            ],
+                            "fox": []
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "c",
+                                            "float",
+                                            "Bar",
+                                            "me"
+                                        ],
+                                        [
+                                            "self",
+                                            "b",
+                                            "self",
+                                            "c",
+                                            "CONSTANT"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "c": "float",
+                                    "b": ""
+                                },
+                                "fn_var_occur": {
+                                    "c": [
+                                        [
+                                            "self",
+                                            "c",
+                                            "float",
+                                            "Bar",
+                                            "me"
+                                        ],
+                                        [
+                                            "self",
+                                            "b",
+                                            "self",
+                                            "c",
+                                            "CONSTANT"
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            "self",
+                                            "b",
+                                            "self",
+                                            "c",
+                                            "CONSTANT"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "foo",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "y",
+                                    "int",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {
+                            "y": "int"
+                        },
+                        "fn_var_occur": {
+                            "y": [
+                                [
+                                    "y",
+                                    "int",
+                                    "x"
+                                ],
+                                [
+                                    "print",
+                                    "y",
+                                    "CONSTANT"
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.67
+            },
+            "light-sa-type-inf/tests/examples/vars_args_occur.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] from . different_fns import add [EOL] [EOL] [EOL] PI = [number] [EOL] MOD_CONSTANT = [number] [EOL] [EOL] [EOL] class TestVarArgOccur : [EOL] [EOL] greeting = [string] [EOL] num = [number] [EOL] cls_constant = MOD_CONSTANT + [number] [EOL] [EOL] def __init__ ( self , x , y ) : [EOL] self . x = x [EOL] self . y = y [EOL] [EOL] def fn_params_occur ( self , param1 , param2 ) : [EOL] z = param1 + param2 [EOL] [EOL] add_x_y = add ( param1 , param2 ) [EOL] [EOL] list_comp = [ i for i in range ( param1 ** param2 * z ) ] [EOL] [EOL] if param1 * add_x_y == [number] : [EOL] pass [EOL] elif param1 % param2 < [number] : [EOL] pass [EOL] [EOL] while param2 * param1 * z // [number] : [EOL] pass [EOL] [EOL] for i in range ( param1 + z * [number] ) : [EOL] pass [EOL] [EOL] with z * param2 as f : [EOL] print ( z ** param2 / f ) [EOL] [EOL] assert param1 == add_x_y * z [EOL] yield z + param2 [EOL] return param1 + [number] + param2 / [number] [EOL] [EOL] def local_vars_usage ( self , p ) : [EOL] v = sum ( [ [number] , [number] , [number] , [number] ] ) [EOL] v_1 = v + p + [number] [EOL] [EOL] for i in range ( [number] , v + v_1 ) : [EOL] i += v + [number] [EOL] yield i + v_1 [EOL] [EOL] if v < [number] and v_1 + v > [number] : [EOL] print ( v ) [EOL] [EOL] elif v * v_1 != [number] : [EOL] print ( v * v_1 ) [EOL] else : [EOL] print ( v_1 ) [EOL] [EOL] while v + v_1 < p : [EOL] v *= [number] + v_1 [EOL] [EOL] with ( v_1 + p // [number] ) as n : [EOL] assert v != n [EOL] [EOL] return v + p + p + [number] [EOL] [EOL] [comment] [EOL] def class_vars_usage ( self ) : [EOL] c = self . x + TestVarArgOccur . num [EOL] [EOL] if TestVarArgOccur . num + c < [number] : [EOL] pass [EOL] [EOL] for i in range ( [number] , TestVarArgOccur . num ) : [EOL] yield TestVarArgOccur . num + i [EOL] [EOL] while TestVarArgOccur . num < [number] : [EOL] TestVarArgOccur . num -= [number] [EOL] [EOL] with ( TestVarArgOccur . greeting + [string] ) as f : [EOL] pass [EOL] [EOL] assert c != TestVarArgOccur . cls_constant [EOL] [EOL] return TestVarArgOccur . cls_constant + c [EOL] [EOL] [comment] [EOL] def module_vars_usage ( self , add_something ) : [EOL] if PI + add_something > [number] : [EOL] pass [EOL] [EOL] for i in range ( [number] , int ( PI ) ) : [EOL] pass [EOL] [EOL] while PI + MOD_CONSTANT > [number] : [EOL] PI = - [number] + add_something [EOL] [EOL] with ( MOD_CONSTANT + PI + add_something ) as n : [EOL] print ( n ) [EOL] [EOL] def formatted_str ( self , p ) : [EOL] x = [number] [EOL] y = [number] [EOL] print ( f\" [string] { x * y // p } [string] \" ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 $int$ 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "add"
+                ],
+                "variables": {
+                    "PI": "",
+                    "MOD_CONSTANT": "int"
+                },
+                "mod_var_occur": {
+                    "PI": [
+                        [
+                            "PI",
+                            "add_something"
+                        ],
+                        [
+                            "range",
+                            "int",
+                            "PI"
+                        ],
+                        [
+                            "PI",
+                            "MOD_CONSTANT"
+                        ],
+                        [
+                            "PI",
+                            "add_something"
+                        ],
+                        [
+                            "MOD_CONSTANT",
+                            "PI",
+                            "add_something",
+                            "n"
+                        ]
+                    ],
+                    "MOD_CONSTANT": [
+                        [
+                            "cls_constant",
+                            "MOD_CONSTANT"
+                        ],
+                        [
+                            "PI",
+                            "MOD_CONSTANT"
+                        ],
+                        [
+                            "MOD_CONSTANT",
+                            "PI",
+                            "add_something",
+                            "n"
+                        ]
+                    ]
+                },
+                "classes": [
+                    {
+                        "name": "TestVarArgOccur",
+                        "variables": {
+                            "greeting": "str",
+                            "num": "",
+                            "cls_constant": ""
+                        },
+                        "cls_var_occur": {
+                            "greeting": [
+                                [
+                                    "TestVarArgOccur",
+                                    "greeting",
+                                    "f"
+                                ]
+                            ],
+                            "num": [
+                                [
+                                    "c",
+                                    "self",
+                                    "x",
+                                    "TestVarArgOccur",
+                                    "num"
+                                ],
+                                [
+                                    "TestVarArgOccur",
+                                    "num",
+                                    "c"
+                                ],
+                                [
+                                    "range",
+                                    "TestVarArgOccur",
+                                    "num"
+                                ],
+                                [
+                                    "TestVarArgOccur",
+                                    "num",
+                                    "i"
+                                ],
+                                [
+                                    "TestVarArgOccur",
+                                    "num"
+                                ],
+                                [
+                                    "TestVarArgOccur",
+                                    "num"
+                                ]
+                            ],
+                            "cls_constant": [
+                                [
+                                    "c",
+                                    "TestVarArgOccur",
+                                    "cls_constant"
+                                ],
+                                [
+                                    "TestVarArgOccur",
+                                    "cls_constant",
+                                    "c"
+                                ]
+                            ]
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "x": "int",
+                                    "y": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "x"
+                                        ],
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ],
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "x"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "x"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "fn_params_occur",
+                                "params": {
+                                    "self": "",
+                                    "param1": "int",
+                                    "param2": "int"
+                                },
+                                "ret_exprs": [
+                                    "return param1 + 2 + param2 / 5"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "param1": [
+                                        [
+                                            "z",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "add_x_y",
+                                            "add",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "list_comp",
+                                            "i",
+                                            "i",
+                                            "range",
+                                            "param1",
+                                            "param2",
+                                            "z"
+                                        ],
+                                        [
+                                            "param1",
+                                            "add_x_y"
+                                        ],
+                                        [
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "param2",
+                                            "param1",
+                                            "z"
+                                        ],
+                                        [
+                                            "range",
+                                            "param1",
+                                            "z"
+                                        ],
+                                        [
+                                            "param1",
+                                            "add_x_y",
+                                            "z"
+                                        ],
+                                        [
+                                            "param1",
+                                            "param2"
+                                        ]
+                                    ],
+                                    "param2": [
+                                        [
+                                            "z",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "add_x_y",
+                                            "add",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "list_comp",
+                                            "i",
+                                            "i",
+                                            "range",
+                                            "param1",
+                                            "param2",
+                                            "z"
+                                        ],
+                                        [
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "param2",
+                                            "param1",
+                                            "z"
+                                        ],
+                                        [
+                                            "z",
+                                            "param2",
+                                            "f"
+                                        ],
+                                        [
+                                            "print",
+                                            "z",
+                                            "param2",
+                                            "f"
+                                        ],
+                                        [
+                                            "z",
+                                            "param2"
+                                        ],
+                                        [
+                                            "param1",
+                                            "param2"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "z": "",
+                                    "add_x_y": "",
+                                    "list_comp": ""
+                                },
+                                "fn_var_occur": {
+                                    "z": [
+                                        [
+                                            "z",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "list_comp",
+                                            "i",
+                                            "i",
+                                            "range",
+                                            "param1",
+                                            "param2",
+                                            "z"
+                                        ],
+                                        [
+                                            "param2",
+                                            "param1",
+                                            "z"
+                                        ],
+                                        [
+                                            "range",
+                                            "param1",
+                                            "z"
+                                        ],
+                                        [
+                                            "z",
+                                            "param2",
+                                            "f"
+                                        ],
+                                        [
+                                            "print",
+                                            "z",
+                                            "param2",
+                                            "f"
+                                        ],
+                                        [
+                                            "param1",
+                                            "add_x_y",
+                                            "z"
+                                        ],
+                                        [
+                                            "z",
+                                            "param2"
+                                        ]
+                                    ],
+                                    "add_x_y": [
+                                        [
+                                            "add_x_y",
+                                            "add",
+                                            "param1",
+                                            "param2"
+                                        ],
+                                        [
+                                            "param1",
+                                            "add_x_y"
+                                        ],
+                                        [
+                                            "param1",
+                                            "add_x_y",
+                                            "z"
+                                        ]
+                                    ],
+                                    "list_comp": [
+                                        [
+                                            "list_comp",
+                                            "i",
+                                            "i",
+                                            "range",
+                                            "param1",
+                                            "param2",
+                                            "z"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "param1": "",
+                                    "param2": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "local_vars_usage",
+                                "params": {
+                                    "self": "",
+                                    "p": ""
+                                },
+                                "ret_exprs": [
+                                    "return v + p + p + 20"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "p": [
+                                        [
+                                            "v_1",
+                                            "v",
+                                            "p"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1",
+                                            "p"
+                                        ],
+                                        [
+                                            "v_1",
+                                            "p",
+                                            "n"
+                                        ],
+                                        [
+                                            "v",
+                                            "p",
+                                            "p"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "v": "int",
+                                    "v_1": ""
+                                },
+                                "fn_var_occur": {
+                                    "v": [
+                                        [
+                                            "v",
+                                            "int",
+                                            "sum"
+                                        ],
+                                        [
+                                            "v_1",
+                                            "v",
+                                            "p"
+                                        ],
+                                        [
+                                            "range",
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "i",
+                                            "v"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1",
+                                            "v"
+                                        ],
+                                        [
+                                            "print",
+                                            "v"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "print",
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1",
+                                            "p"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "v",
+                                            "n"
+                                        ],
+                                        [
+                                            "v",
+                                            "p",
+                                            "p"
+                                        ]
+                                    ],
+                                    "v_1": [
+                                        [
+                                            "v_1",
+                                            "v",
+                                            "p"
+                                        ],
+                                        [
+                                            "range",
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "i",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1",
+                                            "v"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "print",
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "print",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1",
+                                            "p"
+                                        ],
+                                        [
+                                            "v",
+                                            "v_1"
+                                        ],
+                                        [
+                                            "v_1",
+                                            "p",
+                                            "n"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "p": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "class_vars_usage",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [
+                                    "return TestVarArgOccur.cls_constant + c"
+                                ],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "c",
+                                            "self",
+                                            "x",
+                                            "TestVarArgOccur",
+                                            "num"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "c": ""
+                                },
+                                "fn_var_occur": {
+                                    "c": [
+                                        [
+                                            "c",
+                                            "self",
+                                            "x",
+                                            "TestVarArgOccur",
+                                            "num"
+                                        ],
+                                        [
+                                            "TestVarArgOccur",
+                                            "num",
+                                            "c"
+                                        ],
+                                        [
+                                            "c",
+                                            "TestVarArgOccur",
+                                            "cls_constant"
+                                        ],
+                                        [
+                                            "TestVarArgOccur",
+                                            "cls_constant",
+                                            "c"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "module_vars_usage",
+                                "params": {
+                                    "self": "",
+                                    "add_something": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [],
+                                    "add_something": [
+                                        [
+                                            "PI",
+                                            "add_something"
+                                        ],
+                                        [
+                                            "PI",
+                                            "add_something"
+                                        ],
+                                        [
+                                            "MOD_CONSTANT",
+                                            "PI",
+                                            "add_something",
+                                            "n"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "PI": ""
+                                },
+                                "fn_var_occur": {
+                                    "PI": [
+                                        [
+                                            "PI",
+                                            "add_something"
+                                        ],
+                                        [
+                                            "range",
+                                            "int",
+                                            "PI"
+                                        ],
+                                        [
+                                            "PI",
+                                            "MOD_CONSTANT"
+                                        ],
+                                        [
+                                            "PI",
+                                            "add_something"
+                                        ],
+                                        [
+                                            "MOD_CONSTANT",
+                                            "PI",
+                                            "add_something",
+                                            "n"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "add_something": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "formatted_str",
+                                "params": {
+                                    "self": "",
+                                    "p": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [],
+                                    "p": [
+                                        [
+                                            "print",
+                                            "x",
+                                            "y",
+                                            "p"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "print",
+                                            "x",
+                                            "y",
+                                            "p"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "print",
+                                            "x",
+                                            "y",
+                                            "p"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "p": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.25
+            },
+            "light-sa-type-inf/tests/examples/__init__.py": {
+                "untyped_seq": "",
+                "typed_seq": "0",
+                "imports": [],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
+            "light-sa-type-inf/tests/examples/docstrings.py": {
+                "untyped_seq": "def basic_docstring ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] [comment] [EOL] def google_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def rest_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def numpy_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def no_docstring ( ) : [EOL] return None [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [
+                    {
+                        "name": "basic_docstring",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": "This is a basic docstring",
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "google_docstring",
+                        "params": {
+                            "param1": "",
+                            "param2": ""
+                        },
+                        "ret_exprs": [
+                            "return True",
+                            "return False"
+                        ],
+                        "params_occur": {
+                            "param1": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ],
+                            "param2": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "param1": "The first parameter.",
+                            "param2": "The second parameter."
+                        },
+                        "docstring": {
+                            "func": "Summary line.",
+                            "ret": "Description of return value",
+                            "long_descr": "Extended description of function."
+                        }
+                    },
+                    {
+                        "name": "rest_docstring",
+                        "params": {
+                            "param1": "",
+                            "param2": ""
+                        },
+                        "ret_exprs": [
+                            "return True",
+                            "return False"
+                        ],
+                        "params_occur": {
+                            "param1": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ],
+                            "param2": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "param1": "The first parameter.",
+                            "param2": "The second parameter."
+                        },
+                        "docstring": {
+                            "func": "Summary line.",
+                            "ret": "Description of return value",
+                            "long_descr": "Description of function."
+                        }
+                    },
+                    {
+                        "name": "numpy_docstring",
+                        "params": {
+                            "param1": "",
+                            "param2": ""
+                        },
+                        "ret_exprs": [
+                            "return True",
+                            "return False"
+                        ],
+                        "params_occur": {
+                            "param1": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ],
+                            "param2": [
+                                [
+                                    "len",
+                                    "param2",
+                                    "param1"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "param1": "The first parameter.",
+                            "param2": "The second parameter."
+                        },
+                        "docstring": {
+                            "func": "Summary line.",
+                            "ret": "Description of return value",
+                            "long_descr": "Extended description of function."
+                        }
+                    },
+                    {
+                        "name": "no_docstring",
+                        "params": {},
+                        "ret_exprs": [
+                            "return None"
+                        ],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
+            "light-sa-type-inf/tests/examples/imports.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] import math [EOL] import typing as t [EOL] from os . path import join , split [EOL] from string import * [EOL] [EOL] [EOL] def inner_imports ( ) : [EOL] import collections [EOL] collections . Counter ( ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "math",
+                    "typing",
+                    "join",
+                    "split",
+                    "collections"
+                ],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [
+                    {
+                        "name": "inner_imports",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
+            "light-sa-type-inf/tests/examples/type_annot_removal.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] CONSTANT = [number] [EOL] MOD = ... [EOL] [EOL] def foo ( x , l ) : [EOL] return l [ x ] [EOL] [EOL] class Bar : [EOL] class_var = [string] [EOL] def __init__ ( self , x ) : [EOL] self . x = x [EOL] self . n = ... [EOL]",
+                "typed_seq": "0 0 0 $int$ 0 0 0 $dict$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 $None$ 0 0 0 $float$ 0 0 0 0 0 $float$ 0 $float$ 0 0 0 $set$ 0 0 0",
+                "imports": [],
+                "variables": {
+                    "CONSTANT": "int",
+                    "MOD": "dict"
+                },
+                "mod_var_occur": {
+                    "CONSTANT": [],
+                    "MOD": []
+                },
+                "classes": [
+                    {
+                        "name": "Bar",
+                        "variables": {
+                            "class_var": "str"
+                        },
+                        "cls_var_occur": {
+                            "class_var": []
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "x": "float"
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "float",
+                                            "x"
+                                        ],
+                                        [
+                                            "self",
+                                            "n",
+                                            "set"
+                                        ]
+                                    ],
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "float",
+                                            "x"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "None",
+                                "variables": {
+                                    "x": "float",
+                                    "n": "set"
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "float",
+                                            "x"
+                                        ]
+                                    ],
+                                    "n": [
+                                        [
+                                            "self",
+                                            "n",
+                                            "set"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "x": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "foo",
+                        "params": {
+                            "x": "int",
+                            "l": "list"
+                        },
+                        "ret_exprs": [
+                            "return l[x]"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "l",
+                                    "x"
+                                ]
+                            ],
+                            "l": [
+                                [
+                                    "l",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": "",
+                            "l": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 1.0
+            },
+            "light-sa-type-inf/tests/examples/assignments.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] from typing import List [EOL] [EOL] [comment] [EOL] PI = [number] [EOL] CONSTANT = [number] [EOL] [EOL] LONG_STRING = [string] [EOL] [EOL] [EOL] class Test : [EOL] [comment] [EOL] x = [number] [EOL] u , f = [number] , [string] [EOL] out_y = [string] [EOL] scientific_num = [number] [EOL] [EOL] def __init__ ( self , x ) : [EOL] self . x = x [EOL] self . y = [string] [EOL] [comment] [EOL] self . b , self . c = [number] , [string] [EOL] self . error = ... [EOL] [EOL] def local_var_assings ( self ) : [EOL] f_no = [number] [EOL] l = [ [string] , [string] ] [EOL] foo = ... [EOL] [EOL] def tuple_assigns ( self ) : [EOL] x , y , z = [number] , [number] , [number] [EOL] a , ( b , c ) = [number] , ( [number] , [number] ) [EOL] d , ( ( e , f ) , ( g , h ) ) = [number] , ( ( [number] , [number] ) , ( [number] , [number] ) ) [EOL] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [comment]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List$ 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $List[str]$ 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "List"
+                ],
+                "variables": {
+                    "PI": "",
+                    "CONSTANT": "int",
+                    "LONG_STRING": ""
+                },
+                "mod_var_occur": {
+                    "PI": [],
+                    "CONSTANT": [],
+                    "LONG_STRING": []
+                },
+                "classes": [
+                    {
+                        "name": "Test",
+                        "variables": {
+                            "x": "",
+                            "u": "",
+                            "f": "",
+                            "out_y": "str",
+                            "scientific_num": ""
+                        },
+                        "cls_var_occur": {
+                            "x": [],
+                            "u": [],
+                            "f": [],
+                            "out_y": [],
+                            "scientific_num": []
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "x": "int"
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "int",
+                                            "x"
+                                        ],
+                                        [
+                                            "self",
+                                            "y"
+                                        ],
+                                        [
+                                            "self",
+                                            "b",
+                                            "self",
+                                            "c"
+                                        ],
+                                        [
+                                            "self",
+                                            "error",
+                                            "List"
+                                        ]
+                                    ],
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "int",
+                                            "x"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "None",
+                                "variables": {
+                                    "x": "int",
+                                    "y": "",
+                                    "error": "List"
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "int",
+                                            "x"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y"
+                                        ]
+                                    ],
+                                    "error": [
+                                        [
+                                            "self",
+                                            "error",
+                                            "List"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "x": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "local_var_assings",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "f_no": "float",
+                                    "l": "List[str]",
+                                    "foo": "str"
+                                },
+                                "fn_var_occur": {
+                                    "f_no": [
+                                        [
+                                            "f_no",
+                                            "float"
+                                        ]
+                                    ],
+                                    "l": [
+                                        [
+                                            "l",
+                                            "List",
+                                            "str"
+                                        ]
+                                    ],
+                                    "foo": [
+                                        [
+                                            "foo",
+                                            "str"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "tuple_assigns",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "",
+                                    "y": "",
+                                    "z": "",
+                                    "a": "",
+                                    "b": "",
+                                    "c": "",
+                                    "d": "",
+                                    "e": "",
+                                    "f": "",
+                                    "g": "",
+                                    "h": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "x",
+                                            "y",
+                                            "z"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "x",
+                                            "y",
+                                            "z"
+                                        ]
+                                    ],
+                                    "z": [
+                                        [
+                                            "x",
+                                            "y",
+                                            "z"
+                                        ]
+                                    ],
+                                    "a": [
+                                        [
+                                            "a",
+                                            "b",
+                                            "c"
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            "a",
+                                            "b",
+                                            "c"
+                                        ]
+                                    ],
+                                    "c": [
+                                        [
+                                            "a",
+                                            "b",
+                                            "c"
+                                        ]
+                                    ],
+                                    "d": [
+                                        [
+                                            "d",
+                                            "e",
+                                            "f",
+                                            "g",
+                                            "h"
+                                        ]
+                                    ],
+                                    "e": [
+                                        [
+                                            "d",
+                                            "e",
+                                            "f",
+                                            "g",
+                                            "h"
+                                        ]
+                                    ],
+                                    "f": [
+                                        [
+                                            "d",
+                                            "e",
+                                            "f",
+                                            "g",
+                                            "h"
+                                        ]
+                                    ],
+                                    "g": [
+                                        [
+                                            "d",
+                                            "e",
+                                            "f",
+                                            "g",
+                                            "h"
+                                        ]
+                                    ],
+                                    "h": [
+                                        [
+                                            "d",
+                                            "e",
+                                            "f",
+                                            "g",
+                                            "h"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.24
+            },
+            "light-sa-type-inf/tests/examples/space_tokens.py": {
+                "untyped_seq": "[docstring] [EOL] from typing import List [EOL] import math as m [EOL] [EOL] CONSTANT = [number] [EOL] STRING = [string] [EOL] [EOL] [string] [string]==STRING [EOL] [EOL] d = { k : v for k , v in [ ( [number] , [number] ) , ( [number] , [number] ) ] } [EOL] d_e = { ** d , ** d } [EOL] [EOL] f_str = f\" [string] { STRING + STRING }\" [EOL] [EOL] l = [ [number] , [number] , [number] , [number] ] [EOL] [EOL] print ( l [ [number] ] ) [EOL] [EOL] class Delta : [EOL] def __init__ ( self ) : [EOL] self . x = [string] [EOL] [EOL] def foo ( x , y , * s ) : [EOL] global CONSTANT [EOL] n = [number] [EOL] n //= n % x [EOL] y %= x ; x **= n [EOL] if x | x & y | ~ y | x ^ y : [EOL] x << y [EOL] y >> x [EOL] s <<= x [EOL] x >>= y [EOL] y &= x [EOL] x |= y [EOL] x ^= y [EOL] if x <= y or y >= x and~ x : [EOL] pass [EOL] [EOL] assert x != y [EOL] [EOL] return n + x // y [EOL] [EOL] @ set def bar ( x ) : [EOL] v = foo ( x , [number] ) [EOL] try : [EOL] v /= x [EOL] except ZeroDivisionError : [EOL] raise RuntimeError [EOL] finally : [EOL] pass [EOL] if x < v and v > x : [EOL] x *= x [EOL] else : [EOL] pass [EOL] del x [EOL] return v [EOL] [EOL] for i in range ( CONSTANT + [number] + bar ( [number] ) ) : [EOL] if i + foo ( i , [number] ) + [number] : [EOL] print ( i / i ) [EOL] i += [number] - [number] ** [number] [EOL] i -= [number] [EOL] while i < [number] : [EOL] i = i + [number] [EOL] [EOL] with ( i + [number] ) as w : [EOL] pass [EOL] [EOL] foo ( [number] , [number] , * l )",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0",
+                "imports": [
+                    "List",
+                    "math"
+                ],
+                "variables": {
+                    "CONSTANT": "int",
+                    "STRING": "",
+                    "d": "",
+                    "d_e": "",
+                    "f_str": "",
+                    "l": "List[ int ]",
+                    "i": ""
+                },
+                "mod_var_occur": {
+                    "CONSTANT": [
+                        [
+                            "CONSTANT"
+                        ],
+                        [
+                            "range",
+                            "CONSTANT",
+                            "bar"
+                        ]
+                    ],
+                    "STRING": [
+                        [
+                            "STRING"
+                        ],
+                        [
+                            "f_str",
+                            "STRING",
+                            "STRING"
+                        ]
+                    ],
+                    "d": [
+                        [
+                            "d_e",
+                            "d",
+                            "d"
+                        ]
+                    ],
+                    "d_e": [],
+                    "f_str": [],
+                    "l": [
+                        [
+                            "print",
+                            "l"
+                        ],
+                        [
+                            "foo",
+                            "l"
+                        ]
+                    ],
+                    "i": [
+                        [
+                            "i",
+                            "w"
+                        ]
+                    ]
+                },
+                "classes": [
+                    {
+                        "name": "Delta",
+                        "variables": {},
+                        "cls_var_occur": {},
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "foo",
+                        "params": {
+                            "x": "",
+                            "y": "",
+                            "s": ""
+                        },
+                        "ret_exprs": [
+                            "return n+x//y"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "n",
+                                    "n",
+                                    "x"
+                                ],
+                                [
+                                    "y",
+                                    "x",
+                                    "x",
+                                    "n"
+                                ],
+                                [
+                                    "x",
+                                    "x",
+                                    "y",
+                                    "y",
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "y",
+                                    "x"
+                                ],
+                                [
+                                    "s",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "y",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y",
+                                    "y",
+                                    "x",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "n",
+                                    "x",
+                                    "y"
+                                ]
+                            ],
+                            "y": [
+                                [
+                                    "y",
+                                    "x",
+                                    "x",
+                                    "n"
+                                ],
+                                [
+                                    "x",
+                                    "x",
+                                    "y",
+                                    "y",
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "y",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "y",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "x",
+                                    "y",
+                                    "y",
+                                    "x",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "y"
+                                ],
+                                [
+                                    "n",
+                                    "x",
+                                    "y"
+                                ]
+                            ],
+                            "s": [
+                                [
+                                    "s",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {
+                            "n": ""
+                        },
+                        "fn_var_occur": {
+                            "n": [
+                                [
+                                    "n",
+                                    "n",
+                                    "x"
+                                ],
+                                [
+                                    "y",
+                                    "x",
+                                    "x",
+                                    "n"
+                                ],
+                                [
+                                    "n",
+                                    "x",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "x": "",
+                            "y": "",
+                            "s": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "bar",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [
+                            "return v"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "v",
+                                    "foo",
+                                    "x"
+                                ],
+                                [
+                                    "v",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "v",
+                                    "v",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "int",
+                        "variables": {
+                            "v": ""
+                        },
+                        "fn_var_occur": {
+                            "v": [
+                                [
+                                    "v",
+                                    "foo",
+                                    "x"
+                                ],
+                                [
+                                    "v",
+                                    "x"
+                                ],
+                                [
+                                    "x",
+                                    "v",
+                                    "v",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.21
+            },
+            "light-sa-type-inf/tests/examples/different_fns.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] from typing import Optional [EOL] [EOL] [EOL] [comment] [EOL] def add ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def noargs ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def no_params ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def noreturn ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_none ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_optional ( y ) : [EOL] if len ( y ) == [number] : [EOL] return None [EOL] return y [EOL] [EOL] [EOL] [comment] [EOL] def untyped_args ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def with_inner ( ) : [EOL] def inner ( x ) : [EOL] [docstring] [EOL] return [number] + x [EOL] return inner ( [number] ) [EOL] [EOL] [EOL] [comment] [EOL] def varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def untyped_varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def kwarg_method ( a , * b , ** c ) : [EOL] return c [EOL] [EOL] [EOL] [comment] [EOL] async def async_fn ( y ) : [EOL] return await y [EOL] [EOL] [EOL] [comment] [EOL] def abstract_fn ( name ) : ... [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $Optional[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0",
+                "imports": [
+                    "Optional"
+                ],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [
+                    {
+                        "name": "add",
+                        "params": {
+                            "x": "int",
+                            "y": "int"
+                        },
+                        "ret_exprs": [
+                            "return x + y"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "x",
+                                    "y"
+                                ]
+                            ],
+                            "y": [
+                                [
+                                    "x",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "noargs",
+                        "params": {},
+                        "ret_exprs": [
+                            "return 5"
+                        ],
+                        "params_occur": {},
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "no_params",
+                        "params": {},
+                        "ret_exprs": [
+                            "return 0"
+                        ],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "noreturn",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "print",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "return_none",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "print",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "ret_type": "None",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "return_optional",
+                        "params": {
+                            "y": "list"
+                        },
+                        "ret_exprs": [
+                            "return None",
+                            "return y"
+                        ],
+                        "params_occur": {
+                            "y": [
+                                [
+                                    "len",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "ret_type": "Optional[int]",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "y": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "untyped_args",
+                        "params": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "ret_exprs": [
+                            "return x + y"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "x",
+                                    "y"
+                                ]
+                            ],
+                            "y": [
+                                [
+                                    "x",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "inner",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [
+                            "return 12 + x"
+                        ],
+                        "params_occur": {
+                            "x": []
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": "This is the inner function",
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "with_inner",
+                        "params": {},
+                        "ret_exprs": [
+                            "return inner(10)"
+                        ],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "varargs",
+                        "params": {
+                            "xs": "int"
+                        },
+                        "ret_exprs": [
+                            "return sum"
+                        ],
+                        "params_occur": {
+                            "xs": []
+                        },
+                        "ret_type": "int",
+                        "variables": {
+                            "sum": "int"
+                        },
+                        "fn_var_occur": {
+                            "sum": [
+                                [
+                                    "sum",
+                                    "int"
+                                ],
+                                [
+                                    "sum",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "xs": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "untyped_varargs",
+                        "params": {
+                            "xs": ""
+                        },
+                        "ret_exprs": [
+                            "return sum"
+                        ],
+                        "params_occur": {
+                            "xs": []
+                        },
+                        "ret_type": "int",
+                        "variables": {
+                            "sum": "int"
+                        },
+                        "fn_var_occur": {
+                            "sum": [
+                                [
+                                    "sum",
+                                    "int"
+                                ],
+                                [
+                                    "sum",
+                                    "x"
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "xs": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "kwarg_method",
+                        "params": {
+                            "a": "int",
+                            "b": "int",
+                            "c": "float"
+                        },
+                        "ret_exprs": [
+                            "return c"
+                        ],
+                        "params_occur": {
+                            "a": [],
+                            "b": [],
+                            "c": []
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "a": "",
+                            "b": "",
+                            "c": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "async_fn",
+                        "params": {
+                            "y": "int"
+                        },
+                        "ret_exprs": [
+                            "return await y"
+                        ],
+                        "params_occur": {
+                            "y": []
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "y": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "abstract_fn",
+                        "params": {
+                            "name": "str"
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "name": []
+                        },
+                        "ret_type": "str",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "name": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.28
+            },
+            "light-sa-type-inf/tests/examples/representations.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] cls_var = [number] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] print ( [string] ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "path",
+                    "math"
+                ],
+                "variables": {
+                    "CONSTANT": ""
+                },
+                "mod_var_occur": {
+                    "CONSTANT": []
+                },
+                "classes": [
+                    {
+                        "name": "MyClass",
+                        "variables": {
+                            "cls_var": "int"
+                        },
+                        "cls_var_occur": {
+                            "cls_var": [
+                                [
+                                    "MyClass",
+                                    "cls_var",
+                                    "c",
+                                    "n"
+                                ]
+                            ]
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "y": "float"
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "None",
+                                "variables": {
+                                    "y": ""
+                                },
+                                "fn_var_occur": {
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "cls_fn",
+                                "params": {
+                                    "self": "",
+                                    "c": "int"
+                                },
+                                "ret_exprs": [
+                                    "return MyClass.cls_var + c / (2 + n)"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "c": [
+                                        [
+                                            "n",
+                                            "c"
+                                        ],
+                                        [
+                                            "MyClass",
+                                            "cls_var",
+                                            "c",
+                                            "n"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "float",
+                                "variables": {
+                                    "n": ""
+                                },
+                                "fn_var_occur": {
+                                    "n": [
+                                        [
+                                            "n",
+                                            "c"
+                                        ],
+                                        [
+                                            "MyClass",
+                                            "cls_var",
+                                            "c",
+                                            "n"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "c": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Bar",
+                        "variables": {},
+                        "cls_var_occur": {},
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "my_fn",
+                        "params": {
+                            "x": "int"
+                        },
+                        "ret_exprs": [
+                            "return x + 10"
+                        ],
+                        "params_occur": {
+                            "x": []
+                        },
+                        "ret_type": "int",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "foo",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "None",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "type_annot_cove": 0.47
+            },
+            "light-sa-type-inf/tests/examples/string_removal.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] s = [string] [EOL] multi_line_str = [string] [EOL] [EOL] f_str = f\" [string] { multi_line_str }\" [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {
+                    "s": "",
+                    "multi_line_str": "",
+                    "f_str": ""
+                },
+                "mod_var_occur": {
+                    "s": [],
+                    "multi_line_str": [
+                        [
+                            "f_str",
+                            "multi_line_str"
+                        ]
+                    ],
+                    "f_str": []
+                },
+                "classes": [],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.0
+            }
+        },
+        "type_annot_cove": 0.24
+    }
+}
