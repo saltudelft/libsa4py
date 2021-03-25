@@ -1932,8 +1932,8 @@
                 "type_annot_cove": 0.28
             },
             "light-sa-type-inf/tests/examples/representations.py": {
-                "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] cls_var = [number] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] print ( [string] ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0",
+                "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "path",
                     "math"
@@ -2108,7 +2108,7 @@
                         "fn_var_occur": {},
                         "params_descr": {},
                         "docstring": {
-                            "func": null,
+                            "func": "foo docstring",
                             "ret": null,
                             "long_descr": null
                         }
