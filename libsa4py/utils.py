@@ -82,6 +82,14 @@ def save_json(filename: str, dict_obj: dict):
         json.dump(dict_obj, json_f, indent=4)
 
 
+def load_json(filename: str) -> dict:
+    """
+    Loads a json file into a dictionary
+    """
+    with open(filename, 'r') as json_f:
+        return json.load(json_f)
+
+
 def find_repos_list(projects_path: str) -> List[dict]:
     """
     Finds a list of author/repo from a Python dataset.

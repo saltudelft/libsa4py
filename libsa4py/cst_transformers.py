@@ -44,6 +44,9 @@ class NumberRemover(cst.CSTTransformer):
     def leave_Integer(self, original_node: cst.Integer, updated_node: cst.Integer):
         return cst.SimpleString(value="\"[number]\"")
 
+    def leave_Imaginary(self, original_node: cst.Imaginary, updated_node: cst.Imaginary):
+        return original_node  # TODO: Remove imaginary number with a [number] token
+
 
 class TypeAnnotationRemover(cst.CSTTransformer):
     """

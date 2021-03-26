@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple
 from libsa4py.representations import FunctionInfo, ClassInfo
+from libsa4py.nl_preprocessing import extract_docstring_descriptions
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -64,7 +65,7 @@ class Visitor(cst.CSTVisitor):
         # Create function info representation for newly visited function
         func = FunctionInfo(node.name.value)  # Pass in function name
         func.node = node  # Update node
-        func.docstring = self.__extract_docstring(node)  # Update docstring
+
 
         # Push function info on top of the stack, thus increasing stack
         # depth to account for the current function.
@@ -82,6 +83,10 @@ class Visitor(cst.CSTVisitor):
 
         # Decrease stack depth of the current function
         fn = self.stack.pop()
+
+        fn.docstring, params_descr = extract_docstring_descriptions(self.__extract_docstring(node))
+        fn.params_descr = {p: params_descr[p] if p in params_descr else '' for p in fn.parameters.keys()}
+
         fn.parameters_occur = self.__find_args_vars_use(list(fn.parameters.keys()), self.fn_may_args_var_use, True)
         fn.variables_occur = self.__find_args_vars_use(list(fn.variables.keys()), self.fn_may_args_var_use)
 

@@ -148,8 +148,8 @@ class Pipeline:
             for filename, f_relative, f_split in project_files:
                 try:
                     project_analyzed_files[project_id]["src_files"][f_relative] = \
-                        self.apply_nlp_transf(Extractor().extract(read_file(filename))) if self.nlp_transf \
-                            else Extractor.extract(read_file(filename))
+                        self.apply_nlp_transf(Extractor().extract(read_file(filename)).to_dict()) if self.nlp_transf \
+                            else Extractor.extract(read_file(filename)).to_dict()
                     project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
                     extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
                                             [c['name'] for c in
