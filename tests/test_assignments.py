@@ -16,7 +16,7 @@ class TestAssignments(unittest.TestCase):
         cls.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read()).to_dict()
 
     def test_module_vars(self):
-        module_vars_expected = {'PI': '', 'CONSTANT': 'int', 'LONG_STRING': ''}
+        module_vars_expected = {'PI': '', 'M_FOO': '', 'M_BAR': '', 'CONSTANT': 'int', 'LONG_STRING': ''}
         self.assertDictEqual(module_vars_expected, self.processed_f['variables'])
 
     def test_class_vars(self):
@@ -25,7 +25,7 @@ class TestAssignments(unittest.TestCase):
 
     def test_self_vars(self):
         # TODO: implement the extraction of self vars in a multiple assignments
-        self_vars_expected = {'x': 'int', 'y': '', 'error': 'List'}
+        self_vars_expected = {'x': 'int', 'y': '', 'b': '', 'c': '', 'error': 'List'}
         self.assertDictEqual(self_vars_expected, self.processed_f['classes'][0]['funcs'][0]['variables'])
 
     def test_local_vars(self):
@@ -35,6 +35,7 @@ class TestAssignments(unittest.TestCase):
     def test_tuple_assign(self):
         tuple_assigns_expected = {'x': '', 'y': '', 'z': '', 'a': '', 'b': '', 'c': '', 'd': '', 'e': '', 'f': '',
                                   'g': '', 'h': ''}
+        print(self.processed_f['classes'][0]['funcs'][2]['variables'])
         self.assertDictEqual(tuple_assigns_expected, self.processed_f['classes'][0]['funcs'][2]['variables'])
 
     def test_walrus_op(self):

@@ -229,9 +229,9 @@ class Visitor(cst.CSTVisitor):
                     self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = ''
                 else:
                     self.cls_stack[-1].variables = {**self.cls_stack[-1].variables,
-                                                    **{n.value.value: '' for n in extracted_names['names']}}
+                                                    **{n: '' for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(self.cls_stack[-1].name, None, n.value.value): '' for n in
+                                                   **{(self.cls_stack[-1].name, None, n): '' for n in
                                                       extracted_names['names']}}
 
             else:
@@ -242,11 +242,11 @@ class Visitor(cst.CSTVisitor):
                     self.module_all_annotations[(None, None, extracted_names['name'])] = ''
                 else:
                     self.module_variables = {**self.module_variables,
-                                             **{n.value.value: '' for n in extracted_names['names']}}
+                                             **{n: '' for n in extracted_names['names']}}
                     self.module_variables_use = {**self.module_variables_use,
-                                             **{n.value.value: [] for n in extracted_names['names']}}
+                                             **{n: [] for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(None, None, n.value.value): '' for n in
+                                                   **{(None, None, n): '' for n in
                                                       extracted_names['names']}}
 
     def visit_AnnAssign(self, node: cst.AnnAssign):
@@ -418,8 +418,7 @@ class Visitor(cst.CSTVisitor):
         )
 
         if extracted_var_names is not None and "names" in extracted_var_names:
-            # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
-            return {'names': match.findall(node, match.Element(value=match.Name(value=match.DoNotCare())))}
+            return {'names': self.__extract_names_multi_assign(extracted_var_names['names'])}
         else:
             return extracted_var_names
 
@@ -427,7 +426,6 @@ class Visitor(cst.CSTVisitor):
         """
         Extracts a variable's identifier name and its type annotation
         """
-
         return match.extract(node, match.AnnAssign(  # Annotated Assignment
             target=match.OneOf(
                 match.Name(  # Variable name of assignment (only one)
@@ -496,6 +494,24 @@ class Visitor(cst.CSTVisitor):
             # TODO: Either rename class defs, or create new list for additional types
             self.class_defs.append(extracted_type["type"].strip("\'"))
 
+    def __extract_names_multi_assign(self, elements):
+        # Add self vars. in tuple assignments, e.g. self.x, self.y = 1, 2
+        # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
+        names = []
+        i = 0
+        while i < len(elements):
+            if match.matches(elements[i], match.Element(value=match.Name(value=match.DoNotCare()))):
+                names.append(elements[i].value.value)
+            elif match.matches(elements[i], match.Element(value=match.Attribute(attr=match.Name(value=match.DoNotCare())))):
+                names.append(elements[i].value.attr.value)
+            elif match.matches(elements[i], match.Element(value=match.Tuple(elements=match.DoNotCare()))):
+                elements.extend(match.findall(elements[i].value, match.Element(value=match.OneOf(
+                    match.Attribute(attr=match.Name(value=match.DoNotCare())),
+                    match.Name(value=match.DoNotCare())
+                ))))
+            i += 1
+
+        return names
     def __add_variable_to_function(self, name, annotation):
         """
         Adds a variable definition/assignment to the current function,
@@ -547,36 +563,9 @@ class Visitor(cst.CSTVisitor):
 
             # Iterate through all target names
             for name in extracted_names["names"]:
-                # Extract tuple elements
-                extracted_name = match.extract(name, match.Element(  # Tuple element (single entry)
-                    value=match.OneOf(match.Name(  # Get name of tuple entry
-                        value=match.SaveMatchedNode(  # Save result
-                            match.MatchRegex(r'(.)+'),  # Match any string literal
-                            "name"
-                        )
-                    ),
-                        # Extracts variable name from objects attributes like self.x or y.x
-                        match.Attribute(
-                            value=match.Name(value=match.SaveMatchedNode(
-                                match.MatchRegex(r'(.)+'),
-                                "obj_name"  # Object name
-                            )
-                            ),
-                            attr=match.Name(match.SaveMatchedNode(
-                                match.MatchRegex(r'(.)+'),
-                                "name"
-                            )
-                            ),
-                        )
-                    )
-                )
-                    )
-
-                # If name could be extracted, add it to current function
-                if extracted_name is not None:
-                    self.__add_variable_to_function(extracted_name["name"], None)
-                    self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                                 self.stack[-1].name, extracted_name["name"])] = ''
+                self.__add_variable_to_function(name, None)
+                self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
+                                             self.stack[-1].name, name)] = ''
 
     def __find_args_vars_use(self, vars_name: list, may_vars_use: List[list], is_var_arg: bool=False) -> dict:
         """

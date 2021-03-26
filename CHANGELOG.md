@@ -7,6 +7,9 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Adding extensive units tests for testing various features and components of LibSA4Py.
 - Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
 
+### Fixed
+- Extracting self variables in multi assignments expressions like `self.x,self.y=1,2`
+
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.
 

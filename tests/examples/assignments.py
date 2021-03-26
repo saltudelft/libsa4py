@@ -7,6 +7,7 @@ from typing import List
 # Module-level constants
 PI = 3.14
 CONSTANT: int = 404
+M_FOO, M_BAR = 2.16, 13
 
 LONG_STRING = """Vestibulum dignissim nisi in ex vehicula viverra at et augue. Phasellus volutpat euismod gravida.
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque volutpat sapien sed odio eleifend elementum."""
@@ -22,7 +23,6 @@ class Test:
     def __init__(self, x: int) -> None:
         self.x: int = x
         self.y = "Test"
-        # TODO: can't find self vars in a multiple assignments
         self.b, self.c = 45, 'blah'
         self.error: List
 
