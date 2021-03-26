@@ -43,16 +43,16 @@ class FunctionInfo:
 
         return self
 
-    # def __eq__(self, other_func_info_obj: 'FunctionInfo'):
-    #     # TODO: Buggy comparison in its docstring part.
-    #     return other_func_info_obj.name == self.name and \
-    #            other_func_info_obj.parameters == self.parameters and \
-    #            other_func_info_obj.parameters_occur == self.parameters_occur and \
-    #            other_func_info_obj.return_exprs == self.return_exprs and \
-    #            other_func_info_obj.return_type == self.return_type and \
-    #            other_func_info_obj.variables == self.variables and \
-    #            other_func_info_obj.variables_occur == self.variables_occur and \
-    #            other_func_info_obj.docstring == self.docstring
+    def __eq__(self, other_func_info_obj: 'FunctionInfo'):
+        return other_func_info_obj.name == self.name and \
+               other_func_info_obj.parameters == self.parameters and \
+               other_func_info_obj.parameters_occur == self.parameters_occur and \
+               other_func_info_obj.params_descr == self.params_descr and \
+               other_func_info_obj.return_exprs == self.return_exprs and \
+               other_func_info_obj.return_type == self.return_type and \
+               other_func_info_obj.variables == self.variables and \
+               other_func_info_obj.variables_occur == self.variables_occur and \
+               other_func_info_obj.docstring == self.docstring
 
     def get_type_annot_cove(self) -> float:
         try:
@@ -82,19 +82,19 @@ class ClassInfo:
         return {"name": self.name, "variables": self.variables, "cls_var_occur": self.variables_use_occur,
                 "funcs": [f.to_dict() for f in self.funcs]}
 
-    # def from_dict(self, cls_repr_dict: dict):
-    #     self.name = cls_repr_dict['name']
-    #     self.variables = cls_repr_dict['variables']
-    #     self.variables_use_occur = cls_repr_dict['cls_var_occur']
-    #     self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
-    #
-    #     return self
-    #
-    # def __eq__(self, other_class_info_obj: 'ClassInfo'):
-    #     return other_class_info_obj.name == self.name and \
-    #            other_class_info_obj.variables == self.variables and \
-    #            other_class_info_obj.variables_use_occur == self.variables_use_occur and \
-    #            other_class_info_obj.funcs == self.funcs
+    def from_dict(self, cls_repr_dict: dict):
+        self.name = cls_repr_dict['name']
+        self.variables = cls_repr_dict['variables']
+        self.variables_use_occur = cls_repr_dict['cls_var_occur']
+        self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
+
+        return self
+
+    def __eq__(self, other_class_info_obj: 'ClassInfo'):
+        return other_class_info_obj.name == self.name and \
+               other_class_info_obj.variables == self.variables and \
+               other_class_info_obj.variables_use_occur == self.variables_use_occur and \
+               other_class_info_obj.funcs == self.funcs
 
     def get_type_annot_cove(self) -> float:
         return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
@@ -117,44 +117,29 @@ class ModuleInfo:
         self.typed_seq = typed_seq
 
     def to_dict(self) -> dict:
-        return {"untyped_seq": ModuleInfo.normalize_module_code(self.untyped_seq),
-                "typed_seq": create_output_seq(ModuleInfo.normalize_module_code(self.typed_seq)),
+        return {"untyped_seq": self.untyped_seq,
+                "typed_seq": self.typed_seq,
                 "imports": self.import_names, "variables": self.variables, "mod_var_occur": self.var_occur,
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
                 "type_annot_cove": round(self.get_type_annot_cove(), 2)}
 
-    # @classmethod
-    # def from_dict(cls, mod_dict_repr: dict):
-    #     return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
-    #                [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
-    #                [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
-    #                mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'])
-    #
-    # def __eq__(self, other_module_info_obj: 'ModuleInfo'):
-    #     return other_module_info_obj.import_names == self.import_names and \
-    #            other_module_info_obj.variables == self.variables and \
-    #            other_module_info_obj.var_occur == self.var_occur and \
-    #            other_module_info_obj.classes == self.classes and \
-    #            other_module_info_obj.funcs == self.funcs and \
-    #            other_module_info_obj.untyped_seq == self.untyped_seq and \
-    #            other_module_info_obj.typed_seq == self.typed_seq
+    @classmethod
+    def from_dict(cls, mod_dict_repr: dict):
+        return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
+                   [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
+                   [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
+                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'])
 
-    @staticmethod
-    def normalize_module_code(m_code: str) -> str:
-        # New lines
-        m_code = re.compile(r"\n").sub(r" [EOL] ", m_code)
-        # white spaces
-        m_code = re.compile(r"[ \t\n]+").sub(" ", m_code)
-
-        # Replace comments, docstrings, numeric literals and string literals with special tokens
-        special_tks = {"#[comment]": "[comment]", "\"\"\"[docstring]\"\"\"": "[docstring]", "\"[string]\"": "[string]",
-                       "\"[number]\"": "[number]"}
-        regex = re.compile("(%s)" % "|".join(map(re.escape, special_tks.keys())))
-        m_code = regex.sub(lambda mo: special_tks[mo.string[mo.start():mo.end()]], m_code)
-
-        return m_code.strip()
+    def __eq__(self, other_module_info_obj: 'ModuleInfo'):
+        return other_module_info_obj.import_names == self.import_names and \
+               other_module_info_obj.variables == self.variables and \
+               other_module_info_obj.var_occur == self.var_occur and \
+               other_module_info_obj.classes == self.classes and \
+               other_module_info_obj.funcs == self.funcs and \
+               other_module_info_obj.untyped_seq == self.untyped_seq and \
+               other_module_info_obj.typed_seq == self.typed_seq
 
     def get_type_annot_cove(self):
         return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
