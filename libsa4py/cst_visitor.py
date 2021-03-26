@@ -30,6 +30,7 @@ class Visitor(cst.CSTVisitor):
         self.module_variables: Dict[str, str] = {}
         self.module_variables_use: Dict[str, List[list]] = {}
         self.module_all_annotations: Dict[Tuple, str] = {}
+        self.module_type_annot_cove: float = 0.0
 
         # Visible types in a source code file
         self.class_defs = []
@@ -364,6 +365,11 @@ class Visitor(cst.CSTVisitor):
                 self.cls_may_vars_use.append(with_names)
 
         self.__find_module_vars_use(with_names)
+
+    def leave_Module(self, node):
+        # Calculating the type annotation coverage of the module.
+        all_annot_filtered = {k:v for k, v in self.module_all_annotations.items() if k[2] != 'self'}
+        self.module_type_annot_cove = round(sum([1 for k, v in all_annot_filtered.items() if v]) / len(all_annot_filtered.keys()), 2)
 
     def __convert_annotation(self, node: cst.Annotation):
         """

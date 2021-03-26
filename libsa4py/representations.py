@@ -54,18 +54,6 @@ class FunctionInfo:
                other_func_info_obj.variables_occur == self.variables_occur and \
                other_func_info_obj.docstring == self.docstring
 
-    def get_type_annot_cove(self) -> float:
-        try:
-            return (sum([1 for k, v in self.variables.items() if v] +
-                        [1 for k, v in self.parameters.items() if v]) +
-                    (1 if self.return_type else 0)) / (len(self.variables.keys()) +
-                        (len(self.parameters.keys()) - 1 if 'self' in self.parameters.keys()
-                             else len(self.parameters.keys())) + (1 if len(self.return_exprs) or
-                                                                       self.return_type == "None" else 0))
-        except ZeroDivisionError:
-            # For functions with no parameters, variables and return
-            return 0.0
-
 
 class ClassInfo:
     """
@@ -96,10 +84,6 @@ class ClassInfo:
                other_class_info_obj.variables_use_occur == self.variables_use_occur and \
                other_class_info_obj.funcs == self.funcs
 
-    def get_type_annot_cove(self) -> float:
-        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
-               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 2
-
 
 class ModuleInfo:
     """
@@ -107,7 +91,8 @@ class ModuleInfo:
     """
 
     def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]],
-                 classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str):
+                 classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str,
+                 type_annot_cove: float):
         self.import_names = import_names
         self.variables = variables
         self.var_occur = var_occur
@@ -115,6 +100,7 @@ class ModuleInfo:
         self.funcs = funcs
         self.untyped_seq = untyped_seq
         self.typed_seq = typed_seq
+        self.type_annot_cove = type_annot_cove
 
     def to_dict(self) -> dict:
         return {"untyped_seq": self.untyped_seq,
@@ -123,14 +109,14 @@ class ModuleInfo:
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
-                "type_annot_cove": round(self.get_type_annot_cove(), 2)}
+                "type_annot_cove": self.type_annot_cove}
 
     @classmethod
     def from_dict(cls, mod_dict_repr: dict):
         return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
                    [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
                    [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
-                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'])
+                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['type_annot_cove'])
 
     def __eq__(self, other_module_info_obj: 'ModuleInfo'):
         return other_module_info_obj.import_names == self.import_names and \
@@ -139,12 +125,8 @@ class ModuleInfo:
                other_module_info_obj.classes == self.classes and \
                other_module_info_obj.funcs == self.funcs and \
                other_module_info_obj.untyped_seq == self.untyped_seq and \
-               other_module_info_obj.typed_seq == self.typed_seq
-
-    def get_type_annot_cove(self):
-        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
-               (sum([c.get_type_annot_cove() for c in self.classes]) / len(self.classes) if len(self.classes) else 0) +
-               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 3
+               other_module_info_obj.typed_seq == self.typed_seq and \
+               other_module_info_obj.type_annot_cove == self.type_annot_cove
 
 
 def create_output_seq(typed_seq: str, type_sep_symb="$") -> str:

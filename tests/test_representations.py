@@ -79,8 +79,8 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
     def test_mod_type_annot_cove(self):
-        # TODO: Write for a module type annotation coverage
-        pass
+        exp_type_annot_cove = 0.64
+        self.assertEqual(exp_type_annot_cove, processed_f.type_annot_cove)
 
 
 class TestClassRepresentation(unittest.TestCase):
@@ -141,11 +141,11 @@ class TestFunctionRepresentation(unittest.TestCase):
                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}
         self.assertDictEqual(fn_repr_dict, processed_f.to_dict()['classes'][0]['funcs'][0])
 
-    def test_fn_type_annot_cove(self):
-        fn = FunctionInfo('my_fn')
-        fn.from_dict(processed_f.to_dict()['funcs'][0])
-
-        self.assertEqual(fn.get_type_annot_cove(), 1.0)
+    # def test_fn_type_annot_cove(self):
+    #     fn = FunctionInfo('my_fn')
+    #     fn.from_dict(processed_f.to_dict()['funcs'][0])
+    #
+    #     self.assertEqual(fn.get_type_annot_cove(), 1.0)
 
 
 class TestOutputSequence(unittest.TestCase):

@@ -1,6 +1,6 @@
 from libsa4py.cst_extractor import Extractor
 from libsa4py.representations import ModuleInfo
-from libsa4py.utils import read_file, load_json
+from libsa4py.utils import read_file, load_json, save_json
 import unittest
 
 
