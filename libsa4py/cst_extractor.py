@@ -1,7 +1,8 @@
 from libsa4py.cst_visitor import Visitor
-from libsa4py.representations import ModuleInfo
+from libsa4py.representations import ModuleInfo, create_output_seq
 from libsa4py.cst_transformers import TypeAdder, SpaceAdder, StringRemover, CommentAndDocStringRemover, NumberRemover,\
     TypeAnnotationRemover
+from libsa4py.nl_preprocessing import normalize_module_code
 from libsa4py.exceptions import ParseError
 
 import libcst as cst
@@ -44,4 +45,4 @@ class Extractor:
         v_typed = v_typed.visit(v_space)
 
         return ModuleInfo(v.imports, v.module_variables, v.module_variables_use, v.cls_list, v.fns,
-                          v_untyped.code, v_typed.code)
+                          normalize_module_code(v_untyped.code), create_output_seq(normalize_module_code(v_typed.code)))

@@ -182,6 +182,7 @@ def extract_docstring_descriptions(docstring: str) -> Tuple[dict, dict]:
     except Exception:
         return {"func": None, "ret": None, "long_descr": None}, {}
 
+
 def __check_func_docstring(self, docstring: str) -> Optional[str]:
     """Check the docstring if it has a valid structure for parsing and returns a valid docstring."""
     dash_line_matcher: Pattern[str] = re.compile("\s*--+")
@@ -241,3 +242,18 @@ def __check_func_docstring(self, docstring: str) -> Optional[str]:
         return preparsed_docstring
     else:
         return
+
+
+def normalize_module_code(m_code: str) -> str:
+    # New lines
+    m_code = re.compile(r"\n").sub(r" [EOL] ", m_code)
+    # white spaces
+    m_code = re.compile(r"[ \t\n]+").sub(" ", m_code)
+
+    # Replace comments, docstrings, numeric literals and string literals with special tokens
+    special_tks = {"#[comment]": "[comment]", "\"\"\"[docstring]\"\"\"": "[docstring]", "\"[string]\"": "[string]",
+                   "\"[number]\"": "[number]"}
+    regex = re.compile("(%s)" % "|".join(map(re.escape, special_tks.keys())))
+    m_code = regex.sub(lambda mo: special_tks[mo.string[mo.start():mo.end()]], m_code)
+
+    return m_code.strip()
