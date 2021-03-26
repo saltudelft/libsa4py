@@ -1,5 +1,6 @@
 from libsa4py.cst_extractor import Extractor
-from libsa4py.representations import FunctionInfo, ClassInfo, ModuleInfo, create_output_seq, validate_output_seq
+from libsa4py.representations import FunctionInfo, ModuleInfo, create_output_seq, validate_output_seq
+from libsa4py.nl_preprocessing import normalize_module_code
 from libsa4py.exceptions import OutputSequenceException
 from libsa4py.utils import read_file
 import unittest
@@ -153,7 +154,7 @@ class TestOutputSequence(unittest.TestCase):
     """
 
     def test_normalized_module_code(self):
-        self.assertEqual(ModuleInfo.normalize_module_code(processed_f.untyped_seq),
+        self.assertEqual(normalize_module_code(processed_f.untyped_seq),
                          read_file('exp_outputs/normalized_mod_code.txt').strip())
 
     def test_create_output_sequence(self):
@@ -161,7 +162,7 @@ class TestOutputSequence(unittest.TestCase):
                       " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
                       " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
-        self.assertEqual(exp_out_seq, create_output_seq(ModuleInfo.normalize_module_code(processed_f.typed_seq)))
+        self.assertEqual(exp_out_seq, create_output_seq(normalize_module_code(processed_f.typed_seq)))
 
     def test_invalid_type_alignment_with_name(self):
         # Misses one type
@@ -170,7 +171,7 @@ class TestOutputSequence(unittest.TestCase):
                       " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertRaises(OutputSequenceException, validate_output_seq,
-                          ModuleInfo.normalize_module_code(processed_f.typed_seq), malformed_out_seq)
+                          normalize_module_code(processed_f.typed_seq), malformed_out_seq)
 
     def test_invalid_non_name_alignment(self):
         # Has an extra type
@@ -179,7 +180,7 @@ class TestOutputSequence(unittest.TestCase):
                       " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertRaises(OutputSequenceException, validate_output_seq,
-                          ModuleInfo.normalize_module_code(processed_f.typed_seq), malformed_out_seq)
+                          normalize_module_code(processed_f.typed_seq), malformed_out_seq)
 
     def test_invalid_input_typed_seq(self):
         valid_out_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
