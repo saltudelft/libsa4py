@@ -1,0 +1,202 @@
+{
+    "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
+    "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
+    "imports": [
+        "path",
+        "math"
+    ],
+    "variables": {
+        "CONSTANT": ""
+    },
+    "mod_var_occur": {
+        "CONSTANT": []
+    },
+    "classes": [
+        {
+            "name": "MyClass",
+            "variables": {
+                "cls_var": "int"
+            },
+            "cls_var_occur": {
+                "cls_var": [
+                    [
+                        "MyClass",
+                        "cls_var",
+                        "c",
+                        "n"
+                    ]
+                ]
+            },
+            "funcs": [
+                {
+                    "name": "__init__",
+                    "params": {
+                        "self": "",
+                        "y": "float"
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "self": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ],
+                        "y": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ]
+                    },
+                    "ret_type": "None",
+                    "variables": {
+                        "y": ""
+                    },
+                    "fn_var_occur": {
+                        "y": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ]
+                    },
+                    "params_descr": {
+                        "self": "",
+                        "y": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                },
+                {
+                    "name": "cls_fn",
+                    "params": {
+                        "self": "",
+                        "c": "int"
+                    },
+                    "ret_exprs": [
+                        "return MyClass.cls_var + c / (2 + n)"
+                    ],
+                    "params_occur": {
+                        "self": [],
+                        "c": [
+                            [
+                                "n",
+                                "c"
+                            ],
+                            [
+                                "MyClass",
+                                "cls_var",
+                                "c",
+                                "n"
+                            ]
+                        ]
+                    },
+                    "ret_type": "float",
+                    "variables": {
+                        "n": ""
+                    },
+                    "fn_var_occur": {
+                        "n": [
+                            [
+                                "n",
+                                "c"
+                            ],
+                            [
+                                "MyClass",
+                                "cls_var",
+                                "c",
+                                "n"
+                            ]
+                        ]
+                    },
+                    "params_descr": {
+                        "self": "",
+                        "c": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Bar",
+            "variables": {},
+            "cls_var_occur": {},
+            "funcs": [
+                {
+                    "name": "__init__",
+                    "params": {
+                        "self": ""
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "self": []
+                    },
+                    "ret_type": "",
+                    "variables": {},
+                    "fn_var_occur": {},
+                    "params_descr": {
+                        "self": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                }
+            ]
+        }
+    ],
+    "funcs": [
+        {
+            "name": "my_fn",
+            "params": {
+                "x": "int"
+            },
+            "ret_exprs": [
+                "return x + 10"
+            ],
+            "params_occur": {
+                "x": []
+            },
+            "ret_type": "int",
+            "variables": {},
+            "fn_var_occur": {},
+            "params_descr": {
+                "x": ""
+            },
+            "docstring": {
+                "func": null,
+                "ret": null,
+                "long_descr": null
+            }
+        },
+        {
+            "name": "foo",
+            "params": {},
+            "ret_exprs": [],
+            "params_occur": {},
+            "ret_type": "None",
+            "variables": {},
+            "fn_var_occur": {},
+            "params_descr": {},
+            "docstring": {
+                "func": "Foo docstring",
+                "ret": null,
+                "long_descr": null
+            }
+        }
+    ],
+    "set": null,
+    "type_annot_cove": 0.47
+}
