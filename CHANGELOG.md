@@ -5,6 +5,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 ### Added
 - Extracting the usage of module constants, class variables, and local variables across a source code file (Contextual hint)
 - Adding extensive units tests for testing various features and components of LibSA4Py.
+- Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
 
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.

@@ -35,7 +35,7 @@ def foo (  x ,   y ,  * s ) :
         y &= x
         x |= y
         x ^= y
-    if x <= y or y >= x and~ x :
+    if x <= y or y >= x and ~ x :
         pass
 
     assert x != y

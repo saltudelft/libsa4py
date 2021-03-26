@@ -526,6 +526,11 @@ class SpaceAdder(cst.CSTTransformer):
             whitespace_before=cst.SimpleWhitespace(' ')
         )
 
+    def leave_And(self, original_node, updated_node):
+        return updated_node.with_changes(
+            whitespace_after=cst.SimpleWhitespace(' ')
+        )
+
     def leave_Plus(self, node, updated_node):
         return updated_node.with_changes(
             whitespace_after=cst.SimpleWhitespace(' ')
