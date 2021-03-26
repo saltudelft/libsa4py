@@ -765,6 +765,17 @@
                 "set": null,
                 "type_annot_cove": 0.19
             },
+            "light-sa-type-inf/tests/examples/__init__.py": {
+                "untyped_seq": "",
+                "typed_seq": "0",
+                "imports": [],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.0
+            },
             "light-sa-type-inf/tests/examples/docstrings.py": {
                 "untyped_seq": "def basic_docstring ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] [comment] [EOL] def google_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def rest_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def numpy_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def no_docstring ( ) : [EOL] return None [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
@@ -2147,6 +2158,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.3
+        "type_annot_cove": 0.28
     }
 }
