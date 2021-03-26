@@ -19,14 +19,15 @@ class Visitor(cst.CSTVisitor):
 
         self.fns = []  # List of functions in a module
         # Statements in which a function's arguments may occur
-        self.fn_may_args_use = []
+        self.fn_may_args_var_use: List[list] = []
 
         # self.visited_class = False
         self.cls_stack: List[ClassInfo] = []
         self.cls_list: List[ClassInfo] = []
-        # self.cls_variables: Dict[str, str] = {}  # Class variables and their types
+        self.cls_may_vars_use: List[list] = []
 
         self.module_variables: Dict[str, str] = {}
+        self.module_variables_use: Dict[str, List[list]] = {}
         self.module_all_annotations: Dict[Tuple, str] = {}
 
         # Visible types in a source code file
@@ -45,13 +46,15 @@ class Visitor(cst.CSTVisitor):
 
         cls = ClassInfo()
         cls.name = node.name.value
-        # print(node)
 
         self.cls_stack.append(cls)
 
     def leave_ClassDef(self, node: cst.ClassDef):
 
-        self.cls_list.append(self.cls_stack.pop())
+        cls = self.cls_stack.pop()
+        cls.variables_use_occur = self.__find_args_vars_use(list(cls.variables.keys()), self.cls_may_vars_use)
+        self.cls_may_vars_use = []
+        self.cls_list.append(cls)
 
     def visit_FunctionDef(self, node: cst.FunctionDef):
         """
@@ -78,24 +81,25 @@ class Visitor(cst.CSTVisitor):
         self.last_annotation = None
 
         # Decrease stack depth of the current function
-        func = self.stack.pop()
-        func.parameters_occur = self.__find_fn_args_use(list(func.parameters.keys()), self.fn_may_args_use)
+        fn = self.stack.pop()
+        fn.parameters_occur = self.__find_args_vars_use(list(fn.parameters.keys()), self.fn_may_args_var_use, True)
+        fn.variables_occur = self.__find_args_vars_use(list(fn.variables.keys()), self.fn_may_args_var_use)
 
-        self.fn_may_args_use = []
+        self.fn_may_args_var_use = []
 
         # Retrieve & update return type from returns annotation (if it exists)
         # If return annotation does not exist, it will resolve to 'None' and then an empty
         # string via the conversion method.
-        func.return_type = self.__convert_annotation(node.returns)
+        fn.return_type = self.__convert_annotation(node.returns)
 
         if len(self.cls_stack) > 0:
             # Adds a class method
-            self.cls_stack[-1].funcs.append(func)
-            self.module_all_annotations[(self.cls_stack[-1].name, func.name, None)] = func.return_type
+            self.cls_stack[-1].funcs.append(fn)
+            self.module_all_annotations[(self.cls_stack[-1].name, fn.name, None)] = fn.return_type
         else:
             # Add a local function info to functions list
-            self.fns.append(func)
-            self.module_all_annotations[(None, func.name, None)] = func.return_type
+            self.fns.append(fn)
+            self.module_all_annotations[(None, fn.name, None)] = fn.return_type
 
     def visit_Return(self, node):
         """
@@ -229,16 +233,18 @@ class Visitor(cst.CSTVisitor):
                 # Adds module-level variables
                 if 'name' in extracted_names:
                     self.module_variables[extracted_names['name']] = ''
+                    self.module_variables_use[extracted_names['name']] = []
                     self.module_all_annotations[(None, None, extracted_names['name'])] = ''
                 else:
                     self.module_variables = {**self.module_variables,
                                              **{n.value.value: '' for n in extracted_names['names']}}
+                    self.module_variables_use = {**self.module_variables_use,
+                                             **{n.value.value: [] for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
                                                    **{(None, None, n.value.value): '' for n in
                                                       extracted_names['names']}}
 
     def visit_AnnAssign(self, node: cst.AnnAssign):
-        # print(node)
         extracted_assign = self.__extract_variable_name_type(node)
 
         if extracted_assign is not None:
@@ -255,6 +261,7 @@ class Visitor(cst.CSTVisitor):
                                              extracted_assign['name'])] = extracted_assign['type']
             else:
                 self.module_variables[extracted_assign['name']] = extracted_assign['type']
+                self.module_variables_use[extracted_assign['name']] = []
                 self.module_all_annotations[(None, None, extracted_assign['name'])] = extracted_assign['type']
 
     def visit_Lambda(self, node: cst.Lambda):
@@ -264,48 +271,77 @@ class Visitor(cst.CSTVisitor):
         self.lambda_depth -= 1
 
     def visit_SimpleStatementLine(self, node: cst.SimpleStatementLine):
-        if len(self.stack) > 0:
-            self.fn_may_args_use.append([n.value for n in match.findall(node, match.Name(
+        smt_names = [n.value for n in match.findall(node, match.Name(
                 value=match.SaveMatchedNode(
                     match.DoNotCare(),
                     'name'
                 )
-            ))])
+            ))]
+
+        if len(self.stack) > 0:
+            self.fn_may_args_var_use.append(smt_names)
+
+        if len(self.cls_stack) > 0:
+            if self.cls_stack[0].name in smt_names:
+                self.cls_may_vars_use.append(smt_names)
+
+        self.__find_module_vars_use(smt_names)
 
     def visit_If(self, node: cst.If):
-        if len(self.stack) > 0:
-            # print(node)
-            self.fn_may_args_use.append([n.value for n in match.findall(node.test, match.Name(
+        if_names = [n.value for n in match.findall(node.test, match.Name(
                 value=match.SaveMatchedNode(
                     match.DoNotCare(),
                     'name'
                 )
-            ))])
+            ))]
+
+        if len(self.cls_stack) > 0:
+            if self.cls_stack[0].name in if_names:
+                self.cls_may_vars_use.append(if_names)
+
+        if len(self.stack) > 0:
+            self.fn_may_args_var_use.append(if_names)
+
+        self.__find_module_vars_use(if_names)
 
     def visit_While(self, node: cst.While):
-        if len(self.stack) > 0:
-            self.fn_may_args_use.append([n.value for n in match.findall(node.test, match.Name(
+
+        while_names = [n.value for n in match.findall(node.test, match.Name(
                 value=match.SaveMatchedNode(
                     match.DoNotCare(),
                     'name'
                 )
-            ))])
+            ))]
+
+        if len(self.stack) > 0:
+            self.fn_may_args_var_use.append(while_names)
+
+        if len(self.cls_stack) > 0:
+            if self.cls_stack[0].name in while_names:
+                self.cls_may_vars_use.append(while_names)
+
+        self.__find_module_vars_use(while_names)
 
     def visit_For(self, node: cst.For):
-        if len(self.stack) > 0:
-            self.fn_may_args_use.append([n.value for n in match.findall(node.iter, match.Name(
+
+        for_names = [n.value for n in match.findall(node.iter, match.Name(
                 value=match.SaveMatchedNode(
                     match.DoNotCare(),
                     'name'
                 )
-            ))])
+            ))]
+
+        if len(self.cls_stack) > 0:
+            if self.cls_stack[0].name in for_names:
+                self.cls_may_vars_use.append(for_names)
+
+        if len(self.stack) > 0:
+            self.fn_may_args_var_use.append(for_names)
+
+        self.__find_module_vars_use(for_names)
 
     def visit_With(self, node: cst.With):
-        if len(self.stack) > 0:
-            # print(node)
-            self.fn_may_args_use.append([n.value for n in match.findall(match.extract(node,
-                                                                                      match.With(
-                                                                                          items=match.SaveMatchedNode(
+        with_names = [n.value for n in match.findall(match.extract(node, match.With( items=match.SaveMatchedNode(
                                                                                               match.DoNotCare(),
                                                                                               'with_items'
                                                                                           )))['with_items'][0],
@@ -314,7 +350,15 @@ class Visitor(cst.CSTVisitor):
                                                                                 match.DoNotCare(),
                                                                                 'name'
                                                                             )
-                                                                        ))])
+                                                                        ))]
+        if len(self.stack) > 0:
+            self.fn_may_args_var_use.append(with_names)
+
+        if len(self.cls_stack) > 0:
+            if self.cls_stack[0].name in with_names:
+                self.cls_may_vars_use.append(with_names)
+
+        self.__find_module_vars_use(with_names)
 
     def __convert_annotation(self, node: cst.Annotation):
         """
@@ -529,17 +573,38 @@ class Visitor(cst.CSTVisitor):
                     self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
                                                  self.stack[-1].name, extracted_name["name"])] = ''
 
-    def __find_fn_args_use(self, fn_args: list, fn_may_args_use: list) -> dict:
+    def __find_args_vars_use(self, vars_name: list, may_vars_use: List[list], is_var_arg: bool=False) -> dict:
+        """
+        Finds usage of variables or functions' arguments in a context
+        """
+
+        # def is_var_def(a: str, mu: list):
+        #     if is_var_arg:
+        #         return False
+        #     else:
+        #         # TODO: Do not exclude non-assign statements like x+= smt
+        #         return a in mu[0] or ('self' in mu[0] and a in mu[1])
 
         fn_args_use = {}
-        for arg in fn_args:
+        for arg in vars_name:
             arg_use = []
-            for may_use in fn_may_args_use:
+            for may_use in may_vars_use:
                 if arg in may_use and len(may_use) > 1:
+                    # Excludes variable definition itself from the context hints
                     arg_use.append(may_use)
             fn_args_use[arg] = arg_use
 
         return fn_args_use
+
+    def __find_module_vars_use(self, may_vars_use: list):
+        """
+        Finds usage of module variables in a context
+        """
+
+        for v in self.module_variables.keys():
+            # TODO: To be more exact, the variable can be checked whether it's in functions' vars or class vars
+            if v in may_vars_use:
+                self.module_variables_use[v].append(may_vars_use)
 
     def __convert_node_to_code(self, node) -> str:
         """

@@ -43,4 +43,5 @@ class Extractor:
         v_untyped = v_untyped.visit(v_space)
         v_typed = v_typed.visit(v_space)
 
-        return ModuleInfo(v.imports, v.module_variables, v.cls_list, v.fns, v_untyped.code, v_typed.code).to_dict()
+        return ModuleInfo(v.imports, v.module_variables, v.module_variables_use, v.cls_list, v.fns,
+                          v_untyped.code, v_typed.code).to_dict()
