@@ -8,7 +8,8 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
 
 ### Fixed
-- Extracting self variables in multi assignments expressions like `self.x,self.y=1,2`
+- Extracting self variables in multi assignments expressions like `self.x,self.y=1,2`.
+- Replacing imaginary numbers with the `[numeric]` token.
 
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.

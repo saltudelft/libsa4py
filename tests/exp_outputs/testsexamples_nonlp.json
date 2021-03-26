@@ -2,7 +2,7 @@
     "tests/examples": {
         "src_files": {
             "light-sa-type-inf/tests/examples/num_removal.py": {
-                "untyped_seq": "[docstring] [EOL] [EOL] x = [number] [EOL] y = [number] [EOL] s = [number] [EOL] c = [number] + 3j [EOL] b = [number] [EOL] o = [number] [EOL] h = [number] [EOL]",
+                "untyped_seq": "[docstring] [EOL] [EOL] x = [number] [EOL] y = [number] [EOL] s = [number] [EOL] c = [number] + [number] [EOL] b = [number] [EOL] o = [number] [EOL] h = [number] [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [],
                 "variables": {
