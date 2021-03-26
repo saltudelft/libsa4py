@@ -2,6 +2,10 @@
 All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) tool will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Extracting the usage of module constants, class variables, and local variables across a source code file (Contextual hint)
+- Adding extensive units tests for testing various features and components of LibSA4Py.
+
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.
 
