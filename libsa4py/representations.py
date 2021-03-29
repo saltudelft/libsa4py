@@ -1,6 +1,6 @@
-from typing import Dict, List, Union, Optional, Pattern, Match
+from typing import Dict, List, Optional, Pattern, Match
 from libsa4py.exceptions import OutputSequenceException
-import docstring_parser
+
 import re
 
 
@@ -17,121 +17,42 @@ class FunctionInfo:
         self.name = name
         self.parameters: Dict[str, str] = {}
         self.parameters_occur: Dict[str, list] = {}
+        self.params_descr: Dict[str, str] = {}
         self.return_exprs = []
         self.return_type = ""
-        self.docstring = ""
+        self.docstring: Dict[str, str] = {}
         self.variables: Dict[str, str] = {}  # Variable names
         self.variables_occur: Dict[str, list] = {}
         self.node = None
 
     def to_dict(self):
-        return {**{"name": self.name, "params": self.parameters, "ret_exprs": self.return_exprs,
-                   "params_occur": self.parameters_occur, "ret_type": self.return_type, "variables": self.variables,
-                   "fn_var_occur": self.variables_occur, **self.__get_params_descr()}}
+        return {"name": self.name, "params": self.parameters, "ret_exprs": self.return_exprs,
+                "params_occur": self.parameters_occur, "ret_type": self.return_type, "variables": self.variables,
+                "fn_var_occur": self.variables_occur, "params_descr": self.params_descr, "docstring": self.docstring}
 
-    def __get_params_descr(self):
-        params_descr = self.__extract_docstring_descriptions(self.docstring)
-        return {"params_descr": {p: params_descr['params'][p] if p in params_descr['params'] else '' for p in
-                                 self.parameters.keys()},
-                "docstring": {"func": params_descr["function_descr"], "ret": params_descr["return_descr"],
-                              "long_descr": params_descr["long_descr"]}}
+    def from_dict(self, fn_dict_repr: dict):
+        self.name = fn_dict_repr['name']
+        self.parameters = fn_dict_repr['params']
+        self.parameters_occur = fn_dict_repr['params_occur']
+        self.params_descr = fn_dict_repr['params_descr']
+        self.return_exprs = fn_dict_repr['ret_exprs']
+        self.return_type = fn_dict_repr['ret_type']
+        self.variables = fn_dict_repr['variables']
+        self.variables_occur = fn_dict_repr['fn_var_occur']
+        self.docstring = fn_dict_repr['docstring']
 
-    def __extract_docstring_descriptions(self, docstring: str) -> Dict[
-        str, Union[Union[Optional[str], Dict[str, str]], Optional[str]]]:
-        """Extract the return description from the docstring"""
-        try:
-            parsed_docstring: docstring_parser.parser.Docstring = docstring_parser.parse(docstring)
+        return self
 
-            descr_map: Dict[str, Union[Union[str, Dict[str, str]], Optional[str]], Optional[str]] = {
-                "function_descr": parsed_docstring.short_description,
-                "params": {},
-                "return_descr": None,
-                "long_descr": None}
-
-            if parsed_docstring.returns is not None:
-                descr_map["return_descr"] = parsed_docstring.returns.description
-
-            if parsed_docstring.long_description is not None:
-                descr_map['long_descr'] = parsed_docstring.long_description
-
-            for param in parsed_docstring.params:
-                descr_map["params"][param.arg_name] = param.description
-
-            return descr_map
-        except Exception:
-            return {"function_descr": None, "params": {}, "return_descr": None, "long_descr": None}
-
-    def __check_func_docstring(self, docstring: str) -> Optional[str]:
-        """Check the docstring if it has a valid structure for parsing and returns a valid docstring."""
-        dash_line_matcher: Pattern[str] = re.compile("\s*--+")
-        param_keywords: List[str] = ["Parameters", "Params", "Arguments", "Args"]
-        return_keywords: List[str] = ["Returns", "Return"]
-        break_keywords: List[str] = ["See Also", "Examples"]
-
-        convert_docstring: bool = False
-        add_indent: bool = False
-        add_double_colon: bool = False
-        active_keyword: bool = False
-        end_docstring: bool = False
-
-        preparsed_docstring: str = ""
-        lines: List[str] = docstring.split("\n")
-        for line in lines:
-            result: Optional[Match] = re.match(dash_line_matcher, line)
-            if result is not None:
-                preparsed_docstring = preparsed_docstring[:-1] + ":" + "\n"
-                convert_docstring = True
-            else:
-                for keyword in param_keywords:
-                    if keyword in line:
-                        add_indent = True
-                        active_keyword = True
-                        break
-                if not active_keyword:
-                    for keyword in return_keywords:
-                        if keyword in line:
-                            add_indent = True
-                            add_double_colon = True
-                            active_keyword = True
-                            break
-                if not add_double_colon:
-                    for keyword in break_keywords:
-                        if keyword in line:
-                            end_docstring = True
-                            break
-                if end_docstring:
-                    break
-                if active_keyword:
-                    preparsed_docstring += line + "\n"
-                    active_keyword = False
-                elif add_double_colon:
-                    preparsed_docstring += "\t" + line + ":\n"
-                    add_double_colon = False
-                elif add_indent:
-                    line_parts = line.split(":")
-                    if len(line_parts) > 1:
-                        preparsed_docstring += "\t" + line_parts[0] + "(" + line_parts[1].replace(" ", "") + "):\n"
-                    else:
-                        preparsed_docstring += "\t" + line + "\n"
-                else:
-                    preparsed_docstring += line + "\n"
-
-        if convert_docstring:
-            return preparsed_docstring
-        else:
-            return
-
-    def get_type_annot_cove(self) -> float:
-        try:
-            return (sum([1 for k, v in self.variables.items() if v] +
-                        [1 for k, v in self.parameters.items() if v]) +
-                    (1 if self.return_type else 0)) / (len(self.variables.keys()) +
-                        (len(self.parameters.keys()) - 1 if 'self' in self.parameters.keys()
-                             else len(self.parameters.keys())) + (1 if len(self.return_exprs) or
-                                                                       self.return_type == "None" else 0))
-        except ZeroDivisionError:
-            # For functions with no parameters, variables and return
-            return 0.0
+    def __eq__(self, other_func_info_obj: 'FunctionInfo'):
+        return other_func_info_obj.name == self.name and \
+               other_func_info_obj.parameters == self.parameters and \
+               other_func_info_obj.parameters_occur == self.parameters_occur and \
+               other_func_info_obj.params_descr == self.params_descr and \
+               other_func_info_obj.return_exprs == self.return_exprs and \
+               other_func_info_obj.return_type == self.return_type and \
+               other_func_info_obj.variables == self.variables and \
+               other_func_info_obj.variables_occur == self.variables_occur and \
+               other_func_info_obj.docstring == self.docstring
 
 
 class ClassInfo:
@@ -149,9 +70,19 @@ class ClassInfo:
         return {"name": self.name, "variables": self.variables, "cls_var_occur": self.variables_use_occur,
                 "funcs": [f.to_dict() for f in self.funcs]}
 
-    def get_type_annot_cove(self) -> float:
-        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
-               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 2
+    def from_dict(self, cls_repr_dict: dict):
+        self.name = cls_repr_dict['name']
+        self.variables = cls_repr_dict['variables']
+        self.variables_use_occur = cls_repr_dict['cls_var_occur']
+        self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
+
+        return self
+
+    def __eq__(self, other_class_info_obj: 'ClassInfo'):
+        return other_class_info_obj.name == self.name and \
+               other_class_info_obj.variables == self.variables and \
+               other_class_info_obj.variables_use_occur == self.variables_use_occur and \
+               other_class_info_obj.funcs == self.funcs
 
 
 class ModuleInfo:
@@ -160,7 +91,8 @@ class ModuleInfo:
     """
 
     def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]],
-                 classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str):
+                 classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str,
+                 type_annot_cove: float):
         self.import_names = import_names
         self.variables = variables
         self.var_occur = var_occur
@@ -168,35 +100,33 @@ class ModuleInfo:
         self.funcs = funcs
         self.untyped_seq = untyped_seq
         self.typed_seq = typed_seq
+        self.type_annot_cove = type_annot_cove
 
     def to_dict(self) -> dict:
-        return {"untyped_seq": ModuleInfo.normalize_module_code(self.untyped_seq),
-                "typed_seq": create_output_seq(ModuleInfo.normalize_module_code(self.typed_seq)),
+        return {"untyped_seq": self.untyped_seq,
+                "typed_seq": self.typed_seq,
                 "imports": self.import_names, "variables": self.variables, "mod_var_occur": self.var_occur,
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
-                "type_annot_cove": round(self.get_type_annot_cove(), 2)}
+                "type_annot_cove": self.type_annot_cove}
 
-    @staticmethod
-    def normalize_module_code(m_code: str) -> str:
-        # New lines
-        m_code = re.compile(r"\n").sub(r" [EOL] ", m_code)
-        # white spaces
-        m_code = re.compile(r"[ \t\n]+").sub(" ", m_code)
+    @classmethod
+    def from_dict(cls, mod_dict_repr: dict):
+        return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
+                   [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
+                   [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
+                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['type_annot_cove'])
 
-        # Replace comments, docstrings, numeric literals and string literals with special tokens
-        special_tks = {"#[comment]": "[comment]", "\"\"\"[docstring]\"\"\"": "[docstring]", "\"[string]\"": "[string]",
-                       "\"[number]\"": "[number]"}
-        regex = re.compile("(%s)" % "|".join(map(re.escape, special_tks.keys())))
-        m_code = regex.sub(lambda mo: special_tks[mo.string[mo.start():mo.end()]], m_code)
-
-        return m_code.strip()
-
-    def get_type_annot_cove(self):
-        return ((sum([1 for k, v in self.variables.items() if v]) / len(self.variables.keys()) if len(self.variables.keys()) else 0) +
-               (sum([c.get_type_annot_cove() for c in self.classes]) / len(self.classes) if len(self.classes) else 0) +
-               (sum([f.get_type_annot_cove() for f in self.funcs]) / len(self.funcs) if len(self.funcs) else 0)) / 3
+    def __eq__(self, other_module_info_obj: 'ModuleInfo'):
+        return other_module_info_obj.import_names == self.import_names and \
+               other_module_info_obj.variables == self.variables and \
+               other_module_info_obj.var_occur == self.var_occur and \
+               other_module_info_obj.classes == self.classes and \
+               other_module_info_obj.funcs == self.funcs and \
+               other_module_info_obj.untyped_seq == self.untyped_seq and \
+               other_module_info_obj.typed_seq == self.typed_seq and \
+               other_module_info_obj.type_annot_cove == self.type_annot_cove
 
 
 def create_output_seq(typed_seq: str, type_sep_symb="$") -> str:

@@ -4,10 +4,15 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 ## [Unreleased]
 ### Added
 - Integrated [pyre](https://pyre-check.org/) into the pipeline for inferring the types of variables in source code files of given projects
+- Extracting the usage of module constants, class variables, and local variables across a source code file (Contextual hint)
+- Adding extensive units tests for testing various features and components of LibSA4Py.
+- Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
 
 ### Fixed
 - Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.
 - Malformed output sequence for the Equal operator (i.e. `==`) in comparisons
+- Extracting self variables in multi assignments expressions like `self.x,self.y=1,2`.
+- Replacing imaginary numbers with the `[numeric]` token.
 
 ### Removed
 - Removing the unused `input_projects` argument from the `Pipeline` class.

@@ -1,34 +1,23 @@
 from libsa4py.cst_extractor import Extractor
+from libsa4py.representations import ModuleInfo
+from libsa4py.utils import read_file, load_json, save_json
 import unittest
 
 
 class TestExtractor(unittest.TestCase):
     """
-    It tests extracted attributes and type hints from a Python source code file.
+    It tests the CST extractor of LibSA4Py
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def setUp(self):
-        self.processed_src_f = Extractor().extract(open('example.py', 'r').read())
+    @classmethod
+    def setUpClass(cls):
+        cls.extractor_out = Extractor().extract(read_file('./examples/representations.py'))
 
-    def test_output_dict_fields(self):
-        self.assertEqual(list(self.processed_src_f.keys()), ['untyped_seq', 'typed_seq', 'imports', 'variables',
-                                                             'classes', 'funcs'])
+    def test_extractor_output(self):
+        expected_out = load_json('./exp_outputs/extractor_out.json')
+        expected_out = ModuleInfo.from_dict(expected_out)
 
-    def test_extracted_import_names(self):
-        self.assertEqual(self.processed_src_f['imports'], ['Optional', 'List'])
-
-    def test_extracted_module_variables(self):
-        self.assertEqual(self.processed_src_f['variables'], {"PI": "", "x": "",  "y": "", "z": "",
-                                                             "TEST_CONSTANT": "int", "LONG_STRING": ""})
-
-    def test_extracted_class_names(self):
-        self.assertEqual([c['name'] for c in self.processed_src_f['classes']], ['Test', 'Test2'])
-
-    def test_extracted_class_variables(self):
-        self.assertEqual([c['variables'] for c in self.processed_src_f['classes']], [{"out_x": "", "out_u": "",
-                                                                                      "out_f": "", "out_y": "str",
-                                                                                      "scientific_num": ""},
-                                                                                     {"x": "", "y": "float"}])
+        self.assertEqual(expected_out, self.extractor_out)

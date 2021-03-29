@@ -1,5 +1,6 @@
 # Intro
-[![PyPI version](https://badge.fury.io/py/libsa4py.svg)](https://badge.fury.io/py/libsa4py)
+[![PyPI version](https://badge.fury.io/py/libsa4py.svg)](https://badge.fury.io/py/libsa4py) 
+![GH Workflow](https://github.com/saltudelft/libsa4py/actions/workflows/libsa4py_test.yaml/badge.svg)
 
 `LibSA4Py` is a static analysis library for Python, which extracts type hints and features for training ML-based type inference models.
 

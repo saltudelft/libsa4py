@@ -1,7 +1,8 @@
 from __future__ import unicode_literals
 from functools import reduce
-from typing import Optional
+from typing import Optional, Tuple, List, Pattern, Match
 
+import docstring_parser
 import re
 import nltk
 
@@ -157,3 +158,102 @@ class SentenceProcessor:
         words = [all_cap_regex.sub(r'\1 \2', first_cap_regex.sub(r'\1 \2', word)) for word in sentence.split(" ")]
 
         return ' '.join(words)
+
+
+def extract_docstring_descriptions(docstring: str) -> Tuple[dict, dict]:
+    """Extract the return description from the docstring"""
+    try:
+        parsed_docstring: docstring_parser.parser.Docstring = docstring_parser.parse(docstring)
+
+        fn_docstring = {"func": parsed_docstring.short_description, "ret": None,
+                        "long_descr": None}
+        params_descr = {}
+
+        if parsed_docstring.returns is not None:
+            fn_docstring["ret"] = parsed_docstring.returns.description
+
+        if parsed_docstring.long_description is not None:
+            fn_docstring['long_descr'] = parsed_docstring.long_description
+
+        for param in parsed_docstring.params:
+            params_descr[param.arg_name] = param.description
+
+        return fn_docstring, params_descr
+    except Exception:
+        return {"func": None, "ret": None, "long_descr": None}, {}
+
+
+def __check_func_docstring(self, docstring: str) -> Optional[str]:
+    """Check the docstring if it has a valid structure for parsing and returns a valid docstring."""
+    dash_line_matcher: Pattern[str] = re.compile("\s*--+")
+    param_keywords: List[str] = ["Parameters", "Params", "Arguments", "Args"]
+    return_keywords: List[str] = ["Returns", "Return"]
+    break_keywords: List[str] = ["See Also", "Examples"]
+
+    convert_docstring: bool = False
+    add_indent: bool = False
+    add_double_colon: bool = False
+    active_keyword: bool = False
+    end_docstring: bool = False
+
+    preparsed_docstring: str = ""
+    lines: List[str] = docstring.split("\n")
+    for line in lines:
+        result: Optional[Match] = re.match(dash_line_matcher, line)
+        if result is not None:
+            preparsed_docstring = preparsed_docstring[:-1] + ":" + "\n"
+            convert_docstring = True
+        else:
+            for keyword in param_keywords:
+                if keyword in line:
+                    add_indent = True
+                    active_keyword = True
+                    break
+            if not active_keyword:
+                for keyword in return_keywords:
+                    if keyword in line:
+                        add_indent = True
+                        add_double_colon = True
+                        active_keyword = True
+                        break
+            if not add_double_colon:
+                for keyword in break_keywords:
+                    if keyword in line:
+                        end_docstring = True
+                        break
+            if end_docstring:
+                break
+            if active_keyword:
+                preparsed_docstring += line + "\n"
+                active_keyword = False
+            elif add_double_colon:
+                preparsed_docstring += "\t" + line + ":\n"
+                add_double_colon = False
+            elif add_indent:
+                line_parts = line.split(":")
+                if len(line_parts) > 1:
+                    preparsed_docstring += "\t" + line_parts[0] + "(" + line_parts[1].replace(" ", "") + "):\n"
+                else:
+                    preparsed_docstring += "\t" + line + "\n"
+            else:
+                preparsed_docstring += line + "\n"
+
+    if convert_docstring:
+        return preparsed_docstring
+    else:
+        return
+
+
+def normalize_module_code(m_code: str) -> str:
+    # New lines
+    m_code = re.compile(r"\n").sub(r" [EOL] ", m_code)
+    # white spaces
+    m_code = re.compile(r"[ \t\n]+").sub(" ", m_code)
+
+    # Replace comments, docstrings, numeric literals and string literals with special tokens
+    special_tks = {"#[comment]": "[comment]", "\"\"\"[docstring]\"\"\"": "[docstring]", "\"[string]\"": "[string]",
+                   "\"[number]\"": "[number]"}
+    regex = re.compile("(%s)" % "|".join(map(re.escape, special_tks.keys())))
+    m_code = regex.sub(lambda mo: special_tks[mo.string[mo.start():mo.end()]], m_code)
+
+    return m_code.strip()

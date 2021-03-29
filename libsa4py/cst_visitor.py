@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple
 from libsa4py.representations import FunctionInfo, ClassInfo
+from libsa4py.nl_preprocessing import extract_docstring_descriptions
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -31,6 +32,7 @@ class Visitor(cst.CSTVisitor):
         self.module_variables: Dict[str, str] = {}
         self.module_variables_use: Dict[str, List[list]] = {}
         self.module_all_annotations: Dict[Tuple, str] = {}
+        self.module_type_annot_cove: float = 0.0
 
         # Visible types in a source code file
         self.class_defs = []
@@ -66,7 +68,7 @@ class Visitor(cst.CSTVisitor):
         # Create function info representation for newly visited function
         func = FunctionInfo(node.name.value)  # Pass in function name
         func.node = node  # Update node
-        func.docstring = self.__extract_docstring(node)  # Update docstring
+
 
         # Push function info on top of the stack, thus increasing stack
         # depth to account for the current function.
@@ -84,6 +86,10 @@ class Visitor(cst.CSTVisitor):
 
         # Decrease stack depth of the current function
         fn = self.stack.pop()
+
+        fn.docstring, params_descr = extract_docstring_descriptions(self.__extract_docstring(node))
+        fn.params_descr = {p: params_descr[p] if p in params_descr else '' for p in fn.parameters.keys()}
+
         fn.parameters_occur = self.__find_args_vars_use(list(fn.parameters.keys()), self.fn_may_args_var_use, True)
         fn.variables_occur = self.__find_args_vars_use(list(fn.variables.keys()), self.fn_may_args_var_use)
 
@@ -227,11 +233,10 @@ class Visitor(cst.CSTVisitor):
                     self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     self.cls_stack[-1].variables = {**self.cls_stack[-1].variables,
-                                                    **{n.value.value: self.__get_type_from_metadata(n.value) for n in extracted_names['names']}}
+                                                    **{n.value: self.__get_type_from_metadata(n) for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(self.cls_stack[-1].name, None, n.value.value): \
-                                                       self.__get_type_from_metadata(n.value) for n in extracted_names['names']}}
-
+                                                   **{(self.cls_stack[-1].name, None, n.value): \
+                                                       self.__get_type_from_metadata(n) for n in extracted_names['names']}}
             else:
                 # Adds module-level variables
                 if 'name' in extracted_names:
@@ -240,12 +245,12 @@ class Visitor(cst.CSTVisitor):
                     self.module_all_annotations[(None, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     self.module_variables = {**self.module_variables,
-                                             **{n.value.value: self.__get_type_from_metadata(n.value) \
-                                                for n in extracted_names['names']}}
+                                             **{n.value: self.__get_type_from_metadata(n) for n in extracted_names['names']}}
+
                     self.module_variables_use = {**self.module_variables_use,
-                                             **{n.value.value: [] for n in extracted_names['names']}}
+                                             **{n.value: [] for n in extracted_names['names']}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(None, None, n.value.value): self.__get_type_from_metadata(n.value) \
+                                                   **{(None, None, n.value): self.__get_type_from_metadata(n) \
                                                       for n in extracted_names['names']}}
 
     def visit_AnnAssign(self, node: cst.AnnAssign):
@@ -364,6 +369,15 @@ class Visitor(cst.CSTVisitor):
 
         self.__find_module_vars_use(with_names)
 
+    def leave_Module(self, node):
+        try:
+            # Calculating the type annotation coverage of the module.
+            all_annot_filtered = {k:v for k, v in self.module_all_annotations.items() if k[2] != 'self'}
+            self.module_type_annot_cove = round(sum([1 for k, v in all_annot_filtered.items() if v]) \
+                                                / len(all_annot_filtered.keys()), 2)
+        except ZeroDivisionError:
+            self.module_type_annot_cove = 1.0
+
     def __convert_annotation(self, node: cst.Annotation):
         """
         Converts an annotation to a string format.
@@ -421,8 +435,7 @@ class Visitor(cst.CSTVisitor):
                 extracted_var_names['type'] = self.__get_type_from_metadata(node.target)
                 return extracted_var_names
             elif "names" in extracted_var_names:
-                # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
-                return {'names': match.findall(node, match.Element(value=match.Name(value=match.DoNotCare())))}
+                return {'names': self.__extract_names_multi_assign(list(extracted_var_names['names']))}
         else:
             return extracted_var_names
 
@@ -430,7 +443,6 @@ class Visitor(cst.CSTVisitor):
         """
         Extracts a variable's identifier name and its type annotation
         """
-
         return match.extract(node, match.AnnAssign(  # Annotated Assignment
             target=match.OneOf(
                 match.Name(  # Variable name of assignment (only one)
@@ -499,6 +511,24 @@ class Visitor(cst.CSTVisitor):
             # TODO: Either rename class defs, or create new list for additional types
             self.class_defs.append(extracted_type["type"].strip("\'"))
 
+    def __extract_names_multi_assign(self, elements):
+        # Add self vars. in tuple assignments, e.g. self.x, self.y = 1, 2
+        # Adds variables in tuple(s) in multiple assignments, e.g. a, (b, c) = 1, (2, 3)
+        names: List[cst.Name] = []
+        i = 0
+        while i < len(elements):
+            if match.matches(elements[i], match.Element(value=match.Name(value=match.DoNotCare()))):
+                names.append(elements[i].value)
+            elif match.matches(elements[i], match.Element(value=match.Attribute(attr=match.Name(value=match.DoNotCare())))):
+                names.append(elements[i].value.attr)
+            elif match.matches(elements[i], match.Element(value=match.Tuple(elements=match.DoNotCare()))):
+                elements.extend(match.findall(elements[i].value, match.Element(value=match.OneOf(
+                    match.Attribute(attr=match.Name(value=match.DoNotCare())),
+                    match.Name(value=match.DoNotCare())
+                ))))
+            i += 1
+
+        return names
     def __add_variable_to_function(self, name, annotation):
         """
         Adds a variable definition/assignment to the current function,
@@ -550,37 +580,9 @@ class Visitor(cst.CSTVisitor):
 
             # Iterate through all target names
             for name in extracted_names["names"]:
-                # Extract tuple elements
-                extracted_name = match.extract(name, match.Element(  # Tuple element (single entry)
-                    value=match.OneOf(match.Name(  # Get name of tuple entry
-                        value=match.SaveMatchedNode(  # Save result
-                            match.MatchRegex(r'(.)+'),  # Match any string literal
-                            "name"
-                        )
-                    ),
-                        # Extracts variable name from objects attributes like self.x or y.x
-                        match.Attribute(
-                            value=match.Name(value=match.SaveMatchedNode(
-                                match.MatchRegex(r'(.)+'),
-                                "obj_name"  # Object name
-                            )
-                            ),
-                            attr=match.Name(match.SaveMatchedNode(
-                                match.MatchRegex(r'(.)+'),
-                                "name"
-                            )
-                            ),
-                        )
-                    )
-                )
-                    )
-
-                # If name could be extracted, add it to current function
-                if extracted_name is not None:
-                    self.__add_variable_to_function(extracted_name["name"], self.__get_type_from_metadata(name.value))
-                    self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                                 self.stack[-1].name, extracted_name["name"])] =  \
-                        self.__get_type_from_metadata(name.value)
+                self.__add_variable_to_function(name.value, self.__get_type_from_metadata(name))
+                self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
+                                             self.stack[-1].name, name.value)] = self.__get_type_from_metadata(name)
 
     def __find_args_vars_use(self, vars_name: list, may_vars_use: List[list], is_var_arg: bool=False) -> dict:
         """
