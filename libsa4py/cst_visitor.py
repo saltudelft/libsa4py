@@ -373,7 +373,7 @@ class Visitor(cst.CSTVisitor):
             self.module_type_annot_cove = round(sum([1 for k, v in all_annot_filtered.items() if v]) \
                                                 / len(all_annot_filtered.keys()), 2)
         except ZeroDivisionError:
-            self.module_type_annot_cove = 0.0
+            self.module_type_annot_cove = 1.0
 
     def __convert_annotation(self, node: cst.Annotation):
         """

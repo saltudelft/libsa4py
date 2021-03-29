@@ -82,6 +82,10 @@ class TestModuleRepresentations(unittest.TestCase):
         exp_type_annot_cove = 0.64
         self.assertEqual(exp_type_annot_cove, processed_f.type_annot_cove)
 
+    def test_empty_mod_type_annot_cove(self):
+        empty_mod = Extractor().extract(open('./examples/__init__.py', 'r').read())
+        self.assertEqual(1.0, empty_mod.type_annot_cove)
+
 
 class TestClassRepresentation(unittest.TestCase):
     """

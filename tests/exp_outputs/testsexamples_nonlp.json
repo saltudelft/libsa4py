@@ -993,7 +993,7 @@
                 "classes": [],
                 "funcs": [],
                 "set": null,
-                "type_annot_cove": 0.0
+                "type_annot_cove": 1.0
             },
             "libsa4py/tests/examples/docstrings.py": {
                 "untyped_seq": "def basic_docstring ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] [comment] [EOL] def google_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def rest_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def numpy_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def no_docstring ( ) : [EOL] return None [EOL]",
@@ -2587,6 +2587,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.28
+        "type_annot_cove": 0.35
     }
 }
