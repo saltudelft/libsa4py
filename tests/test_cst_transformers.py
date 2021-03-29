@@ -12,6 +12,8 @@ class TestSpaceAdder(unittest.TestCase):
     It tests the SpaceAdder transformer.
     """
 
+    maxDiff = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
