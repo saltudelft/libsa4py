@@ -14,7 +14,8 @@ from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
-from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers
+from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
+    clean_pyre_config
 
 import logging
 import logging.config
@@ -150,8 +151,9 @@ class Pipeline:
             if len(project_files) != 0:
                 if self.use_pyre:
                     print(f"Running pyre for {project_id}")
+                    clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
                     pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
-                    
+
                 for filename, f_relative, f_split in project_files:
                     try:
                         pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
