@@ -30,11 +30,11 @@ def find_pyre_server(project_path: str) -> Optional[int]:
 def clean_pyre_config(project_path: str):
     if exists(join(project_path, '.pyre_configuration')):
         os.remove(join(project_path, '.pyre_configuration'))
-        print(f"PYRE_CLEAN: config of {project_path} ")
+        print(f"[PYRE_CLEAN] config of {project_path} ")
 
     if exists(join(project_path, '.pyre')):
         shutil.rmtree(join(project_path, '.pyre'))
-        print(f"PYRE_CLEAN: pyre folder of {project_path} ")
+        print(f"[PYRE_CLEAN] pyre folder of {project_path} ")
 
 
 def pyre_server_shutdown(project_path: str):
@@ -57,11 +57,11 @@ def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> O
         if r_code == 0:
             return json.loads(stdout)["response"][0]
         else:
-            print("PYRE_ERROR: ", stderr)
+            print(f"[PYRE_ERROR] p: {project_path}", stderr)
             return None
     except KeyError:
-        print("PYRE_ERROR", json.loads(stdout)['error'])
+        print(f"[PYRE_ERROR] p: {project_path}", json.loads(stdout)['error'])
     except TimeoutExpired as te:
-        print("PYRE_TIMEOUT: ", te)
+        print(f"[PYRE_TIMEOUT] p: {project_path}", te)
     finally:
         return None
