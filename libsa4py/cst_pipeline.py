@@ -148,70 +148,71 @@ class Pipeline:
             print(f"{project_id} has {len(project_files)} files after deduplication")
 
             project_files = [(f, str(Path(f).relative_to(Path(self.projects_path).parent))) for f in project_files]
-            project_files = [(f, f_r, self.split_dataset_files[f_r] if f_r in self.split_dataset_files else None) for f, f_r in project_files]
+            project_files = [(f, f_r, self.split_dataset_files[f_r] if f_r in self.split_dataset_files else None) for f,
+                             f_r in project_files]
 
-            for filename, f_relative, f_split in project_files:
-                try:
-                    pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
-                                                      filename) if self.use_pyre else None
+            if len(project_files) != 0:
+                for filename, f_relative, f_split in project_files:
+                    try:
+                        pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
+                                                          filename) if self.use_pyre else None
 
-                    project_analyzed_files[project_id]["src_files"][f_relative] = \
-                        self.apply_nlp_transf(Extractor().extract(read_file(filename), pyre_data_file).to_dict()) if self.nlp_transf \
-                            else Extractor.extract(read_file(filename), pyre_data_file).to_dict()
+                        project_analyzed_files[project_id]["src_files"][f_relative] = \
+                            self.apply_nlp_transf(
+                                Extractor().extract(read_file(filename), pyre_data_file).to_dict()) if self.nlp_transf \
+                                else Extractor.extract(read_file(filename), pyre_data_file).to_dict()
 
-                    project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
+                        project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
 
-                    extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
-                                            [c['name'] for c in
-                                            project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
-                except ParseError as err:
-                    # print(f"Could not parse file {filename}")
-                    traceback.print_exc()
-                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                except UnicodeDecodeError:
-                    print(f"Could not read file {filename}")
-                except Exception as err:
-                    # Other unexpected exceptions; Failure of single file should not
-                    # fail the entire project processing.
-                    # TODO: A better workaround would be to have a specialized exception thrown
-                    # by the extractor, so that this exception is specialized.
-                    #print(f"Could not process file {filename}")
-                    traceback.print_exc()
-                    self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
-                    #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                        extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
+                                              [c['name'] for c in
+                                               project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
+                    except ParseError as err:
+                        # print(f"Could not parse file {filename}")
+                        traceback.print_exc()
+                        self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                    except UnicodeDecodeError:
+                        print(f"Could not read file {filename}")
+                    except Exception as err:
+                        # Other unexpected exceptions; Failure of single file should not
+                        # fail the entire project processing.
+                        # TODO: A better workaround would be to have a specialized exception thrown
+                        # by the extractor, so that this exception is specialized.
+                        #print(f"Could not process file {filename}")
+                        traceback.print_exc()
+                        self.logger.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
+                        #logging.error("project: %s |file: %s |Exception: %s" % (project_id, filename, err))
 
-            print(f'Saving available type hints for {project_id}...')
-            if self.avl_types_dir is not None:
-                if extracted_avl_types:
-                    with open(join(self.avl_types_dir, f'{project["author"]}_{project["repo"]}_avltypes.txt'),
-                              'w') as f:
-                        for t in extracted_avl_types:
-                            f.write("%s\n" % t)
+                print(f'Saving available type hints for {project_id}...')
+                if self.avl_types_dir is not None:
+                    if extracted_avl_types:
+                        with open(join(self.avl_types_dir, f'{project["author"]}_{project["repo"]}_avltypes.txt'),
+                                  'w') as f:
+                            for t in extracted_avl_types:
+                                f.write("%s\n" % t)
+
+                project_analyzed_files[project_id]["type_annot_cove"] = \
+                    round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
+                               project_analyzed_files[project_id]["src_files"].keys()]) / len(
+                        project_analyzed_files[project_id]["src_files"].keys()), 2)
+
+                save_json(self.get_project_filename(project), project_analyzed_files)
+
+                if self.use_pyre:
+                    pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
+
+            else:
+                raise NullProjectException(project_id)
+
         except KeyboardInterrupt:
             quit(1)
+        except NullProjectException as err:
+            self.logger.error(err)
+            print(err)
         except Exception as err:
             print(f'Running pipeline for project {i} failed')
             traceback.print_exc()
             self.logger.error("project: %s | Exception: %s" % (project_id, err))
-        finally:
-            try:
-                if self.use_pyre:
-                    pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
-
-                if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
-                    project_analyzed_files[project_id]["type_annot_cove"] = \
-                        round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
-                             project_analyzed_files[project_id]["src_files"].keys()]) / len(
-                            project_analyzed_files[project_id]["src_files"].keys()), 2)
-
-                    save_json(self.get_project_filename(project), project_analyzed_files)
-                else:
-                    raise NullProjectException(project_id)
-            except NullProjectException as err:
-                    self.logger.error(err)
-            except Exception as err:
-                self.logger.error(
-                    "project: %s | Exception: %s | json: %s" % (project_id, err, str(project_analyzed_files)))
 
     def run(self, repos_list: List[Dict], jobs, start=0):
 
