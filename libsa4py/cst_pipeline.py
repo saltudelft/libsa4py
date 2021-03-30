@@ -138,10 +138,6 @@ class Pipeline:
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
 
-            if self.use_pyre:
-                print(f"Running pyre for {project_id}")
-                pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
-
             project_files = list_files(join(self.projects_path, project["author"], project["repo"]))
             print(f"{project_id} has {len(project_files)} files before deduplication")
             project_files = [f for f in project_files if not self.is_file_duplicate(f)]
@@ -152,6 +148,10 @@ class Pipeline:
                              f_r in project_files]
 
             if len(project_files) != 0:
+                if self.use_pyre:
+                    print(f"Running pyre for {project_id}")
+                    pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+                    
                 for filename, f_relative, f_split in project_files:
                     try:
                         pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
