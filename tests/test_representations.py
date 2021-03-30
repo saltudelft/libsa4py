@@ -18,7 +18,7 @@ class TestModuleRepresentations(unittest.TestCase):
 
     def test_mod_repr_dict_keys(self):
         mod_repr_dict_key_exp = ['untyped_seq', 'typed_seq', 'imports', 'variables', 'mod_var_occur', 'classes', 'funcs',
-                                 'set', 'type_annot_cove']
+                                 'set', 'no_types_annot', 'type_annot_cove']
         self.assertListEqual(mod_repr_dict_key_exp, list(processed_f.to_dict().keys()))
 
     def test_mod_repr_cls_dict(self):
@@ -60,7 +60,6 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(processed_f.to_dict()['set'], None)
 
     def test_mod_untyped_seq(self):
-        print(processed_f.to_dict()['untyped_seq'])
         mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] " \
                           "CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = " \
                           "[number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] " \
@@ -85,6 +84,10 @@ class TestModuleRepresentations(unittest.TestCase):
     def test_empty_mod_type_annot_cove(self):
         empty_mod = Extractor().extract(open('./examples/__init__.py', 'r').read())
         self.assertEqual(1.0, empty_mod.type_annot_cove)
+
+    def test_no_type_annot(self):
+        exp_no_type_annot = {'D': 7, 'I': 0}
+        self.assertDictEqual(exp_no_type_annot, processed_f.to_dict()['no_types_annot'])
 
 
 class TestClassRepresentation(unittest.TestCase):

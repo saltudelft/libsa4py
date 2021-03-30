@@ -10,10 +10,12 @@ X, Y = 1, 2
 class Foo:
     foo_num = 128
     foo_name = "Foo"
+    foo_x, foo_y = 256, [10, 9, 8]
 
     def __init__(self, y='default'):
         self.x = [1, 2, 3]
         self.y = y
+        self.l, self.k = (45, 35), 'OOooOO'
 
     def local_vars(self):
         x = ('Hello', 'World')
