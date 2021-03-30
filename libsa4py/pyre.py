@@ -4,6 +4,7 @@ Helper functions to use pyre in the pipeline
 
 from typing import Optional
 from pathlib import Path
+from subprocess import TimeoutExpired
 from libcst.metadata.type_inference_provider import run_command, PyreData
 import os
 import signal
@@ -35,15 +36,19 @@ def pyre_kill_all_servers():
     print("Killed all instances of pyre's servers")
 
 
-def pyre_query_types(project_path: str, file_path: str) -> Optional[PyreData]:
-    stdout, stderr, r_code = run_command('''cd %s; pyre query "types(path='%s')"''' % (project_path,
-                                         str(Path(file_path).relative_to(Path(project_path)))))
-    if r_code == 0:
-        try:
+def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> Optional[PyreData]:
+    try:
+        stdout, stderr, r_code = run_command('''cd %s; pyre query "types(path='%s')"''' % (project_path,
+                                             str(Path(file_path).relative_to(Path(project_path)))),
+                                             timeout=timeout)
+        if r_code == 0:
             return json.loads(stdout)["response"][0]
-        except KeyError:
-            print("PYRE_ERROR", json.loads(stdout)['error'])
+        else:
+            print("PYRE_ERROR: ", stderr)
             return None
-    else:
-        print("PYRE_ERROR: ", stderr)
+    except KeyError:
+        print("PYRE_ERROR", json.loads(stdout)['error'])
+    except TimeoutExpired as te:
+        print("PYRE_TIMEOUT: ", te)
+    finally:
         return None
