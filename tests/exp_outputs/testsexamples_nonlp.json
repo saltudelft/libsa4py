@@ -1625,6 +1625,158 @@
                 "set": null,
                 "type_annot_cove": 0.25
             },
+            "libsa4py/tests/examples/vars_types_pyre.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] PI = [number] [EOL] no = [number] [EOL] CONSTANT = [string] [EOL] X , Y = [number] , [number] [EOL] [EOL] class Foo : [EOL] foo_num = [number] [EOL] foo_name = [string] [EOL] [EOL] def __init__ ( self , y = [string] ) : [EOL] self . x = [ [number] , [number] , [number] ] [EOL] self . y = y [EOL] [EOL] def local_vars ( self ) : [EOL] x = ( [string] , [string] ) [EOL] f , g = [number] , [number] [EOL] res = PI + f [EOL] [EOL] [EOL] [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {
+                    "PI": "",
+                    "no": "int",
+                    "CONSTANT": "",
+                    "X": "",
+                    "Y": ""
+                },
+                "mod_var_occur": {
+                    "PI": [
+                        [
+                            "res",
+                            "PI",
+                            "f"
+                        ]
+                    ],
+                    "no": [],
+                    "CONSTANT": [],
+                    "X": [],
+                    "Y": []
+                },
+                "classes": [
+                    {
+                        "name": "Foo",
+                        "variables": {
+                            "foo_num": "",
+                            "foo_name": ""
+                        },
+                        "cls_var_occur": {
+                            "foo_num": [],
+                            "foo_name": []
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x"
+                                        ],
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x"
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            "self",
+                                            "y",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "local_vars",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "",
+                                    "f": "",
+                                    "g": "",
+                                    "res": ""
+                                },
+                                "fn_var_occur": {
+                                    "x": [],
+                                    "f": [
+                                        [
+                                            "f",
+                                            "g"
+                                        ],
+                                        [
+                                            "res",
+                                            "PI",
+                                            "f"
+                                        ]
+                                    ],
+                                    "g": [
+                                        [
+                                            "f",
+                                            "g"
+                                        ]
+                                    ],
+                                    "res": [
+                                        [
+                                            "res",
+                                            "PI",
+                                            "f"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [],
+                "set": null,
+                "type_annot_cove": 0.07
+            },
             "libsa4py/tests/examples/space_tokens.py": {
                 "untyped_seq": "[docstring] [EOL] from typing import List [EOL] import math as m [EOL] [EOL] CONSTANT = [number] [EOL] STRING = [string] [EOL] [EOL] [string] [string] == STRING [EOL] [EOL] d = { k : v for k , v in [ ( [number] , [number] ) , ( [number] , [number] ) ] } [EOL] d_e = { ** d , ** d } [EOL] [EOL] f_str = f\" [string] { STRING + STRING }\" [EOL] [EOL] l = [ [number] , [number] , [number] , [number] ] [EOL] [EOL] print ( l [ [number] ] ) [EOL] [EOL] class Delta : [EOL] def __init__ ( self ) : [EOL] self . x = [string] [EOL] [EOL] def foo ( x , y , * s ) : [EOL] global CONSTANT [EOL] n = [number] [EOL] n //= n % x [EOL] y %= x ; x **= n [EOL] if x | x & y | ~ y | x ^ y : [EOL] x << y [EOL] y >> x [EOL] s <<= x [EOL] x >>= y [EOL] y &= x [EOL] x |= y [EOL] x ^= y [EOL] if x <= y or y >= x and ~ x : [EOL] pass [EOL] [EOL] assert x != y [EOL] [EOL] return n + x // y [EOL] [EOL] @ set def bar ( x ) : [EOL] v = foo ( x , [number] ) [EOL] try : [EOL] v /= x [EOL] except ZeroDivisionError : [EOL] raise RuntimeError [EOL] finally : [EOL] pass [EOL] if x < v and v > x : [EOL] x *= x [EOL] else : [EOL] pass [EOL] del x [EOL] return v [EOL] [EOL] for i in range ( CONSTANT + [number] + bar ( [number] ) ) : [EOL] if i + foo ( i , [number] ) + [number] : [EOL] print ( i / i ) [EOL] i += [number] - [number] ** [number] [EOL] i -= [number] [EOL] while i < [number] : [EOL] i = i + [number] [EOL] [EOL] with ( i + [number] ) as w : [EOL] pass [EOL] [EOL] foo ( [number] , [number] , * l )",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0",
@@ -2587,6 +2739,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.35
+        "type_annot_cove": 0.33
     }
 }
