@@ -193,12 +193,13 @@ class Pipeline:
                             for t in extracted_avl_types:
                                 f.write("%s\n" % t)
 
-                project_analyzed_files[project_id]["type_annot_cove"] = \
-                    round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
-                               project_analyzed_files[project_id]["src_files"].keys()]) / len(
-                        project_analyzed_files[project_id]["src_files"].keys()), 2)
+                if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
+                    project_analyzed_files[project_id]["type_annot_cove"] = \
+                        round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
+                                   project_analyzed_files[project_id]["src_files"].keys()]) / len(
+                            project_analyzed_files[project_id]["src_files"].keys()), 2)
 
-                save_json(self.get_project_filename(project), project_analyzed_files)
+                    save_json(self.get_project_filename(project), project_analyzed_files)
 
                 if self.use_pyre:
                     pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
