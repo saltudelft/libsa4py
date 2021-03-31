@@ -44,6 +44,7 @@ def extract_fns(projects: dict) -> list:
         p_fns['author'], p_fns['repo'] = p.split("/")
         for f in projects['projects'][p]['src_files'].keys():
             p_fns['files'][f] = {}
+            p_fns['files'][f]['set'] = projects['projects'][p]['src_files'][f]['set']
             p_fns['files'][f]['imports'] = [NLP_P.process_identifier(i) for i in
                                             projects['projects'][p]['src_files'][f]['imports']]
             cls_fns = [f for c in projects['projects'][p]['src_files'][f]['classes'] for f in c['funcs']]
