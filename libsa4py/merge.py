@@ -51,7 +51,7 @@ def extract_fns(projects: dict) -> list:
             p_fns['files'][f]['fns'] = f_fns + cls_fns
         for f in p_fns['files']:
             for fn in p_fns['files'][f]['fns']:
-                fns.append([p_fns['author'], p_fns['repo'], f, fn['name'],
+                fns.append([p_fns['author'], p_fns['repo'], f, fn['name'], p_fns['files'][f]['set'],
                             any(t for t in list(fn['params'].values())) or fn['ret_type'] != '',
                             fn['docstring']['long_descr'] if fn['docstring']['long_descr'] is not None else np.NaN,
                             fn['docstring']['func'] if fn['docstring']['func'] is not None else np.NaN,
@@ -73,7 +73,7 @@ def create_dataframe_fns(output_path: str, merged_jsons: dict):
     """
 
     fns = extract_fns(merged_jsons)
-    df_fns = pd.DataFrame(fns, columns=['author', 'repo', 'file', 'name', 'has_type', 'docstring', 'func_descr',
+    df_fns = pd.DataFrame(fns, columns=['author', 'repo', 'file', 'name', 'set', 'has_type', 'docstring', 'func_descr',
                                         'arg_names', 'arg_types', 'arg_descrs', 'return_type', 'return_expr',
                                         'args_occur', 'return_descr', 'variables', 'variables_types', 'aval_types',
                                         'arg_names_len', 'arg_types_len'])
