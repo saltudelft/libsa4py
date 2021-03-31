@@ -6,6 +6,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Extracting the usage of module constants, class variables, and local variables across a source code file (Contextual hint)
 - Adding extensive units tests for testing various features and components of LibSA4Py.
 - Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
+- The `--l` CLI arg for `merge` option to process a specified number of projects.
 
 ### Fixed
 - Extracting self variables in multi assignments expressions like `self.x,self.y=1,2`.
