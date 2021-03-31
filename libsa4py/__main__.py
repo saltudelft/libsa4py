@@ -32,6 +32,7 @@ def main():
 
     merge_parser = sub_parsers.add_parser('merge')
     merge_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
+    merge_parser.add_argument("--l", required=False, type=int, help="Number of projects to be merged")
     merge_parser.set_defaults(func=merge_projects)
 
     args = arg_parser.parse_args()

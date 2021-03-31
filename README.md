@@ -43,11 +43,12 @@ Description:
 ## Merging projects
 To merge all the processed JSON-formatted projects into a single dataframe, run the following command:
 ```
-libsa4py merge --o $OUTPUT_PATH
+libsa4py merge --o $OUTPUT_PATH --l $LIMIT
 ```
 
 Description:
 - `--o $OUTPUT_PATH`: Path to the processed projects, used in the previous processing step.
+- `--l $LIMIT`: Number of projects to be merged. [**Optional**]
 
 # JSON Output
 After processing each project, a JSON-formatted file is produced, which is described [here](https://github.com/saltudelft/light-sa-type-inf/blob/master/JSONOutput.md).

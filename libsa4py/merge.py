@@ -13,10 +13,13 @@ import pandas as pd
 NLP_P = NLPreprocessor()
 
 
-def merge_jsons_to_dict(json_files: list) -> dict:
+def merge_jsons_to_dict(json_files: list, limit: int = None) -> dict:
     """
     Merges all the JSON files of projects into a dictionary
     """
+
+    if limit is not None:
+        json_files = json_files[:limit]
 
     all_projects_dict = {'projects': {}}
     for f in tqdm(json_files, total=len(json_files), desc="Merging JSONs"):
@@ -81,6 +84,6 @@ def merge_projects(args):
     """
     Saves merged projects into a single JSON file and a Dataframe
     """
-    merged_jsons = merge_jsons_to_dict(list_files(join(args.o, 'processed_projects'), ".json"))
-    save_json(join(args.o, 'merged_projects.json'), merged_jsons)
+    merged_jsons = merge_jsons_to_dict(list_files(join(args.o, 'processed_projects'), ".json"), args.l)
+    save_json(join(args.o, 'merged_%s_projects.json' % (str(args.l) if args.l is not None else 'all')), merged_jsons)
     create_dataframe_fns(args.o, merged_jsons)
