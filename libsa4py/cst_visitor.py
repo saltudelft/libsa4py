@@ -1,7 +1,7 @@
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Union
 from libsa4py.representations import FunctionInfo, ClassInfo
 from libsa4py.nl_preprocessing import extract_docstring_descriptions
-from libsa4py import DEV_TYPE_ANNOT, INF_TYPE_ANNOT
+from libsa4py import DEV_TYPE_ANNOT, INF_TYPE_ANNOT, UNK_TYPE_ANNOT
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -36,7 +36,7 @@ class Visitor(cst.CSTVisitor):
         self.module_all_annotations: Dict[Tuple, Tuple[str, str]] = {}
         self.module_pyre_inferred_types: List[str] = []
         self.module_type_annot_cove: float = 0.0
-        self.module_no_types: Dict[str, int] = {'D': 0, 'I': 0}
+        self.module_no_types: Dict[str, int] = {'U': 0, 'D': 0, 'I': 0}
 
         # Visible types in a source code file
         self.class_defs = []
@@ -107,11 +107,13 @@ class Visitor(cst.CSTVisitor):
         if len(self.cls_stack) > 0:
             # Adds a class method
             self.cls_stack[-1].funcs.append(fn)
-            self.module_all_annotations[(self.cls_stack[-1].name, fn.name, None)] = (fn.return_type, DEV_TYPE_ANNOT)
+            self.module_all_annotations[(self.cls_stack[-1].name, fn.name, None)] = (fn.return_type, DEV_TYPE_ANNOT \
+                if fn.return_type else UNK_TYPE_ANNOT)
         else:
             # Add a local function info to functions list
             self.fns.append(fn)
-            self.module_all_annotations[(None, fn.name, None)] = (fn.return_type, DEV_TYPE_ANNOT)
+            self.module_all_annotations[(None, fn.name, None)] = (fn.return_type, DEV_TYPE_ANNOT \
+                if fn.return_type else UNK_TYPE_ANNOT)
 
     def visit_Return(self, node):
         """
@@ -150,10 +152,12 @@ class Visitor(cst.CSTVisitor):
 
             if len(self.cls_stack) > 0:
                 self.module_all_annotations[(self.cls_stack[-1].name, self.stack[-1].name,
-                                             node.name.value)] = (annotation_value, DEV_TYPE_ANNOT)
+                                             node.name.value)] = (annotation_value, DEV_TYPE_ANNOT \
+                    if annotation_value else UNK_TYPE_ANNOT)
             else:
                 self.module_all_annotations[(None, self.stack[-1].name,
-                                             node.name.value)] = (annotation_value, DEV_TYPE_ANNOT)
+                                             node.name.value)] = (annotation_value, DEV_TYPE_ANNOT \
+                    if annotation_value else UNK_TYPE_ANNOT)
 
         # Un-set last annotation
         self.last_annotation = None
@@ -236,12 +240,12 @@ class Visitor(cst.CSTVisitor):
                     self.cls_stack[-1].variables[extracted_names['name']] = extracted_names['type'][0]
                     self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = extracted_names['type']
                 else:
+                    ext_names_type = self.__get_type_for_names(extracted_names['names'])
                     self.cls_stack[-1].variables = {**self.cls_stack[-1].variables,
-                                                    **{n.value: self.__get_type_from_metadata(n) for n in extracted_names['names']}}
+                                                    **{n.value: t for n, t, i in ext_names_type}}
                     self.module_all_annotations = {**self.module_all_annotations,
                                                    **{(self.cls_stack[-1].name, None, n.value): \
-                                                          (self.__get_type_from_metadata(n), INF_TYPE_ANNOT) \
-                                                      for n in extracted_names['names']}}
+                                                          (t, i) for n, t, i in ext_names_type}}
             else:
                 # Adds module-level variables
                 if 'name' in extracted_names:
@@ -249,14 +253,13 @@ class Visitor(cst.CSTVisitor):
                     self.module_variables_use[extracted_names['name']] = []
                     self.module_all_annotations[(None, None, extracted_names['name'])] = extracted_names['type']
                 else:
+                    ext_names_type = self.__get_type_for_names(extracted_names['names'])
                     self.module_variables = {**self.module_variables,
-                                             **{n.value: self.__get_type_from_metadata(n) for n in extracted_names['names']}}
-
+                                             **{n.value: t for n, t, i in ext_names_type}}
                     self.module_variables_use = {**self.module_variables_use,
-                                             **{n.value: [] for n in extracted_names['names']}}
+                                             **{n.value: [] for n, t, i in ext_names_type}}
                     self.module_all_annotations = {**self.module_all_annotations,
-                                                   **{(None, None, n.value): (self.__get_type_from_metadata(n), INF_TYPE_ANNOT) \
-                                                      for n in extracted_names['names']}}
+                                                   **{(None, None, n.value): (t, i) for n, t, i in ext_names_type}}
 
     def visit_AnnAssign(self, node: cst.AnnAssign):
         extracted_assign = self.__extract_variable_name_type(node)
@@ -267,18 +270,19 @@ class Visitor(cst.CSTVisitor):
                 # Both name & type must be present if we have an Annotated Assign
                 self.__add_variable_to_function(extracted_assign["name"], extracted_assign["type"])
                 self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                             self.stack[-1].name, extracted_assign["name"])] = (extracted_assign["type"],
-                                                                                                DEV_TYPE_ANNOT)
+                                             self.stack[-1].name, extracted_assign["name"])] = \
+                    (extracted_assign["type"], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)
             elif len(self.cls_stack) > 0:
                 # TODO: Support types in tuple format, e.g. x:int, y:int = 12, 12
                 self.cls_stack[-1].variables[extracted_assign['name']] = extracted_assign['type']
                 self.module_all_annotations[(self.cls_stack[-1].name, None,
-                                             extracted_assign['name'])] = (extracted_assign['type'], DEV_TYPE_ANNOT)
+                                             extracted_assign['name'])] = \
+                    (extracted_assign['type'], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)
             else:
                 self.module_variables[extracted_assign['name']] = extracted_assign['type']
                 self.module_variables_use[extracted_assign['name']] = []
-                self.module_all_annotations[(None, None, extracted_assign['name'])] = (extracted_assign['type'],
-                                                                                       DEV_TYPE_ANNOT)
+                self.module_all_annotations[(None, None, extracted_assign['name'])] = \
+                    (extracted_assign['type'], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)
 
     def visit_Lambda(self, node: cst.Lambda):
         self.lambda_depth += 1
@@ -382,6 +386,8 @@ class Visitor(cst.CSTVisitor):
             all_annot_filtered = {k: v for k, v in self.module_all_annotations.items() if k[2] != 'self'}
             no_dev_type_annot = sum([1 for k, v in all_annot_filtered.items() if v[0] and v[1] == DEV_TYPE_ANNOT])
             self.module_no_types['D'], self.module_no_types['I'] = no_dev_type_annot, len(self.module_pyre_inferred_types)
+            self.module_no_types['U'] = len(all_annot_filtered.keys()) - (self.module_no_types['D'] + \
+                                                                          self.module_no_types['I'])  # UNK_TYPE_ANNOT
             self.module_type_annot_cove = round(sum([1 for k, v in all_annot_filtered.items() if v[0]]) \
                                                 / len(all_annot_filtered.keys()), 2)
         except ZeroDivisionError:
@@ -441,7 +447,8 @@ class Visitor(cst.CSTVisitor):
 
         if extracted_var_names is not None:
             if "name" in extracted_var_names:
-                extracted_var_names['type'] = (self.__get_type_from_metadata(node.target), INF_TYPE_ANNOT)
+                t = self.__get_type_from_metadata(node.target)
+                extracted_var_names['type'] = (t, INF_TYPE_ANNOT if t else UNK_TYPE_ANNOT)
                 return extracted_var_names
             elif "names" in extracted_var_names:
                 return {'names': self.__extract_names_multi_assign(list(extracted_var_names['names']))}
@@ -595,7 +602,8 @@ class Visitor(cst.CSTVisitor):
 
                 self.__add_variable_to_function(name, name_type)
                 self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
-                                             self.stack[-1].name, name)] = (name_type, INF_TYPE_ANNOT)
+                                             self.stack[-1].name, name)] = \
+                    (name_type, INF_TYPE_ANNOT if name_type else UNK_TYPE_ANNOT)
 
     def __find_args_vars_use(self, vars_name: list, may_vars_use: List[list], is_var_arg: bool=False) -> dict:
         """
@@ -660,6 +668,13 @@ class Visitor(cst.CSTVisitor):
 
         # Return empty string if docstring undefined
         return docstring if docstring is not None else ""
+
+    def __get_type_for_names(self, names: List[cst.Name]):
+        n_types: List[Tuple[cst.Name, str, Union[UNK_TYPE_ANNOT, INF_TYPE_ANNOT]]] = []
+        for n in names:
+            t = self.__get_type_from_metadata(n)
+            n_types.append((n, t, INF_TYPE_ANNOT if t else UNK_TYPE_ANNOT))
+        return n_types
 
     def __get_type_from_metadata(self, node: cst.Name) -> str:
         """

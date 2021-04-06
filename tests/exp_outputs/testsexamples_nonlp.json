@@ -27,6 +27,7 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 7,
                     "D": 0,
                     "I": 0
                 },
@@ -91,6 +92,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 3,
                     "D": 0,
                     "I": 0
                 },
@@ -264,6 +266,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 5,
                     "D": 5,
                     "I": 0
                 },
@@ -995,6 +998,7 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 22,
                     "D": 5,
                     "I": 0
                 },
@@ -1010,6 +1014,7 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 0,
                     "D": 0,
                     "I": 0
                 },
@@ -1175,6 +1180,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 11,
                     "D": 0,
                     "I": 0
                 },
@@ -1212,6 +1218,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 1,
                     "D": 0,
                     "I": 0
                 },
@@ -1344,6 +1351,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 0,
                     "D": 9,
                     "I": 0
                 },
@@ -1656,13 +1664,14 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 24,
                     "D": 8,
                     "I": 0
                 },
                 "type_annot_cove": 0.25
             },
             "libsa4py/tests/examples/vars_types_pyre.py": {
-                "untyped_seq": "[docstring] [EOL] [EOL] PI = [number] [EOL] no = [number] [EOL] CONSTANT = [string] [EOL] X , Y = [number] , [number] [EOL] [EOL] class Foo : [EOL] foo_num = [number] [EOL] foo_name = [string] [EOL] foo_x , foo_y = [number] , [ [number] , [number] , [number] ] [EOL] [EOL] def __init__ ( self , y = [string] ) : [EOL] self . x = [ [number] , [number] , [number] ] [EOL] self . y = y [EOL] self . l , self . k = ( [number] , [number] ) , [string] [EOL] [EOL] def local_vars ( self ) : [EOL] x = ( [string] , [string] ) [EOL] f , g = [number] , [number] [EOL] res = PI + f [EOL] [EOL] [EOL] [EOL]",
+                "untyped_seq": "[docstring] [EOL] [EOL] PI = [number] [EOL] no = [number] [EOL] CONSTANT = [string] [EOL] X , Y = [number] , [number] [EOL] [EOL] class Foo : [EOL] foo_num = [number] [EOL] foo_name = [string] [EOL] foo_x , foo_y = [number] , [ [number] , [number] , [number] ] [EOL] [EOL] def __init__ ( self , t = [string] ) : [EOL] self . x = [ [number] , [number] , [number] ] [EOL] self . y = t [EOL] self . l , self . k = ( [number] , [number] ) , [string] [EOL] [EOL] def local_vars ( self ) : [EOL] x = ( [string] , [string] ) [EOL] f , g = [number] , [number] [EOL] res = PI + f [EOL] [EOL] [EOL] [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [],
                 "variables": {
@@ -1705,7 +1714,7 @@
                                 "name": "__init__",
                                 "params": {
                                     "self": "",
-                                    "y": ""
+                                    "t": ""
                                 },
                                 "ret_exprs": [],
                                 "params_occur": {
@@ -1717,7 +1726,7 @@
                                         [
                                             "self",
                                             "y",
-                                            "y"
+                                            "t"
                                         ],
                                         [
                                             "self",
@@ -1726,11 +1735,11 @@
                                             "k"
                                         ]
                                     ],
-                                    "y": [
+                                    "t": [
                                         [
                                             "self",
                                             "y",
-                                            "y"
+                                            "t"
                                         ]
                                     ]
                                 },
@@ -1752,7 +1761,7 @@
                                         [
                                             "self",
                                             "y",
-                                            "y"
+                                            "t"
                                         ]
                                     ],
                                     "l": [
@@ -1774,7 +1783,7 @@
                                 },
                                 "params_descr": {
                                     "self": "",
-                                    "y": ""
+                                    "t": ""
                                 },
                                 "docstring": {
                                     "func": null,
@@ -1840,6 +1849,7 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 19,
                     "D": 1,
                     "I": 0
                 },
@@ -2193,6 +2203,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 13,
                     "D": 4,
                     "I": 0
                 },
@@ -2583,6 +2594,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 7,
                     "D": 24,
                     "I": 0
                 },
@@ -2789,6 +2801,7 @@
                 ],
                 "set": null,
                 "no_types_annot": {
+                    "U": 4,
                     "D": 7,
                     "I": 0
                 },
@@ -2817,6 +2830,7 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
+                    "U": 3,
                     "D": 0,
                     "I": 0
                 },

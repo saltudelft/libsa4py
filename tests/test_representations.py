@@ -86,7 +86,7 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(1.0, empty_mod.type_annot_cove)
 
     def test_no_type_annot(self):
-        exp_no_type_annot = {'D': 7, 'I': 0}
+        exp_no_type_annot = {'U': 4, 'D': 7, 'I': 0}
         self.assertDictEqual(exp_no_type_annot, processed_f.to_dict()['no_types_annot'])
 
 

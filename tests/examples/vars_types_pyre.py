@@ -12,9 +12,9 @@ class Foo:
     foo_name = "Foo"
     foo_x, foo_y = 256, [10, 9, 8]
 
-    def __init__(self, y='default'):
+    def __init__(self, t='default'):
         self.x = [1, 2, 3]
-        self.y = y
+        self.y = t
         self.l, self.k = (45, 35), 'OOooOO'
 
     def local_vars(self):

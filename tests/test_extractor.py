@@ -70,5 +70,5 @@ class TestExtractorPyre(unittest.TestCase):
         self.assertEqual(exp_mod_seq2seq, self.extractor_out.to_dict()['typed_seq'])
 
     def test_no_type_annot(self):
-        exp_no_type_annot = {'D': 1, 'I': 15}
+        exp_no_type_annot = {'U': 4, 'D': 1, 'I': 15}
         self.assertEqual(exp_no_type_annot, self.extractor_out.to_dict()['no_types_annot'])
