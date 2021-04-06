@@ -6,3 +6,4 @@ joblib
 tqdm
 docstring_parser
 dpu_utils
+pyre-check

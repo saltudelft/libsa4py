@@ -198,5 +198,10 @@
         }
     ],
     "set": null,
+    "no_types_annot": {
+        "U": 4,
+        "D": 7,
+        "I": 0
+    },
     "type_annot_cove": 0.64
 }

@@ -92,7 +92,7 @@ class ModuleInfo:
 
     def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]],
                  classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str,
-                 type_annot_cove: float):
+                 no_types_annot: Dict[str, int], type_annot_cove: float):
         self.import_names = import_names
         self.variables = variables
         self.var_occur = var_occur
@@ -100,6 +100,7 @@ class ModuleInfo:
         self.funcs = funcs
         self.untyped_seq = untyped_seq
         self.typed_seq = typed_seq
+        self.no_types_annot = no_types_annot
         self.type_annot_cove = type_annot_cove
 
     def to_dict(self) -> dict:
@@ -109,6 +110,7 @@ class ModuleInfo:
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
+                "no_types_annot": self.no_types_annot,
                 "type_annot_cove": self.type_annot_cove}
 
     @classmethod
@@ -116,7 +118,8 @@ class ModuleInfo:
         return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
                    [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
                    [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
-                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['type_annot_cove'])
+                   mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['no_types_annot'],
+                   mod_dict_repr['type_annot_cove'])
 
     def __eq__(self, other_module_info_obj: 'ModuleInfo'):
         return other_module_info_obj.import_names == self.import_names and \
@@ -126,6 +129,7 @@ class ModuleInfo:
                other_module_info_obj.funcs == self.funcs and \
                other_module_info_obj.untyped_seq == self.untyped_seq and \
                other_module_info_obj.typed_seq == self.typed_seq and \
+               other_module_info_obj.no_types_annot == self.no_types_annot and \
                other_module_info_obj.type_annot_cove == self.type_annot_cove
 
 

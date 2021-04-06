@@ -7,7 +7,7 @@ import math as m
 CONSTANT : int = 10
 STRING = "Hello, World!"
 
-"Hello, " "World"==STRING
+"Hello, " "World" == STRING
 
 d = { k : v for k , v in [ ( 1 , 2 ) , ( 2 , 3 ) ] }
 d_e = { ** d , ** d }

@@ -1,4 +1,3 @@
-import json
 import os
 import traceback
 import random
@@ -15,6 +14,8 @@ from libsa4py.cst_extractor import Extractor
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
+from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
+    clean_pyre_config
 
 import logging
 import logging.config
@@ -26,7 +27,7 @@ class Pipeline:
     """
 
     def __init__(self, projects_path, output_dir, nlp_transf: bool = True,
-                 use_cache: bool = True, dups_files_path=None, split_files_path=None):
+                 use_cache: bool = True, use_pyre: bool = False, dups_files_path=None, split_files_path=None):
         self.projects_path = projects_path
         self.output_dir = output_dir
         self.processed_projects = None
@@ -34,6 +35,7 @@ class Pipeline:
         self.avl_types_dir = None
         self.nlp_transf = nlp_transf
         self.use_cache = use_cache
+        self.use_pyre = use_pyre
         self.nlp_prep = NLPreprocessor()
 
         self.__make_output_dirs()
@@ -147,15 +149,26 @@ class Pipeline:
                              f_r in project_files]
 
             if len(project_files) != 0:
+                if self.use_pyre:
+                    print(f"Running pyre for {project_id}")
+                    clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
+                    pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+
                 for filename, f_relative, f_split in project_files:
                     try:
+                        pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
+                                                          filename) if self.use_pyre else None
+
                         project_analyzed_files[project_id]["src_files"][f_relative] = \
-                            self.apply_nlp_transf(Extractor().extract(read_file(filename)).to_dict()) if self.nlp_transf \
-                                else Extractor.extract(read_file(filename)).to_dict()
+                            self.apply_nlp_transf(
+                                Extractor().extract(read_file(filename), pyre_data_file).to_dict()) if self.nlp_transf \
+                                else Extractor.extract(read_file(filename), pyre_data_file).to_dict()
+
                         project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
+
                         extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
-                                                [c['name'] for c in
-                                                project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
+                                              [c['name'] for c in
+                                               project_analyzed_files[project_id]["src_files"][f_relative]['classes']]
                     except ParseError as err:
                         # print(f"Could not parse file {filename}")
                         traceback.print_exc()
@@ -180,15 +193,20 @@ class Pipeline:
                             for t in extracted_avl_types:
                                 f.write("%s\n" % t)
 
-                project_analyzed_files[project_id]["type_annot_cove"] = \
-                    round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
-                               project_analyzed_files[project_id]["src_files"].keys()]) / len(
-                        project_analyzed_files[project_id]["src_files"].keys()), 2)
+                if len(project_analyzed_files[project_id]["src_files"].keys()) != 0:
+                    project_analyzed_files[project_id]["type_annot_cove"] = \
+                        round(sum([project_analyzed_files[project_id]["src_files"][s]["type_annot_cove"] for s in
+                                   project_analyzed_files[project_id]["src_files"].keys()]) / len(
+                            project_analyzed_files[project_id]["src_files"].keys()), 2)
 
-                save_json(self.get_project_filename(project), project_analyzed_files)
+                    save_json(self.get_project_filename(project), project_analyzed_files)
+
+                if self.use_pyre:
+                    pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
 
             else:
                 raise NullProjectException(project_id)
+
         except KeyboardInterrupt:
             quit(1)
         except NullProjectException as err:
@@ -209,4 +227,6 @@ class Pipeline:
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
         print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
+
+        pyre_kill_all_servers()
         logging.shutdown()

@@ -16,6 +16,7 @@ After processing each project, a JSON-formatted file is produced, which is descr
           "classes": [],
           "funcs": [],
           "set": null,
+          "no_types_annot": {"U":  0, "D": 0, "I": 0},
           "type_annot_cove": 0.0
         }
     },
@@ -36,6 +37,10 @@ Description of the fields:
 - `classes`: Contains the JSON object of processed classes which are described below.
 - `funcs`: Contains the JSON object of processed functions in a module, which are described below.
 - `set`: Determines to which sets the file belongs to, if `--s` option is provided when running the pipeline. It contains one of the values in `['train', 'valid', 'test']`. The default value is `null`.
+- `no_types_annot`: Type slots stats for the processed module:
+  - `U`: No. of types slots w/o a type annotation.
+  - `D`: No of type slots w/ developer-provided annotations.
+  - `I`: No. of type slots w/ Pyre-inferred annotations.
 - `type_annot_cove`: Type annotations coverage for source code files and the whole project.
 
 ## Classes

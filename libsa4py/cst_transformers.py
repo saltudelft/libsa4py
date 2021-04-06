@@ -88,7 +88,7 @@ class TypeAdder(cst.CSTTransformer):
     Also, it propagates types of a function parameters in the function body and module-level constants
     """
 
-    def __init__(self, module_type_annot: Dict[Tuple, str]):
+    def __init__(self, module_type_annot: Dict[Tuple, Tuple[str, str]]):
         self.cls_stack: List[str] = []
         self.fn_stack: List[str] = []
         self.module_type_annot = module_type_annot
@@ -114,7 +114,7 @@ class TypeAdder(cst.CSTTransformer):
     def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):
 
         ret_type = self.module_type_annot[(self.cls_stack[-1] if len(self.cls_stack) > 0 else None,
-                                           self.fn_stack[-1], None)]
+                                           self.fn_stack[-1], None)][0]
         self.fn_stack.pop()
         if ret_type != '':
             return updated_node.with_changes(name=cst.Name(value=f"${ret_type}$"))
@@ -123,10 +123,10 @@ class TypeAdder(cst.CSTTransformer):
 
     def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
 
-        def extract_module_var_type(module_type_annot: Dict[Tuple, str]):
+        def extract_module_var_type(module_type_annot: Dict[Tuple, Tuple[str, str]]):
             if (None, None, original_node.value) in module_type_annot:  # Skips imported module names
-                if module_type_annot[(None, None, original_node.value)] != '':
-                    return module_type_annot[(None, None, original_node.value)]
+                if module_type_annot[(None, None, original_node.value)][0] != '':
+                    return module_type_annot[(None, None, original_node.value)][0]
 
         name_type = None
 
@@ -135,10 +135,10 @@ class TypeAdder(cst.CSTTransformer):
             if (self.cls_stack[-1], self.fn_stack[-1] if len(self.fn_stack) > 0 else None, original_node.value) in \
                     self.module_type_annot:  # skips classes' identifiers
                 if self.module_type_annot[(self.cls_stack[-1], self.fn_stack[-1] if len(self.fn_stack) > 0 else None,
-                                           original_node.value)] != '':
+                                           original_node.value)][0] != '':
                     name_type = self.module_type_annot[(self.cls_stack[-1],
                                                         self.fn_stack[-1] if len(self.fn_stack) > 0 else None,
-                                                        original_node.value)]
+                                                        original_node.value)][0]
             else:  # module-level variables (constants) in a function
                 name_type = extract_module_var_type(self.module_type_annot)
         else:  # module-level variables (constants)
@@ -393,7 +393,10 @@ class SpaceAdder(cst.CSTTransformer):
         )
 
     def leave_Equal(self, node, updated_node):
-        return updated_node.with_changes()
+        return updated_node.with_changes(
+            whitespace_after=cst.SimpleWhitespace(' '),
+            whitespace_before = cst.SimpleWhitespace(' '),
+        )
 
     def leave_FloorDivide(self, node, updated_node):
         return updated_node.with_changes(

@@ -20,7 +20,6 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Environment :: Console',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
@@ -32,7 +31,8 @@ setup(
     keywords='libsa4py static analysis features type hints type inference machine learning python pipeline light-weight',
     packages=['libsa4py'],
     python_requries='>=3.5',
-    install_requires=['libcst', 'numpy', 'pandas', 'nltk', 'joblib', 'tqdm', 'docstring_parser', 'dpu_utils'],
+    install_requires=['libcst', 'numpy', 'pandas', 'nltk', 'joblib', 'tqdm', 'docstring_parser', 'dpu_utils',
+                      'pyre-check'],
     entry_points={
         'console_scripts': [
             'libsa4py = libsa4py.__main__:main',

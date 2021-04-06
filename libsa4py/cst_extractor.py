@@ -14,15 +14,21 @@ class Extractor:
     """
 
     @staticmethod
-    def extract(program: str) -> ModuleInfo:
-
+    def extract(program: str,
+                program_types: cst.metadata.type_inference_provider.PyreData = None) -> ModuleInfo:
         try:
             parsed_program = cst.parse_module(program)
         except Exception as e:
             raise ParseError(str(e))
 
-        v: Visitor = Visitor()
-        parsed_program.visit(v)
+        v = Visitor()
+        if program_types is not None:
+            mw = cst.metadata.MetadataWrapper(parsed_program,
+                                             cache={cst.metadata.TypeInferenceProvider: program_types})
+            mw.visit(v)
+        else:
+            mw = cst.metadata.MetadataWrapper(parsed_program, cache={cst.metadata.TypeInferenceProvider: {'types':[]}})
+            mw.visit(v)
 
         # Transformers
         v_cm_doc = CommentAndDocStringRemover()
@@ -46,4 +52,4 @@ class Extractor:
 
         return ModuleInfo(v.imports, v.module_variables, v.module_variables_use, v.cls_list, v.fns,
                           normalize_module_code(v_untyped.code), create_output_seq(normalize_module_code(v_typed.code)),
-                          v.module_type_annot_cove)
+                          v.module_no_types, v.module_type_annot_cove)
