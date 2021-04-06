@@ -27,7 +27,8 @@ class Extractor:
                                              cache={cst.metadata.TypeInferenceProvider: program_types})
             mw.visit(v)
         else:
-            parsed_program.visit(v)
+            mw = cst.metadata.MetadataWrapper(parsed_program, cache={cst.metadata.TypeInferenceProvider: {'types':[]}})
+            mw.visit(v)
 
         # Transformers
         v_cm_doc = CommentAndDocStringRemover()
