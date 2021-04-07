@@ -68,6 +68,54 @@ def extract_fns(projects: dict) -> list:
     return fns
 
 
+def extract_vars(projects: dict) -> list:
+    """
+    Extracts all the variables from the projects' dictionary in a format that can be converted to a dataframe
+    """
+
+    vars = []
+    for p in tqdm(list(projects['projects'].keys()), total=len(projects['projects'].keys()), desc="Extracting all variables"):
+        p_vars = {'author': '', 'repo': ''}
+        p_vars['author'], p_vars['repo'] = p.split("/")
+        for f in projects['projects'][p]['src_files'].keys():
+            # module vars
+            m_v_occur = list(projects['projects'][p]['src_files'][f]['mod_var_occur'].values())
+            for i, m_v in enumerate(projects['projects'][p]['src_files'][f]['variables'].keys()):
+                vars.append([p_vars['author'], p_vars['repo'], f, projects['projects'][p]['src_files'][f]['set'], 
+                             None, None, m_v, projects['projects'][p]['src_files'][f]['variables'][m_v], m_v_occur[i]])
+
+            for c in projects['projects'][p]['src_files'][f]['classes']:
+                # class vars
+                c_v_occur = list(c['cls_var_occur'].values())
+                for i, c_v in enumerate(c['variables'].keys()):
+                    vars.append([p_vars['author'], p_vars['repo'], f, projects['projects'][p]['src_files'][f]['set'], 
+                                 c['name'], None, c_v, c['variables'][c_v], c_v_occur[i]])
+                
+                for c_fn in c['funcs']:
+                    # class functions vars
+                    c_fn_occur = list(c_fn['fn_var_occur'].values())
+                    for i, fn_v in enumerate(c_fn['variables'].keys()):
+                        vars.append([p_vars['author'], p_vars['repo'], f, projects['projects'][p]['src_files'][f]['set'], 
+                                     c['name'], c_fn['name'], fn_v, c_fn['variables'][fn_v], c_fn_occur[i]])
+
+            for fn in projects['projects'][p]['src_files'][f]['funcs']:
+                # module functions vars
+                fn_v_occur = list(fn['fn_var_occur'].values())
+                for i, fn_v in enumerate(fn['variables'].keys()):
+                    vars.append([p_vars['author'], p_vars['repo'], f, projects['projects'][p]['src_files'][f]['set'], 
+                                 None, fn['name'], fn_v, fn['variables'][fn_v], fn_v_occur[i]])
+    return vars
+
+def create_dataframe_vars(output_path: str, merged_jsons: dict):
+    """
+    Creates a single dataframe that contains all the extracted variables and type hints for further processing
+    """
+
+    vars = extract_vars(merged_jsons)
+    df_vars = pd.DataFrame(vars, columns=['author', 'repo', 'file', 'set', 'cls_name', 'fn_name', 'var_name', 'var_type',
+                                          'var_occur'])
+    df_vars.to_csv(join(output_path, 'all_vars.csv'), index=False)
+
 def create_dataframe_fns(output_path: str, merged_jsons: dict):
     """
     Creates a single dataframe that contains all the extracted functions and type hints for further processing
