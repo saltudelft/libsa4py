@@ -9,13 +9,26 @@ class TestQualifiedTypes(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
     @classmethod
     def setUpClass(cls):
         cls.processed_f = Extractor().extract(open('examples/qualified_types.py', 'r').read()).to_dict()
 
     def test_qualified_type_assign(self):
-        exp_q_type = {'d': 'typing.Dict', 'l': 'typing.List[builtins.str]'}
+        exp_q_type = {'d': 'typing.Dict', 'l': 'typing.List[builtins.str]',
+                      'l_n': 'typing.List[typing.Tuple[builtins.int, builtins.int]]',
+                      'q_v': 'typing.List[builtins.int]', 't_e': 'typing.Tuple[typing.Any, ...]',
+                      'u_d': 'typing.Union[typing.List[typing.Tuple[builtins.str, builtins.int]], '
+                             'typing.Tuple[typing.Any], typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]',
+                      'c': 'typing.Callable[..., typing.List]',
+                      't_a': 'typing.Type[typing.List]',
+                      'tqr': 'libsa4py.cst_transformers.TypeQualifierResolver',
+                      'lt': 'typing.Literal["123"]',
+                      'c_h': 'typing.Callable[[typing.List, typing.Dict], builtins.int]',
+                      's': '[]', 'u': '"Foo"', 'foo': 'Foo',
+                      'foo_t': 'typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]'}
+
         self.assertDictEqual(exp_q_type, self.processed_f['variables'])
 
     def test_qualified_type_cls_var(self):

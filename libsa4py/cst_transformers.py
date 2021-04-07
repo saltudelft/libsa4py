@@ -729,6 +729,7 @@ class TypeQualifierResolver(cst.CSTTransformer):
         self.parametric_type_annot_visited: bool = False
 
     def visit_Annotation(self, node: cst.Annotation):
+        #print("A", node)
         if not match.matches(node, match.Annotation(annotation=match.Name(value='None'))):
             self.type_annot_visited = True
 
@@ -739,6 +740,8 @@ class TypeQualifierResolver(cst.CSTTransformer):
             if q_name is not None:
                 if self.parametric_type_annot_visited:
                     self.parametric_type_annot_visited = False
+                    # print("LA:", updated_node.with_changes(annotation=cst.Subscript(value=self.__name2annotation(q_name).annotation,
+                    #                              slice=updated_node.annotation.slice)))
                     return updated_node.with_changes(annotation=cst.Subscript(value=self.__name2annotation(q_name).annotation,
                                                  slice=updated_node.annotation.slice))
                 else:
@@ -757,11 +760,26 @@ class TypeQualifierResolver(cst.CSTTransformer):
                                updated_node: cst.SubscriptElement):
         if self.type_annot_visited and self.parametric_type_annot_visited:
             q_name = self.__get_qualified_name(original_node.slice.value)
-            return updated_node.with_changes(slice=cst.Index(value=self.__name2annotation(q_name).annotation))
+            if match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Subscript()))):
+                return updated_node.with_changes(slice=cst.Index(value=cst.Subscript(value=self.__name2annotation(q_name).annotation,
+                                                                 slice=updated_node.slice.value.slice)))
+            elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Ellipsis()))):
+                return updated_node.with_changes(slice=cst.Index(value=cst.Ellipsis()))
+            elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.SimpleString(value=match.DoNotCare())))):
+                return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
+            elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.List()))):
+                return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
+            else:
+                return updated_node.with_changes(slice=cst.Index(value=self.__name2annotation(q_name).annotation))
         else:
             return original_node
 
-
+    def leave_Element(self, original_node: cst.Element, updated_node: cst.Element):
+        if self.type_annot_visited:
+            q_name = self.__get_qualified_name(original_node.value)
+            return updated_node.with_changes(value=self.__name2annotation(q_name).annotation)
+        else:
+            return original_node
 
     # def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
     #     if self.type_annot_visited:
