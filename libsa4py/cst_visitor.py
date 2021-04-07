@@ -401,6 +401,7 @@ class Visitor(cst.CSTVisitor):
             # Convert annotation directly to code representation
             # TODO: Adapt this to support subtokens/subtypes for generics
             converted = self.__convert_node_to_code(node.annotation)
+            #converted = self.__get_qualified_name(node.annotation)
 
             # Strip away newlines, spaces and tabs from the type
             converted = self.__clean_string_whitespace(converted)
@@ -669,6 +670,9 @@ class Visitor(cst.CSTVisitor):
         # Return empty string if docstring undefined
         return docstring if docstring is not None else ""
 
+    def __get_qualified_name(self, node):
+        return list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))[0].name
+
     def __get_type_for_names(self, names: List[cst.Name]):
         n_types: List[Tuple[cst.Name, str, Union[UNK_TYPE_ANNOT, INF_TYPE_ANNOT]]] = []
         for n in names:
@@ -681,7 +685,7 @@ class Visitor(cst.CSTVisitor):
         Extracts type of a `Name` node if `TypeInferenceProvider` given.
         """
         try:
-            q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))[0].name
+            q_name = self.__get_qualified_name(node)
             ext_type = self.__clean_string_whitespace(self.get_metadata(cst.metadata.TypeInferenceProvider, node))
             # A workaround for pyre's weird inferred integers
             if bool(re.match("^typing_extensions.Literal\[[0-9]+\]$", ext_type)):

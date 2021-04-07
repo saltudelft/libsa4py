@@ -1,4 +1,4 @@
-from typing import Union, Dict, Tuple, List
+from typing import Union, Dict, Tuple, List, Optional
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -715,3 +715,77 @@ class SpaceAdder(cst.CSTTransformer):
             return updated_node.with_changes(value=original_node.value.replace(" ", ""))
         else:
             return original_node
+
+
+class TypeQualifierResolver(cst.CSTTransformer):
+    """
+    It resolves qualified names for types, e.g. t.List -> typing.List
+    """
+
+    METADATA_DEPENDENCIES = (cst.metadata.QualifiedNameProvider,)
+
+    def __init__(self):
+        self.type_annot_visited: bool = False
+        self.parametric_type_annot_visited: bool = False
+
+    def visit_Annotation(self, node: cst.Annotation):
+        if not match.matches(node, match.Annotation(annotation=match.Name(value='None'))):
+            self.type_annot_visited = True
+
+    def leave_Annotation(self, original_node: cst.Annotation, updated_node: cst.Annotation):
+        if self.type_annot_visited:
+            self.type_annot_visited = False
+            q_name = self.__get_qualified_name(original_node.annotation)
+            if q_name is not None:
+                if self.parametric_type_annot_visited:
+                    self.parametric_type_annot_visited = False
+                    return updated_node.with_changes(annotation=cst.Subscript(value=self.__name2annotation(q_name).annotation,
+                                                 slice=updated_node.annotation.slice))
+                else:
+                    return updated_node.with_changes(annotation=self.__name2annotation(q_name).annotation)
+
+            else:
+                return original_node
+        else:
+            return original_node
+
+    def visit_Subscript(self, node: cst.Subscript):
+        if self.type_annot_visited:
+            self.parametric_type_annot_visited = True
+
+    def leave_SubscriptElement(self, original_node: cst.SubscriptElement,
+                               updated_node: cst.SubscriptElement):
+        if self.type_annot_visited and self.parametric_type_annot_visited:
+            q_name = self.__get_qualified_name(original_node.slice.value)
+            return updated_node.with_changes(slice=cst.Index(value=self.__name2annotation(q_name).annotation))
+        else:
+            return original_node
+
+
+
+    # def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
+    #     if self.type_annot_visited:
+    #         #print("Org:", original_node, "q:", self.__get_qualified_name(original_node))
+    #         #return updated_node.with_changes(value=self.__get_qualified_name(original_node))
+    #         q_name = self.__get_qualified_name(original_node)
+    #         if q_name is not None:
+    #             return updated_node.with_changes(value=self.__get_qualified_name(original_node))
+    #         else:
+    #             return original_node
+    #     else:
+    #         return original_node
+
+    def __get_qualified_name(self, node) -> Optional[str]:
+        q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
+        if len(q_name) != 0:
+            return list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))[0].name
+        else:
+            return None
+
+    def __name2annotation(self, type_name: str):
+        """
+        Converts Name nodes to valid annotation nodes
+        """
+        return match.extract(cst.parse_module("x: %s=None" % type_name).body[0].body[0],
+                             match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                                             annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
