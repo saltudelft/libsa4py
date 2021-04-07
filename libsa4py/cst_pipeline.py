@@ -228,5 +228,6 @@ class Pipeline:
             delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
         print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
 
-        pyre_kill_all_servers()
+        if self.use_pyre:
+            pyre_kill_all_servers()
         logging.shutdown()
