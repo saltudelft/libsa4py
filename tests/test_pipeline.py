@@ -17,11 +17,11 @@ class TestPipeline(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         p_nlp = Pipeline(Path(__file__).parent.absolute().parent,
-                         join(Path(__file__).parent.absolute(), 'tmp'), nlp_transf=True)
+                         join(Path(__file__).parent.absolute(), 'tmp'), nlp_transf=True, use_pyre=False)
         p_nlp.run([{'author': 'tests', 'repo': 'examples'}], 1)
 
         p_no_nlp = Pipeline(Path(__file__).parent.absolute().parent,
-                            join(Path(__file__).parent.absolute(), 'tmp_nonlp'), nlp_transf=False)
+                            join(Path(__file__).parent.absolute(), 'tmp_nonlp'), nlp_transf=False, use_pyre=False)
         p_no_nlp.run([{'author': 'tests', 'repo': 'examples'}], 1)
 
     def test_pipeline_output(self):

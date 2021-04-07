@@ -16,20 +16,20 @@ class TestAssignments(unittest.TestCase):
         cls.processed_f = Extractor().extract(open('./examples/assignments.py', 'r').read()).to_dict()
 
     def test_module_vars(self):
-        module_vars_expected = {'PI': '', 'M_FOO': '', 'M_BAR': '', 'CONSTANT': 'int', 'LONG_STRING': ''}
+        module_vars_expected = {'PI': '', 'M_FOO': '', 'M_BAR': '', 'CONSTANT': 'builtins.int', 'LONG_STRING': ''}
         self.assertDictEqual(module_vars_expected, self.processed_f['variables'])
 
     def test_class_vars(self):
-        cls_vars_expected = {'x': '', 'u': '', 'f': '', 'out_y': 'str', 'scientific_num': ''}
+        cls_vars_expected = {'x': '', 'u': '', 'f': '', 'out_y': 'builtins.str', 'scientific_num': ''}
         self.assertDictEqual(cls_vars_expected, self.processed_f['classes'][0]['variables'])
 
     def test_self_vars(self):
         # TODO: implement the extraction of self vars in a multiple assignments
-        self_vars_expected = {'x': 'int', 'y': '', 'b': '', 'c': '', 'error': 'List'}
+        self_vars_expected = {'x': 'builtins.int', 'y': '', 'b': '', 'c': '', 'error': 'typing.List'}
         self.assertDictEqual(self_vars_expected, self.processed_f['classes'][0]['funcs'][0]['variables'])
 
     def test_local_vars(self):
-        local_vars_expected = {'f_no': 'float', 'l': 'List[str]', 'foo': 'str'}
+        local_vars_expected = {'f_no': 'builtins.float', 'l': 'typing.List[builtins.str]', 'foo': 'builtins.str'}
         self.assertDictEqual(local_vars_expected, self.processed_f['classes'][0]['funcs'][1]['variables'])
 
     def test_tuple_assign(self):

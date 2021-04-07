@@ -98,12 +98,141 @@
                 },
                 "type_annot_cove": 0.0
             },
+            "libsa4py/tests/examples/qualified_types.py": {
+                "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple [EOL] import typing as t [EOL] from collections . abc import Sequence [EOL] import numpy as np [EOL] import builtins [EOL] [EOL] d = { } [EOL] l = [ ] [EOL] [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y ) : [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "Dict",
+                    "Tuple",
+                    "typing",
+                    "Sequence",
+                    "numpy",
+                    "builtins"
+                ],
+                "variables": {
+                    "d": "typing.Dict",
+                    "l": "typing.List[builtins.str]"
+                },
+                "mod_var_occur": {
+                    "d": [],
+                    "l": []
+                },
+                "classes": [
+                    {
+                        "name": "Foo",
+                        "variables": {
+                            "foo_seq": "collections.abc.Sequence"
+                        },
+                        "cls_var_occur": {
+                            "foo_seq": []
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "params": {
+                                    "self": "",
+                                    "x": "typing.Tuple",
+                                    "y": "typing.Pattern"
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "typing",
+                                            "Tuple",
+                                            "x"
+                                        ]
+                                    ],
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "typing",
+                                            "Tuple",
+                                            "x"
+                                        ]
+                                    ],
+                                    "y": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "x": "typing.Tuple",
+                                    "n": "numpy.int"
+                                },
+                                "fn_var_occur": {
+                                    "x": [
+                                        [
+                                            "self",
+                                            "x",
+                                            "typing",
+                                            "Tuple",
+                                            "x"
+                                        ]
+                                    ],
+                                    "n": [
+                                        [
+                                            "n",
+                                            "numpy",
+                                            "int",
+                                            "np",
+                                            "int"
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "bar",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [
+                                    "return np.array([1, 2, 3])"
+                                ],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "numpy.array",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [],
+                "set": null,
+                "no_types_annot": {
+                    "U": 1,
+                    "D": 7,
+                    "I": 0
+                },
+                "type_annot_cove": 0.88
+            },
             "libsa4py/tests/examples/types_prop.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] CONSTANT = [number] [EOL] CONSTANT_USED = [number] + CONSTANT [EOL] [EOL] def foo ( x ) : [EOL] y = x + [number] [comment] [EOL] print ( y + CONSTANT ) [comment] [EOL] [EOL] class Bar : [EOL] me = [number] [comment] [EOL] fox = [number] + me + CONSTANT [comment] [EOL] def __init__ ( self ) : [EOL] self . c = [number] + Bar . me [comment] [EOL] self . b = self . c + CONSTANT [comment]",
-                "typed_seq": "0 0 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 $float$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 $int$ 0",
+                "typed_seq": "0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 $builtins.int$ 0",
                 "imports": [],
                 "variables": {
-                    "CONSTANT": "int",
+                    "CONSTANT": "builtins.int",
                     "CONSTANT_USED": ""
                 },
                 "mod_var_occur": {
@@ -136,7 +265,7 @@
                     {
                         "name": "Bar",
                         "variables": {
-                            "me": "float",
+                            "me": "builtins.float",
                             "fox": ""
                         },
                         "cls_var_occur": {
@@ -144,6 +273,7 @@
                                 [
                                     "self",
                                     "c",
+                                    "builtins",
                                     "float",
                                     "Bar",
                                     "me"
@@ -163,6 +293,7 @@
                                         [
                                             "self",
                                             "c",
+                                            "builtins",
                                             "float",
                                             "Bar",
                                             "me"
@@ -178,7 +309,7 @@
                                 },
                                 "ret_type": "",
                                 "variables": {
-                                    "c": "float",
+                                    "c": "builtins.float",
                                     "b": ""
                                 },
                                 "fn_var_occur": {
@@ -186,6 +317,7 @@
                                         [
                                             "self",
                                             "c",
+                                            "builtins",
                                             "float",
                                             "Bar",
                                             "me"
@@ -224,13 +356,14 @@
                     {
                         "name": "foo",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [],
                         "params_occur": {
                             "x": [
                                 [
                                     "y",
+                                    "builtins",
                                     "int",
                                     "x"
                                 ]
@@ -238,12 +371,13 @@
                         },
                         "ret_type": "",
                         "variables": {
-                            "y": "int"
+                            "y": "builtins.int"
                         },
                         "fn_var_occur": {
                             "y": [
                                 [
                                     "y",
+                                    "builtins",
                                     "int",
                                     "x"
                                 ],
@@ -274,13 +408,13 @@
             },
             "libsa4py/tests/examples/vars_args_occur.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from . different_fns import add [EOL] [EOL] [EOL] PI = [number] [EOL] MOD_CONSTANT = [number] [EOL] [EOL] [EOL] class TestVarArgOccur : [EOL] [EOL] greeting = [string] [EOL] num = [number] [EOL] cls_constant = MOD_CONSTANT + [number] [EOL] [EOL] def __init__ ( self , x , y ) : [EOL] self . x = x [EOL] self . y = y [EOL] [EOL] def fn_params_occur ( self , param1 , param2 ) : [EOL] z = param1 + param2 [EOL] [EOL] add_x_y = add ( param1 , param2 ) [EOL] [EOL] list_comp = [ i for i in range ( param1 ** param2 * z ) ] [EOL] [EOL] if param1 * add_x_y == [number] : [EOL] pass [EOL] elif param1 % param2 < [number] : [EOL] pass [EOL] [EOL] while param2 * param1 * z // [number] : [EOL] pass [EOL] [EOL] for i in range ( param1 + z * [number] ) : [EOL] pass [EOL] [EOL] with z * param2 as f : [EOL] print ( z ** param2 / f ) [EOL] [EOL] assert param1 == add_x_y * z [EOL] yield z + param2 [EOL] return param1 + [number] + param2 / [number] [EOL] [EOL] def local_vars_usage ( self , p ) : [EOL] v = sum ( [ [number] , [number] , [number] , [number] ] ) [EOL] v_1 = v + p + [number] [EOL] [EOL] for i in range ( [number] , v + v_1 ) : [EOL] i += v + [number] [EOL] yield i + v_1 [EOL] [EOL] if v < [number] and v_1 + v > [number] : [EOL] print ( v ) [EOL] [EOL] elif v * v_1 != [number] : [EOL] print ( v * v_1 ) [EOL] else : [EOL] print ( v_1 ) [EOL] [EOL] while v + v_1 < p : [EOL] v *= [number] + v_1 [EOL] [EOL] with ( v_1 + p // [number] ) as n : [EOL] assert v != n [EOL] [EOL] return v + p + p + [number] [EOL] [EOL] [comment] [EOL] def class_vars_usage ( self ) : [EOL] c = self . x + TestVarArgOccur . num [EOL] [EOL] if TestVarArgOccur . num + c < [number] : [EOL] pass [EOL] [EOL] for i in range ( [number] , TestVarArgOccur . num ) : [EOL] yield TestVarArgOccur . num + i [EOL] [EOL] while TestVarArgOccur . num < [number] : [EOL] TestVarArgOccur . num -= [number] [EOL] [EOL] with ( TestVarArgOccur . greeting + [string] ) as f : [EOL] pass [EOL] [EOL] assert c != TestVarArgOccur . cls_constant [EOL] [EOL] return TestVarArgOccur . cls_constant + c [EOL] [EOL] [comment] [EOL] def module_vars_usage ( self , add_something ) : [EOL] if PI + add_something > [number] : [EOL] pass [EOL] [EOL] for i in range ( [number] , int ( PI ) ) : [EOL] pass [EOL] [EOL] while PI + MOD_CONSTANT > [number] : [EOL] PI = - [number] + add_something [EOL] [EOL] with ( MOD_CONSTANT + PI + add_something ) as n : [EOL] print ( n ) [EOL] [EOL] def formatted_str ( self , p ) : [EOL] x = [number] [EOL] y = [number] [EOL] print ( f\" [string] { x * y // p } [string] \" ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 $int$ 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "add"
                 ],
                 "variables": {
                     "PI": "",
-                    "MOD_CONSTANT": "int"
+                    "MOD_CONSTANT": "builtins.int"
                 },
                 "mod_var_occur": {
                     "PI": [
@@ -329,7 +463,7 @@
                     {
                         "name": "TestVarArgOccur",
                         "variables": {
-                            "greeting": "str",
+                            "greeting": "builtins.str",
                             "num": "",
                             "cls_constant": ""
                         },
@@ -391,7 +525,7 @@
                                 "name": "__init__",
                                 "params": {
                                     "self": "",
-                                    "x": "int",
+                                    "x": "builtins.int",
                                     "y": ""
                                 },
                                 "ret_exprs": [],
@@ -459,8 +593,8 @@
                                 "name": "fn_params_occur",
                                 "params": {
                                     "self": "",
-                                    "param1": "int",
-                                    "param2": "int"
+                                    "param1": "builtins.int",
+                                    "param2": "builtins.int"
                                 },
                                 "ret_exprs": [
                                     "return param1 + 2 + param2 / 5"
@@ -696,13 +830,14 @@
                                 },
                                 "ret_type": "",
                                 "variables": {
-                                    "v": "int",
+                                    "v": "builtins.int",
                                     "v_1": ""
                                 },
                                 "fn_var_occur": {
                                     "v": [
                                         [
                                             "v",
+                                            "builtins",
                                             "int",
                                             "sum"
                                         ],
@@ -1226,11 +1361,11 @@
             },
             "libsa4py/tests/examples/type_annot_removal.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] CONSTANT = [number] [EOL] MOD = ... [EOL] [EOL] def foo ( x , l ) : [EOL] return l [ x ] [EOL] [EOL] class Bar : [EOL] class_var = [string] [EOL] def __init__ ( self , x ) : [EOL] self . x = x [EOL] self . n = ... [EOL]",
-                "typed_seq": "0 0 0 $int$ 0 0 0 $dict$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 $None$ 0 0 0 $float$ 0 0 0 0 0 $float$ 0 $float$ 0 0 0 $set$ 0 0 0",
+                "typed_seq": "0 0 0 $builtins.int$ 0 0 0 $builtins.dict$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 $None$ 0 0 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 $builtins.set$ 0 0 0",
                 "imports": [],
                 "variables": {
-                    "CONSTANT": "int",
-                    "MOD": "dict"
+                    "CONSTANT": "builtins.int",
+                    "MOD": "builtins.dict"
                 },
                 "mod_var_occur": {
                     "CONSTANT": [],
@@ -1240,7 +1375,7 @@
                     {
                         "name": "Bar",
                         "variables": {
-                            "class_var": "str"
+                            "class_var": "builtins.str"
                         },
                         "cls_var_occur": {
                             "class_var": []
@@ -1250,7 +1385,7 @@
                                 "name": "__init__",
                                 "params": {
                                     "self": "",
-                                    "x": "float"
+                                    "x": "builtins.float"
                                 },
                                 "ret_exprs": [],
                                 "params_occur": {
@@ -1258,12 +1393,14 @@
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "float",
                                             "x"
                                         ],
                                         [
                                             "self",
                                             "n",
+                                            "builtins",
                                             "set"
                                         ]
                                     ],
@@ -1271,6 +1408,7 @@
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "float",
                                             "x"
                                         ]
@@ -1278,14 +1416,15 @@
                                 },
                                 "ret_type": "None",
                                 "variables": {
-                                    "x": "float",
-                                    "n": "set"
+                                    "x": "builtins.float",
+                                    "n": "builtins.set"
                                 },
                                 "fn_var_occur": {
                                     "x": [
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "float",
                                             "x"
                                         ]
@@ -1294,6 +1433,7 @@
                                         [
                                             "self",
                                             "n",
+                                            "builtins",
                                             "set"
                                         ]
                                     ]
@@ -1315,8 +1455,8 @@
                     {
                         "name": "foo",
                         "params": {
-                            "x": "int",
-                            "l": "list"
+                            "x": "builtins.int",
+                            "l": "builtins.list"
                         },
                         "ret_exprs": [
                             "return l[x]"
@@ -1335,7 +1475,7 @@
                                 ]
                             ]
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -1359,13 +1499,13 @@
             },
             "libsa4py/tests/examples/assignments.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from typing import List [EOL] [EOL] [comment] [EOL] PI = [number] [EOL] CONSTANT = [number] [EOL] M_FOO , M_BAR = [number] , [number] [EOL] [EOL] LONG_STRING = [string] [EOL] [EOL] [EOL] class Test : [EOL] [comment] [EOL] x = [number] [EOL] u , f = [number] , [string] [EOL] out_y = [string] [EOL] scientific_num = [number] [EOL] [EOL] def __init__ ( self , x ) : [EOL] self . x = x [EOL] self . y = [string] [EOL] self . b , self . c = [number] , [string] [EOL] self . error = ... [EOL] [EOL] def local_var_assings ( self ) : [EOL] f_no = [number] [EOL] l = [ [string] , [string] ] [EOL] foo = ... [EOL] [EOL] def tuple_assigns ( self ) : [EOL] x , y , z = [number] , [number] , [number] [EOL] a , ( b , c ) = [number] , ( [number] , [number] ) [EOL] d , ( ( e , f ) , ( g , h ) ) = [number] , ( ( [number] , [number] ) , ( [number] , [number] ) ) [EOL] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [comment]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List$ 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $List[str]$ 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "List"
                 ],
                 "variables": {
                     "PI": "",
-                    "CONSTANT": "int",
+                    "CONSTANT": "builtins.int",
                     "M_FOO": "",
                     "M_BAR": "",
                     "LONG_STRING": ""
@@ -1384,7 +1524,7 @@
                             "x": "",
                             "u": "",
                             "f": "",
-                            "out_y": "str",
+                            "out_y": "builtins.str",
                             "scientific_num": ""
                         },
                         "cls_var_occur": {
@@ -1399,7 +1539,7 @@
                                 "name": "__init__",
                                 "params": {
                                     "self": "",
-                                    "x": "int"
+                                    "x": "builtins.int"
                                 },
                                 "ret_exprs": [],
                                 "params_occur": {
@@ -1407,6 +1547,7 @@
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "int",
                                             "x"
                                         ],
@@ -1423,6 +1564,7 @@
                                         [
                                             "self",
                                             "error",
+                                            "typing",
                                             "List"
                                         ]
                                     ],
@@ -1430,6 +1572,7 @@
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "int",
                                             "x"
                                         ]
@@ -1437,17 +1580,18 @@
                                 },
                                 "ret_type": "None",
                                 "variables": {
-                                    "x": "int",
+                                    "x": "builtins.int",
                                     "y": "",
                                     "b": "",
                                     "c": "",
-                                    "error": "List"
+                                    "error": "typing.List"
                                 },
                                 "fn_var_occur": {
                                     "x": [
                                         [
                                             "self",
                                             "x",
+                                            "builtins",
                                             "int",
                                             "x"
                                         ]
@@ -1478,6 +1622,7 @@
                                         [
                                             "self",
                                             "error",
+                                            "typing",
                                             "List"
                                         ]
                                     ]
@@ -1503,27 +1648,31 @@
                                 },
                                 "ret_type": "",
                                 "variables": {
-                                    "f_no": "float",
-                                    "l": "List[str]",
-                                    "foo": "str"
+                                    "f_no": "builtins.float",
+                                    "l": "typing.List[builtins.str]",
+                                    "foo": "builtins.str"
                                 },
                                 "fn_var_occur": {
                                     "f_no": [
                                         [
                                             "f_no",
+                                            "builtins",
                                             "float"
                                         ]
                                     ],
                                     "l": [
                                         [
                                             "l",
+                                            "typing",
                                             "List",
+                                            "builtins",
                                             "str"
                                         ]
                                     ],
                                     "foo": [
                                         [
                                             "foo",
+                                            "builtins",
                                             "str"
                                         ]
                                     ]
@@ -1672,11 +1821,11 @@
             },
             "libsa4py/tests/examples/vars_types_pyre.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] PI = [number] [EOL] no = [number] [EOL] CONSTANT = [string] [EOL] X , Y = [number] , [number] [EOL] [EOL] class Foo : [EOL] foo_num = [number] [EOL] foo_name = [string] [EOL] foo_x , foo_y = [number] , [ [number] , [number] , [number] ] [EOL] [EOL] def __init__ ( self , t = [string] ) : [EOL] self . x = [ [number] , [number] , [number] ] [EOL] self . y = t [EOL] self . l , self . k = ( [number] , [number] ) , [string] [EOL] [EOL] def local_vars ( self ) : [EOL] x = ( [string] , [string] ) [EOL] f , g = [number] , [number] [EOL] res = PI + f [EOL] [EOL] [EOL] [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [],
                 "variables": {
                     "PI": "",
-                    "no": "int",
+                    "no": "builtins.int",
                     "CONSTANT": "",
                     "X": "",
                     "Y": ""
@@ -1857,18 +2006,18 @@
             },
             "libsa4py/tests/examples/space_tokens.py": {
                 "untyped_seq": "[docstring] [EOL] from typing import List [EOL] import math as m [EOL] [EOL] CONSTANT = [number] [EOL] STRING = [string] [EOL] [EOL] [string] [string] == STRING [EOL] [EOL] d = { k : v for k , v in [ ( [number] , [number] ) , ( [number] , [number] ) ] } [EOL] d_e = { ** d , ** d } [EOL] [EOL] f_str = f\" [string] { STRING + STRING }\" [EOL] [EOL] l = [ [number] , [number] , [number] , [number] ] [EOL] [EOL] print ( l [ [number] ] ) [EOL] [EOL] class Delta : [EOL] def __init__ ( self ) : [EOL] self . x = [string] [EOL] [EOL] def foo ( x , y , * s ) : [EOL] global CONSTANT [EOL] n = [number] [EOL] n //= n % x [EOL] y %= x ; x **= n [EOL] if x | x & y | ~ y | x ^ y : [EOL] x << y [EOL] y >> x [EOL] s <<= x [EOL] x >>= y [EOL] y &= x [EOL] x |= y [EOL] x ^= y [EOL] if x <= y or y >= x and ~ x : [EOL] pass [EOL] [EOL] assert x != y [EOL] [EOL] return n + x // y [EOL] [EOL] @ set def bar ( x ) : [EOL] v = foo ( x , [number] ) [EOL] try : [EOL] v /= x [EOL] except ZeroDivisionError : [EOL] raise RuntimeError [EOL] finally : [EOL] pass [EOL] if x < v and v > x : [EOL] x *= x [EOL] else : [EOL] pass [EOL] del x [EOL] return v [EOL] [EOL] for i in range ( CONSTANT + [number] + bar ( [number] ) ) : [EOL] if i + foo ( i , [number] ) + [number] : [EOL] print ( i / i ) [EOL] i += [number] - [number] ** [number] [EOL] i -= [number] [EOL] while i < [number] : [EOL] i = i + [number] [EOL] [EOL] with ( i + [number] ) as w : [EOL] pass [EOL] [EOL] foo ( [number] , [number] , * l )",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $List[int]$ 0",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0",
                 "imports": [
                     "List",
                     "math"
                 ],
                 "variables": {
-                    "CONSTANT": "int",
+                    "CONSTANT": "builtins.int",
                     "STRING": "",
                     "d": "",
                     "d_e": "",
                     "f_str": "",
-                    "l": "List[ int ]",
+                    "l": "typing.List[builtins.int]",
                     "i": ""
                 },
                 "mod_var_occur": {
@@ -2140,7 +2289,7 @@
                     {
                         "name": "bar",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [
                             "return v"
@@ -2168,7 +2317,7 @@
                                 ]
                             ]
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {
                             "v": ""
                         },
@@ -2211,7 +2360,7 @@
             },
             "libsa4py/tests/examples/different_fns.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from typing import Optional [EOL] [EOL] [EOL] [comment] [EOL] def add ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def noargs ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def no_params ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def noreturn ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_none ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_optional ( y ) : [EOL] if len ( y ) == [number] : [EOL] return None [EOL] return y [EOL] [EOL] [EOL] [comment] [EOL] def untyped_args ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def with_inner ( ) : [EOL] def inner ( x ) : [EOL] [docstring] [EOL] return [number] + x [EOL] return inner ( [number] ) [EOL] [EOL] [EOL] [comment] [EOL] def varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def untyped_varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def kwarg_method ( a , * b , ** c ) : [EOL] return c [EOL] [EOL] [EOL] [comment] [EOL] async def async_fn ( y ) : [EOL] return await y [EOL] [EOL] [EOL] [comment] [EOL] def abstract_fn ( name ) : ... [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $Optional[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $str$ 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Optional[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0",
                 "imports": [
                     "Optional"
                 ],
@@ -2222,8 +2371,8 @@
                     {
                         "name": "add",
                         "params": {
-                            "x": "int",
-                            "y": "int"
+                            "x": "builtins.int",
+                            "y": "builtins.int"
                         },
                         "ret_exprs": [
                             "return x + y"
@@ -2242,7 +2391,7 @@
                                 ]
                             ]
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2262,7 +2411,7 @@
                             "return 5"
                         ],
                         "params_occur": {},
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {},
@@ -2292,7 +2441,7 @@
                     {
                         "name": "noreturn",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [],
                         "params_occur": {
@@ -2318,7 +2467,7 @@
                     {
                         "name": "return_none",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [],
                         "params_occur": {
@@ -2344,7 +2493,7 @@
                     {
                         "name": "return_optional",
                         "params": {
-                            "y": "list"
+                            "y": "builtins.list"
                         },
                         "ret_exprs": [
                             "return None",
@@ -2358,7 +2507,7 @@
                                 ]
                             ]
                         },
-                        "ret_type": "Optional[int]",
+                        "ret_type": "typing.Optional[builtins.int]",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2393,7 +2542,7 @@
                                 ]
                             ]
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2409,7 +2558,7 @@
                     {
                         "name": "inner",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [
                             "return 12 + x"
@@ -2417,7 +2566,7 @@
                         "params_occur": {
                             "x": []
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2449,7 +2598,7 @@
                     {
                         "name": "varargs",
                         "params": {
-                            "xs": "int"
+                            "xs": "builtins.int"
                         },
                         "ret_exprs": [
                             "return sum"
@@ -2457,14 +2606,15 @@
                         "params_occur": {
                             "xs": []
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {
-                            "sum": "int"
+                            "sum": "builtins.int"
                         },
                         "fn_var_occur": {
                             "sum": [
                                 [
                                     "sum",
+                                    "builtins",
                                     "int"
                                 ],
                                 [
@@ -2493,14 +2643,15 @@
                         "params_occur": {
                             "xs": []
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {
-                            "sum": "int"
+                            "sum": "builtins.int"
                         },
                         "fn_var_occur": {
                             "sum": [
                                 [
                                     "sum",
+                                    "builtins",
                                     "int"
                                 ],
                                 [
@@ -2521,9 +2672,9 @@
                     {
                         "name": "kwarg_method",
                         "params": {
-                            "a": "int",
-                            "b": "int",
-                            "c": "float"
+                            "a": "builtins.int",
+                            "b": "builtins.int",
+                            "c": "builtins.float"
                         },
                         "ret_exprs": [
                             "return c"
@@ -2550,7 +2701,7 @@
                     {
                         "name": "async_fn",
                         "params": {
-                            "y": "int"
+                            "y": "builtins.int"
                         },
                         "ret_exprs": [
                             "return await y"
@@ -2558,7 +2709,7 @@
                         "params_occur": {
                             "y": []
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2573,13 +2724,13 @@
                     {
                         "name": "abstract_fn",
                         "params": {
-                            "name": "str"
+                            "name": "builtins.str"
                         },
                         "ret_exprs": [],
                         "params_occur": {
                             "name": []
                         },
-                        "ret_type": "str",
+                        "ret_type": "builtins.str",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2602,7 +2753,7 @@
             },
             "libsa4py/tests/examples/representations.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "path",
                     "math"
@@ -2617,7 +2768,7 @@
                     {
                         "name": "MyClass",
                         "variables": {
-                            "cls_var": "int"
+                            "cls_var": "builtins.int"
                         },
                         "cls_var_occur": {
                             "cls_var": [
@@ -2634,7 +2785,7 @@
                                 "name": "__init__",
                                 "params": {
                                     "self": "",
-                                    "y": "float"
+                                    "y": "builtins.float"
                                 },
                                 "ret_exprs": [],
                                 "params_occur": {
@@ -2680,7 +2831,7 @@
                                 "name": "cls_fn",
                                 "params": {
                                     "self": "",
-                                    "c": "int"
+                                    "c": "builtins.int"
                                 },
                                 "ret_exprs": [
                                     "return MyClass.cls_var + c / (2 + n)"
@@ -2700,7 +2851,7 @@
                                         ]
                                     ]
                                 },
-                                "ret_type": "float",
+                                "ret_type": "builtins.float",
                                 "variables": {
                                     "n": ""
                                 },
@@ -2763,7 +2914,7 @@
                     {
                         "name": "my_fn",
                         "params": {
-                            "x": "int"
+                            "x": "builtins.int"
                         },
                         "ret_exprs": [
                             "return x + 10"
@@ -2771,7 +2922,7 @@
                         "params_occur": {
                             "x": []
                         },
-                        "ret_type": "int",
+                        "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
                         "params_descr": {
@@ -2837,6 +2988,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.33
+        "type_annot_cove": 0.37
     }
 }
