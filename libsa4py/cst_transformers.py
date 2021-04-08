@@ -727,30 +727,29 @@ class TypeQualifierResolver(cst.CSTTransformer):
     def __init__(self):
         self.type_annot_visited: bool = False
         self.parametric_type_annot_visited: bool = False
+        self.last_visited_name: cst.Name = None
+        self.q_names_cache: Dict[Tuple[str, cst.metadata.QualifiedNameSource]] = {}
 
     def visit_Annotation(self, node: cst.Annotation):
-        #print("A", node)
-        if not match.matches(node, match.Annotation(annotation=match.Name(value='None'))):
+        if not match.matches(node, match.Annotation(annotation=match.OneOf(
+                match.Name(value='None'), match.List(elements=[])))):
             self.type_annot_visited = True
 
     def leave_Annotation(self, original_node: cst.Annotation, updated_node: cst.Annotation):
         if self.type_annot_visited:
             self.type_annot_visited = False
-            q_name = self.__get_qualified_name(original_node.annotation)
-            if q_name is not None:
-                if self.parametric_type_annot_visited:
-                    self.parametric_type_annot_visited = False
-                    # print("LA:", updated_node.with_changes(annotation=cst.Subscript(value=self.__name2annotation(q_name).annotation,
-                    #                              slice=updated_node.annotation.slice)))
+            if self.parametric_type_annot_visited:
+                self.parametric_type_annot_visited = False
+                q_name, _ = self.__get_qualified_name(original_node.annotation.value)
+                if q_name is not None:
                     return updated_node.with_changes(annotation=cst.Subscript(value=self.__name2annotation(q_name).annotation,
-                                                 slice=updated_node.annotation.slice))
-                else:
+                                             slice=updated_node.annotation.slice))
+            else:
+                q_name, _ = self.__get_qualified_name(original_node.annotation)
+                if q_name is not None:
                     return updated_node.with_changes(annotation=self.__name2annotation(q_name).annotation)
 
-            else:
-                return original_node
-        else:
-            return original_node
+        return original_node
 
     def visit_Subscript(self, node: cst.Subscript):
         if self.type_annot_visited:
@@ -759,51 +758,68 @@ class TypeQualifierResolver(cst.CSTTransformer):
     def leave_SubscriptElement(self, original_node: cst.SubscriptElement,
                                updated_node: cst.SubscriptElement):
         if self.type_annot_visited and self.parametric_type_annot_visited:
-            q_name = self.__get_qualified_name(original_node.slice.value)
             if match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Subscript()))):
-                return updated_node.with_changes(slice=cst.Index(value=cst.Subscript(value=self.__name2annotation(q_name).annotation,
+                q_name, _ = self.__get_qualified_name(original_node.slice.value.value)
+                if q_name is not None:
+                    return updated_node.with_changes(slice=cst.Index(value=cst.Subscript(value=self.__name2annotation(q_name).annotation,
                                                                  slice=updated_node.slice.value.slice)))
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Ellipsis()))):
+                # TODO: Should the original node be returned?!
                 return updated_node.with_changes(slice=cst.Index(value=cst.Ellipsis()))
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.SimpleString(value=match.DoNotCare())))):
                 return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
+            elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Name(value='None')))):
+                return original_node
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.List()))):
                 return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
             else:
-                return updated_node.with_changes(slice=cst.Index(value=self.__name2annotation(q_name).annotation))
-        else:
-            return original_node
+                q_name, _ = self.__get_qualified_name(original_node.slice.value)
+                if q_name is not None:
+                    return updated_node.with_changes(slice=cst.Index(value=self.__name2annotation(q_name).annotation))
+
+        return original_node
 
     def leave_Element(self, original_node: cst.Element, updated_node: cst.Element):
         if self.type_annot_visited:
-            q_name = self.__get_qualified_name(original_node.value)
+            q_name, _ = self.__get_qualified_name(original_node.value)
             return updated_node.with_changes(value=self.__name2annotation(q_name).annotation)
         else:
             return original_node
 
-    # def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
-    #     if self.type_annot_visited:
-    #         #print("Org:", original_node, "q:", self.__get_qualified_name(original_node))
-    #         #return updated_node.with_changes(value=self.__get_qualified_name(original_node))
-    #         q_name = self.__get_qualified_name(original_node)
-    #         if q_name is not None:
-    #             return updated_node.with_changes(value=self.__get_qualified_name(original_node))
-    #         else:
-    #             return original_node
-    #     else:
-    #         return original_node
+    def visit_Name(self, node: cst.Name):
+        if self.type_annot_visited:
+            self.last_visited_name = node
 
-    def __get_qualified_name(self, node) -> Optional[str]:
-        q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
-        if len(q_name) != 0:
-            return list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))[0].name
+    def __get_qualified_name(self, node):
+        q = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
+        if len(q) != 0:
+            q_name, q_src = q[0].name, q[0].source
+            if q_name[0] == '.':
+                q_name = q_name[1:]
+            if (self.last_visited_name.value, q_src) not in self.q_names_cache:
+                self.q_names_cache[(self.last_visited_name.value, q_src)] = q_name
+
+            return q_name, q_src
         else:
-            return None
+            return None, None
 
     def __name2annotation(self, type_name: str):
         """
         Converts Name nodes to valid annotation nodes
         """
-        return match.extract(cst.parse_module("x: %s=None" % type_name).body[0].body[0],
-                             match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+        try:
+            return match.extract(cst.parse_module("x: %s=None" % type_name).body[0].body[0],
+                         match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                                         annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
+        except cst._exceptions.ParserSyntaxError:
+            # To handle a bug in LibCST's scope provider where a local name shadows a type annotation with the same name
+            if (self.last_visited_name.value, cst.metadata.QualifiedNameSource.IMPORT) in self.q_names_cache:
+                return match.extract(cst.parse_module("x: %s=None" % self.q_names_cache[(self.last_visited_name.value,
+                                cst.metadata.QualifiedNameSource.IMPORT)]).body[0].body[0],
+                                 match.AnnAssign(target=match.Name(value=match.DoNotCare()),
                                              annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
+            else:
+                return match.extract(cst.parse_module("x: %s=None" % self.last_visited_name.value).body[0].body[0],
+                                 match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                                                 annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
+

@@ -1,9 +1,11 @@
 from typing import Dict as _Dict
 from typing import Tuple, Union
 from libsa4py.cst_transformers import TypeQualifierResolver
+from .representations import Bar
 import typing as t
 import typing
 from collections.abc import Sequence
+from builtins import str
 import numpy as np
 import builtins
 
@@ -19,15 +21,27 @@ t_a: t.Type[t.List] = t.List
 tqr: TypeQualifierResolver = TypeQualifierResolver()
 lt: t.Literal["123"] = "123"
 s: [] = [1, 2]
+N: Union[t.List, None] = []
+rl: Bar = Bar()
+b: True = True
 
 class Foo:
     foo_seq: Sequence = []
     def __init__(self, x: t.Tuple, y: t.Pattern=None):
+        class Delta:
+            pass
         self.x: Tuple = x
         n: np.int = np.int(12)
+        d: Delta = Delta()
 
     def bar(self) -> np.array:
         return np.array([1, 2, 3])
+
+    def shadow_qn(self):
+        sq: str = 'Shadow qualified name'
+
+        for str in sq:
+            print(str)
 
 u: "Foo" = Foo(t_e)
 foo: Foo = Foo(t_e)
