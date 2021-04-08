@@ -28,7 +28,8 @@ class TestQualifiedTypes(unittest.TestCase):
                       'c_h': 'typing.Callable[[typing.List, typing.Dict], builtins.int]',
                       's': '[]', 'u': '"Foo"', 'foo': 'Foo',
                       'foo_t': 'typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]',
-                      'N': 'typing.Union[typing.List, None]'}
+                      'N': 'typing.Union[typing.List, None]',
+                      'rl': 'representations.Bar'}
 
         self.assertDictEqual(exp_q_type, self.processed_f['variables'])
 
@@ -47,3 +48,7 @@ class TestQualifiedTypes(unittest.TestCase):
     def test_qualified_type_fn_ret(self):
         exp_q_ret_type = 'numpy.array'
         self.assertEqual(exp_q_ret_type, self.processed_f['classes'][0]['funcs'][1]['ret_type'])
+
+    def test_shadowed_qualified_name(self):
+        exp_q_type = {'sq': 'builtins.str'}
+        self.assertDictEqual(exp_q_type, self.processed_f['classes'][0]['funcs'][2]['variables'])

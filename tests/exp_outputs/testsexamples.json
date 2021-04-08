@@ -33,6 +33,71 @@
                 },
                 "type_annot_cove": 0.0
             },
+            "libsa4py/tests/examples/shadow_qn.py": {
+                "untyped_seq": "from builtins import str [EOL] [EOL] def bar ( ) : [EOL] x = [string] [EOL] [EOL] def foo ( ) : [EOL] p = [string] [EOL] [EOL] for str in [ [string] , [string] ] : [EOL] print ( str ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "str"
+                ],
+                "variables": {},
+                "mod_var_occur": {},
+                "classes": [],
+                "funcs": [
+                    {
+                        "name": "bar",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {
+                            "x": "builtins.str"
+                        },
+                        "fn_var_occur": {
+                            "x": [
+                                "x",
+                                "builtins",
+                                "str"
+                            ]
+                        },
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    },
+                    {
+                        "name": "foo",
+                        "params": {},
+                        "ret_exprs": [],
+                        "params_occur": {},
+                        "ret_type": "",
+                        "variables": {
+                            "p": "builtins.str"
+                        },
+                        "fn_var_occur": {
+                            "p": [
+                                "p",
+                                "builtins",
+                                "str"
+                            ]
+                        },
+                        "params_descr": {},
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "no_types_annot": {
+                    "U": 2,
+                    "D": 2,
+                    "I": 0
+                },
+                "type_annot_cove": 0.5
+            },
             "libsa4py/tests/examples/comment_removal.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] [comment] [EOL] x = [number] [comment] [EOL] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [EOL] def delta ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] class Foo : [EOL] [docstring] [EOL] [EOL] def bar ( self ) : [EOL] [docstring] [EOL] [comment] [EOL] pass [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
@@ -99,16 +164,18 @@
                 "type_annot_cove": 0.0
             },
             "libsa4py/tests/examples/qualified_types.py": {
-                "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple , Union [EOL] from libsa4py . cst_transformers import TypeQualifierResolver [EOL] import typing as t [EOL] import typing [EOL] from collections . abc import Sequence [EOL] import numpy as np [EOL] import builtins [EOL] [EOL] d = { } [EOL] l = [ ] [EOL] q_v = [ [number] ] [EOL] l_n = ... [EOL] t_e = ( ) [EOL] u_d = None [EOL] c = None [EOL] c_h = None [EOL] t_a = t . List [EOL] tqr = TypeQualifierResolver ( ) [EOL] lt = [string] [EOL] s = [ [number] , [number] ] [EOL] N = [ ] [EOL] [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y = None ) : [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL] [EOL] u = Foo ( t_e ) [EOL] foo = Foo ( t_e ) [EOL] foo_t = ( Foo ( t_e ) , TypeQualifierResolver ( ) ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 0 0 $typing.Callable[...,typing.List]$ 0 0 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 0 0 $typing.Type[typing.List]$ 0 0 0 0 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 0 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $\"Foo\"$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 0 0 0",
+                "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple , Union [EOL] from libsa4py . cst_transformers import TypeQualifierResolver [EOL] from . representations import Bar [EOL] import typing as t [EOL] import typing [EOL] from collections . abc import Sequence [EOL] from builtins import str [EOL] import numpy as np [EOL] import builtins [EOL] [EOL] d = { } [EOL] l = [ ] [EOL] q_v = [ [number] ] [EOL] l_n = ... [EOL] t_e = ( ) [EOL] u_d = None [EOL] c = None [EOL] c_h = None [EOL] t_a = t . List [EOL] tqr = TypeQualifierResolver ( ) [EOL] lt = [string] [EOL] s = [ [number] , [number] ] [EOL] N = [ ] [EOL] rl = Bar ( ) [EOL] [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y = None ) : [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL] [EOL] def shadow_qn ( self ) : [EOL] sq = [string] [EOL] [EOL] for str in sq : [EOL] print ( str ) [EOL] [EOL] u = Foo ( t_e ) [EOL] foo = Foo ( t_e ) [EOL] foo_t = ( Foo ( t_e ) , TypeQualifierResolver ( ) ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 0 0 $typing.Callable[...,typing.List]$ 0 0 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 0 0 $typing.Type[typing.List]$ 0 0 0 0 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 0 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 $representations.Bar$ 0 0 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 $\"Foo\"$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 0 0 0",
                 "imports": [
                     "Dict",
                     "Tuple",
                     "Union",
                     "TypeQualifierResolver",
+                    "Bar",
                     "typing",
                     "typing",
                     "Sequence",
+                    "str",
                     "numpy",
                     "builtins"
                 ],
@@ -126,6 +193,7 @@
                     "lt": "typing.Literal[\"123\"]",
                     "s": "[]",
                     "n": "typing.Union[typing.List, None]",
+                    "rl": "representations.Bar",
                     "u": "\"Foo\"",
                     "foo": "Foo",
                     "foo t": "typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]"
@@ -162,6 +230,7 @@
                     "lt": [],
                     "s": [],
                     "N": [],
+                    "rl": [],
                     "u": [],
                     "foo": [],
                     "foo_t": []
@@ -255,6 +324,35 @@
                                     "ret": null,
                                     "long_descr": null
                                 }
+                            },
+                            {
+                                "name": "shadow qn",
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "sq": "builtins.str"
+                                },
+                                "fn_var_occur": {
+                                    "sq": [
+                                        "sq",
+                                        "builtins",
+                                        "str"
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
                             }
                         ]
                     }
@@ -262,11 +360,11 @@
                 "funcs": [],
                 "set": null,
                 "no_types_annot": {
-                    "U": 1,
-                    "D": 21,
+                    "U": 2,
+                    "D": 23,
                     "I": 0
                 },
-                "type_annot_cove": 0.95
+                "type_annot_cove": 0.92
             },
             "libsa4py/tests/examples/types_prop.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] CONSTANT = [number] [EOL] CONSTANT_USED = [number] + CONSTANT [EOL] [EOL] def foo ( x ) : [EOL] y = x + [number] [comment] [EOL] print ( y + CONSTANT ) [comment] [EOL] [EOL] class Bar : [EOL] me = [number] [comment] [EOL] fox = [number] + me + CONSTANT [comment] [EOL] def __init__ ( self ) : [EOL] self . c = [number] + Bar . me [comment] [EOL] self . b = self . c + CONSTANT [comment]",
@@ -2574,6 +2672,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.37
+        "type_annot_cove": 0.38
     }
 }
