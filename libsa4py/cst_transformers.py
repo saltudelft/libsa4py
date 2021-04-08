@@ -729,7 +729,6 @@ class TypeQualifierResolver(cst.CSTTransformer):
         self.parametric_type_annot_visited: bool = False
 
     def visit_Annotation(self, node: cst.Annotation):
-        #print("A", node)
         if not match.matches(node, match.Annotation(annotation=match.Name(value='None'))):
             self.type_annot_visited = True
 
@@ -764,9 +763,12 @@ class TypeQualifierResolver(cst.CSTTransformer):
                 return updated_node.with_changes(slice=cst.Index(value=cst.Subscript(value=self.__name2annotation(q_name).annotation,
                                                                  slice=updated_node.slice.value.slice)))
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Ellipsis()))):
+                # TODO: Should the original node be returned?!
                 return updated_node.with_changes(slice=cst.Index(value=cst.Ellipsis()))
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.SimpleString(value=match.DoNotCare())))):
                 return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
+            elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.Name(value='None')))):
+                return original_node
             elif match.matches(original_node, match.SubscriptElement(slice=match.Index(value=match.List()))):
                 return updated_node.with_changes(slice=cst.Index(value=updated_node.slice.value))
             else:

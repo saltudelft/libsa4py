@@ -19,6 +19,7 @@ t_a: t.Type[t.List] = t.List
 tqr: TypeQualifierResolver = TypeQualifierResolver()
 lt: t.Literal["123"] = "123"
 s: [] = [1, 2]
+N: Union[t.List, None] = []
 
 class Foo:
     foo_seq: Sequence = []
