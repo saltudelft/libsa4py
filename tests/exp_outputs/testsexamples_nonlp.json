@@ -33,75 +33,6 @@
                 },
                 "type_annot_cove": 0.0
             },
-            "libsa4py/tests/examples/shadow_qn.py": {
-                "untyped_seq": "from builtins import str [EOL] [EOL] def bar ( ) : [EOL] x = [string] [EOL] [EOL] def foo ( ) : [EOL] p = [string] [EOL] [EOL] for str in [ [string] , [string] ] : [EOL] print ( str ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
-                "imports": [
-                    "str"
-                ],
-                "variables": {},
-                "mod_var_occur": {},
-                "classes": [],
-                "funcs": [
-                    {
-                        "name": "bar",
-                        "params": {},
-                        "ret_exprs": [],
-                        "params_occur": {},
-                        "ret_type": "",
-                        "variables": {
-                            "x": "builtins.str"
-                        },
-                        "fn_var_occur": {
-                            "x": [
-                                [
-                                    "x",
-                                    "builtins",
-                                    "str"
-                                ]
-                            ]
-                        },
-                        "params_descr": {},
-                        "docstring": {
-                            "func": null,
-                            "ret": null,
-                            "long_descr": null
-                        }
-                    },
-                    {
-                        "name": "foo",
-                        "params": {},
-                        "ret_exprs": [],
-                        "params_occur": {},
-                        "ret_type": "",
-                        "variables": {
-                            "p": "builtins.str"
-                        },
-                        "fn_var_occur": {
-                            "p": [
-                                [
-                                    "p",
-                                    "builtins",
-                                    "str"
-                                ]
-                            ]
-                        },
-                        "params_descr": {},
-                        "docstring": {
-                            "func": null,
-                            "ret": null,
-                            "long_descr": null
-                        }
-                    }
-                ],
-                "set": null,
-                "no_types_annot": {
-                    "U": 2,
-                    "D": 2,
-                    "I": 0
-                },
-                "type_annot_cove": 0.5
-            },
             "libsa4py/tests/examples/comment_removal.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] [comment] [EOL] x = [number] [comment] [EOL] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [EOL] def delta ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] class Foo : [EOL] [docstring] [EOL] [EOL] def bar ( self ) : [EOL] [docstring] [EOL] [comment] [EOL] pass [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
@@ -3169,6 +3100,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.38
+        "type_annot_cove": 0.37
     }
 }
