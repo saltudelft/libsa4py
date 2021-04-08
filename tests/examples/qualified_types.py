@@ -23,6 +23,7 @@ lt: t.Literal["123"] = "123"
 s: [] = [1, 2]
 N: Union[t.List, None] = []
 rl: Bar = Bar()
+b: True = True
 
 class Foo:
     foo_seq: Sequence = []
