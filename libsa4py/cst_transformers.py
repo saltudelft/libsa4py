@@ -813,8 +813,13 @@ class TypeQualifierResolver(cst.CSTTransformer):
                                          annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
         except cst._exceptions.ParserSyntaxError:
             # To handle a bug in LibCST's scope provider where a local name shadows a type annotation with the same name
-            return match.extract(cst.parse_module("x: %s=None" % self.q_names_cache[(self.last_visited_name.value,
-                                                                                     cst.metadata.QualifiedNameSource.IMPORT)]).body[0].body[0],
+            if (self.last_visited_name.value, cst.metadata.QualifiedNameSource.IMPORT) in self.q_names_cache:
+                return match.extract(cst.parse_module("x: %s=None" % self.q_names_cache[(self.last_visited_name.value,
+                                cst.metadata.QualifiedNameSource.IMPORT)]).body[0].body[0],
+                                 match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                                             annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
+            else:
+                return match.extract(cst.parse_module("x: %s=None" % self.last_visited_name.value).body[0].body[0],
                                  match.AnnAssign(target=match.Name(value=match.DoNotCare()),
                                                  annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
 

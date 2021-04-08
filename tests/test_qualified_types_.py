@@ -35,20 +35,20 @@ class TestQualifiedTypes(unittest.TestCase):
 
     def test_qualified_type_cls_var(self):
         exp_q_type = {'foo_seq': 'collections.abc.Sequence'}
-        self.assertDictEqual(exp_q_type, self.processed_f['classes'][0]['variables'])
+        self.assertDictEqual(exp_q_type, self.processed_f['classes'][1]['variables'])
 
     def test_qualified_type_fn_params(self):
         exp_q_type = {'self': '', 'x': 'typing.Tuple', 'y': 'typing.Pattern'}
-        self.assertDictEqual(exp_q_type, self.processed_f['classes'][0]['funcs'][0]['params'])
+        self.assertDictEqual(exp_q_type, self.processed_f['classes'][1]['funcs'][0]['params'])
 
     def test_qualified_type_fn_vars(self):
-        exp_q_type = {'x': 'typing.Tuple', 'n': 'numpy.int'}
-        self.assertDictEqual(exp_q_type, self.processed_f['classes'][0]['funcs'][0]['variables'])
+        exp_q_type = {'x': 'typing.Tuple', 'n': 'numpy.int', 'd': 'Delta'}
+        self.assertDictEqual(exp_q_type, self.processed_f['classes'][1]['funcs'][0]['variables'])
 
     def test_qualified_type_fn_ret(self):
         exp_q_ret_type = 'numpy.array'
-        self.assertEqual(exp_q_ret_type, self.processed_f['classes'][0]['funcs'][1]['ret_type'])
+        self.assertEqual(exp_q_ret_type, self.processed_f['classes'][1]['funcs'][1]['ret_type'])
 
     def test_shadowed_qualified_name(self):
         exp_q_type = {'sq': 'builtins.str'}
-        self.assertDictEqual(exp_q_type, self.processed_f['classes'][0]['funcs'][2]['variables'])
+        self.assertDictEqual(exp_q_type, self.processed_f['classes'][1]['funcs'][2]['variables'])

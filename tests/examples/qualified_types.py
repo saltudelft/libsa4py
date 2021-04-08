@@ -27,8 +27,11 @@ rl: Bar = Bar()
 class Foo:
     foo_seq: Sequence = []
     def __init__(self, x: t.Tuple, y: t.Pattern=None):
+        class Delta:
+            pass
         self.x: Tuple = x
         n: np.int = np.int(12)
+        d: Delta = Delta()
 
     def bar(self) -> np.array:
         return np.array([1, 2, 3])
