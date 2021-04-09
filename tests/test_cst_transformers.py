@@ -1,7 +1,7 @@
 from libsa4py.cst_visitor import Visitor
 from libsa4py.cst_transformers import SpaceAdder, TypeAdder,\
     CommentAndDocStringRemover, StringRemover, NumberRemover, \
-    TypeAnnotationRemover
+    TypeAnnotationRemover, ParametricTypeDepthReducer
 from libsa4py.utils import read_file
 import unittest
 import libcst as cst
@@ -119,3 +119,34 @@ class TestTypeAdder(unittest.TestCase):
     def test_propagated_types_file(self):
         # TODO: TypeAdder needs improvements to propagate all the types across the file
         self.assertMultiLineEqual(read_file('exp_outputs/propagated_types.py'), self.out_p.code)
+
+
+class TestParametricTypeDepthReducer(unittest.TestCase):
+    """
+    It tests reducing the depth of parametric types.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __reduce_depth_param_type(self, param_type: str, max_depth: int) -> str:
+        t = cst.parse_module(param_type)
+        t = t.visit(ParametricTypeDepthReducer(max_annot_depth=max_depth))
+        return t.code
+
+    def test_param_type_depth(self):
+        exp_t = "List[Tuple[str, int]]"
+        self.assertEqual(exp_t,
+                         self.__reduce_depth_param_type("List[Tuple[str, int]]", 2))
+
+    def test_param_type_depth_reduce_three(self):
+        exp_t = "List[List[Any]]"
+        self.assertEqual(exp_t,
+                         self.__reduce_depth_param_type("List[List[Tuple[str]]]", 2))
+
+    def test_param_type_depth_reduce_four(self):
+        exp_t = "List[List[Dict[str, Any]]]"
+        self.assertEqual(exp_t,
+                         self.__reduce_depth_param_type("List[List[Dict[str, Tuple[int]]]]", 3))
+
+
