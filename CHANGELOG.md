@@ -8,6 +8,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Adding extensive units tests for testing various features and components of LibSA4Py.
 - Minor improvement to the `SpaceAdder` code transformer for handling some rare edge cases.
 - The `--l` CLI arg for `merge` option to process a specified number of projects.
+- Adding a CST transformer to reduce the depth of parametric types.
 
 ### Fixed
 - Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.
