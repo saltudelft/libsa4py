@@ -1,3 +1,4 @@
+from libsa4py.cst_lenient_parser import lenient_parse_module
 from libsa4py.cst_visitor import Visitor
 from libsa4py.cst_transformers import SpaceAdder, TypeAdder,\
     CommentAndDocStringRemover, StringRemover, NumberRemover, \
@@ -148,5 +149,15 @@ class TestParametricTypeDepthReducer(unittest.TestCase):
         exp_t = "List[List[Dict[str, Any]]]"
         self.assertEqual(exp_t,
                          self.__reduce_depth_param_type("List[List[Dict[str, Tuple[int]]]]", 3))
+
+    def test_param_type_reduce_lenient_parse(self):
+        param_type = "Dict[str, Type[Union[.vendor.pip._vendor.requests.packages.urllib3.contrib.socks.SOCKSHTTPConnectionPool," \
+                     " .vendor.pip._vendor.requests.packages.urllib3.contrib.socks.SOCKSHTTPSConnectionPool]]]"
+        exp_out = "Dict[str, Type[Any]]"
+
+        t = lenient_parse_module(param_type)
+        t = t.visit(ParametricTypeDepthReducer(2))
+
+        self.assertEqual(t.code, exp_out)
 
 
