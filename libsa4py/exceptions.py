@@ -7,8 +7,8 @@ class ParseError(Exception):
 
 
 class ParseTokenError(Exception):
-    def __init__(self, token: str, token_idx: int):
-        super().__init__("Failed parsing token: " + token)
+    def __init__(self, msg: str, token: str, token_idx: int):
+        super().__init__("Failed parsing token: " + msg)
         self.token = token
         self.token_idx = token_idx
 

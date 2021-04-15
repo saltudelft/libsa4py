@@ -33,7 +33,7 @@ class LenientPythonParser(PythonCSTParser):
                     expected_str = get_expected_str(
                         token, stack[-1].dfa.transitions.keys()
                     )
-                    raise ParseTokenError(expected_str, token.start_pos[1])
+                    raise ParseTokenError(expected_str, token, token.start_pos[1])
 
         stack[-1].dfa = plan.next_dfa
 
