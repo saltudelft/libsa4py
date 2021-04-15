@@ -11,12 +11,14 @@ from datetime import timedelta
 from joblib import delayed
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
+from libsa4py.cst_transformers import TypeApplier
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
 
+import libcst as cst
 import logging
 import logging.config
 
@@ -231,3 +233,28 @@ class Pipeline:
         if self.use_pyre:
             pyre_kill_all_servers()
         logging.shutdown()
+
+
+class TypeAnnotatingProjects:
+    """
+    It applies the inferred type annotations to the input dataset
+    """
+
+    def __init__(self, projects_path: str, proj_merged_jsons: str):
+        self.projects_path = projects_path
+        self.proj_merged_jsons = proj_merged_jsons
+
+    def run(self):
+        proj_json = load_json('/Users/amir/projects/data/MT4Py-pyre/allenaiallennlp.json')
+        for p in proj_json.keys():
+            for i, (f, f_d) in enumerate(proj_json[p]['src_files'].items()):
+                print("F", join(self.projects_path, f))
+                f_read = read_file(join(self.projects_path, f))
+                if len(f_read) != 0:
+                    f_parsed = cst.parse_module(f_read)
+                    f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(TypeApplier(f_d))
+
+
+
+
+

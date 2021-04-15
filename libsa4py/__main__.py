@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from multiprocessing import cpu_count
 from libsa4py.utils import find_repos_list
-from libsa4py.cst_pipeline import Pipeline
+from libsa4py.cst_pipeline import Pipeline, TypeAnnotatingProjects
 from libsa4py.merge import merge_projects
 
 
@@ -9,6 +9,11 @@ def process_projects(args):
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
     p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.use_pyre, args.d, args.s)
     p.run(input_repos, args.j)
+
+
+def apply_types_projects(args):
+    tap = TypeAnnotatingProjects(args.p, args.o)
+    tap.run()
 
 
 def main():
@@ -37,6 +42,11 @@ def main():
     merge_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     merge_parser.add_argument("--l", required=False, type=int, help="Number of projects to be merged")
     merge_parser.set_defaults(func=merge_projects)
+
+    apply_parser = sub_parsers.add_parser('apply')
+    apply_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
+    apply_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
+    apply_parser.set_defaults(func=apply_types_projects)
 
     args = arg_parser.parse_args()
     args.func(args)
