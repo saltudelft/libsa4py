@@ -879,10 +879,13 @@ class TypeApplier(cst.CSTTransformer):
                 else:
                     continue
 
-    def __get_cls_vars(self) -> dict:
+    def __get_cls_vars(self, var_name: str) -> dict:
         for cls in self.f_processed_dict['classes']:
             if cls['name'] == self.cls_visited[-1]:
-                return cls['variables']
+                if var_name in cls['variables']:
+                    return cls['variables']
+                else:
+                    continue
 
     def __get_cls_fn_vars(self, var_name: str):
         for cls in self.f_processed_dict['classes']:
@@ -940,7 +943,7 @@ class TypeApplier(cst.CSTTransformer):
                     # A class variable
                     if self.current_cls_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
                         #print("CV", self.current_cls_vars[original_node.body[0].targets[0].target.value])
-                        t = self.__get_cls_vars()[self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value)]
+                        t = self.__get_cls_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
             elif len(self.fn_visited) != 0:
                 # A module function's variable
                 if self.current_fn_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
