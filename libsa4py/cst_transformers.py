@@ -875,7 +875,7 @@ class TypeApplier(cst.CSTTransformer):
         for fn in self.f_processed_dict['funcs']:
             if fn['name'] == self.nlp_p.process_identifier(self.fn_visited[-1]):
                 if var_name in fn['variables']:
-                    return fn['variables']
+                    return fn['variables'][var_name]
                 else:
                     continue
 
@@ -883,7 +883,7 @@ class TypeApplier(cst.CSTTransformer):
         for cls in self.f_processed_dict['classes']:
             if cls['name'] == self.cls_visited[-1]:
                 if var_name in cls['variables']:
-                    return cls['variables']
+                    return cls['variables'][var_name]
                 else:
                     continue
 
@@ -893,7 +893,7 @@ class TypeApplier(cst.CSTTransformer):
                 for fn in cls['funcs']:
                     if fn['name'] == self.nlp_p.process_identifier(self.fn_visited[-1]):
                         if var_name in fn['variables']:
-                            return fn['variables']
+                            return fn['variables'][var_name]
                         else:
                             continue
 
@@ -932,7 +932,7 @@ class TypeApplier(cst.CSTTransformer):
         if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Name(value=match.DoNotCare()))])])):
 
-            t = None
+            t: str = None
             if len(self.cls_visited) != 0:
                 if len(self.fn_visited) != 0:
                     # A class method's variable
