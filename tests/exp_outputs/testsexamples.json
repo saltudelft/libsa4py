@@ -99,14 +99,15 @@
                 "type_annot_cove": 0.0
             },
             "libsa4py/tests/examples/qualified_types.py": {
-                "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple , Union [EOL] from libsa4py . cst_transformers import TypeQualifierResolver [EOL] from . representations import Bar [EOL] import typing as t [EOL] import typing [EOL] from collections . abc import Sequence [EOL] from builtins import str [EOL] import numpy as np [EOL] import builtins [EOL] [EOL] d = { } [EOL] l = [ ] [EOL] q_v = [ [number] ] [EOL] l_n = ... [EOL] t_e = ( ) [EOL] u_d = None [EOL] c = None [EOL] c_h = None [EOL] t_a = t . List [EOL] tqr = TypeQualifierResolver ( ) [EOL] lt = [string] [EOL] s = [ [number] , [number] ] [EOL] N = [ ] [EOL] rl = Bar ( ) [EOL] b = True [EOL] [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y = None ) : [EOL] class Delta : [EOL] pass [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] d = Delta ( ) [EOL] [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL] [EOL] def shadow_qn ( self ) : [EOL] sq = [string] [EOL] [EOL] for str in sq : [EOL] print ( str ) [EOL] [EOL] u = Foo ( t_e ) [EOL] foo = Foo ( t_e ) [EOL] foo_t = ( Foo ( t_e ) , TypeQualifierResolver ( ) ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 0 0 $typing.Callable[...,typing.List]$ 0 0 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 0 0 $typing.Type[typing.List]$ 0 0 0 0 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 0 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 $representations.Bar$ 0 0 0 0 0 $True$ 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 $Delta$ 0 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 $\"Foo\"$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 0 0 0",
+                "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple , Union [EOL] from libsa4py . cst_transformers import TypeQualifierResolver [EOL] from . representations import Bar [EOL] from . . test_imports import TestImports [EOL] import typing as t [EOL] import typing [EOL] from collections . abc import Sequence [EOL] from builtins import str [EOL] import numpy as np [EOL] import builtins [EOL] [EOL] d = { } [EOL] l = [ ] [EOL] q_v = [ [number] ] [EOL] l_n = ... [EOL] t_e = ( ) [EOL] u_d = None [EOL] c = None [EOL] c_h = None [EOL] t_a = t . List [EOL] tqr = TypeQualifierResolver ( ) [EOL] lt = [string] [EOL] s = [ [number] , [number] ] [EOL] N = [ ] [EOL] rl = Bar ( ) [EOL] b = True [EOL] relative_i = TestImports ( ) [EOL] [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y = None ) : [EOL] class Delta : [EOL] pass [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] d = Delta ( ) [EOL] [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL] [EOL] def shadow_qn ( self ) : [EOL] sq = [string] [EOL] [EOL] for str in sq : [EOL] print ( str ) [EOL] [EOL] u = Foo ( t_e ) [EOL] foo = Foo ( t_e ) [EOL] foo_t = ( Foo ( t_e ) , TypeQualifierResolver ( ) ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 0 0 $typing.Callable[...,typing.List]$ 0 0 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 0 0 $typing.Type[typing.List]$ 0 0 0 0 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 0 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 $representations.Bar$ 0 0 0 0 0 $True$ 0 0 0 $test_imports.TestImports$ 0 0 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 $Delta$ 0 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 $\"Foo\"$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 0 0 0",
                 "imports": [
                     "Dict",
                     "Tuple",
                     "Union",
                     "TypeQualifierResolver",
                     "Bar",
+                    "TestImports",
                     "typing",
                     "typing",
                     "Sequence",
@@ -130,6 +131,7 @@
                     "n": "typing.Union[typing.List, None]",
                     "rl": "representations.Bar",
                     "b": "True",
+                    "relative i": "test_imports.TestImports",
                     "u": "\"Foo\"",
                     "foo": "Foo",
                     "foo t": "typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]"
@@ -172,6 +174,7 @@
                     "N": [],
                     "rl": [],
                     "b": [],
+                    "relative_i": [],
                     "u": [],
                     "foo": [],
                     "foo_t": []
@@ -314,7 +317,7 @@
                 "set": null,
                 "no_types_annot": {
                     "U": 2,
-                    "D": 25,
+                    "D": 26,
                     "I": 0
                 },
                 "type_annot_cove": 0.93

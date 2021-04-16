@@ -2,6 +2,7 @@ from typing import Dict as _Dict
 from typing import Tuple, Union
 from libsa4py.cst_transformers import TypeQualifierResolver
 from .representations import Bar
+from ..test_imports import TestImports
 import typing as t
 import typing
 from collections.abc import Sequence
@@ -24,6 +25,7 @@ s: [] = [1, 2]
 N: Union[t.List, None] = []
 rl: Bar = Bar()
 b: True = True
+relative_i: TestImports = TestImports()
 
 class Foo:
     foo_seq: Sequence = []
