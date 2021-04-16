@@ -1004,7 +1004,8 @@ class TypeApplier(cst.CSTTransformer):
                         '^OrderedDict[Any, *?Any]$': 'OrderedDict',
                         '^Counter[Any]$': 'Counter',
                         '(?<=.*)Match[Any](?<=.*)': 'Match',
-                        '^\.(.+)': r'\1'}
+                        '^\.(.+)': r'\1',
+                        '(?<=.*)Optional\[\](?<=.*)|': 'Optional'}
         for t_alias in type_aliases:
             if regex.search(regex.compile(t_alias), t):
                 t = regex.sub(regex.compile(t_alias), type_aliases[t_alias], t)
