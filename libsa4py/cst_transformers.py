@@ -797,7 +797,7 @@ class TypeQualifierResolver(cst.CSTTransformer):
         q = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
         if len(q) != 0:
             q_name, q_src = q[0].name, q[0].source
-            if re.match(r'^\.{1}[a-zA-Z]{1}.+', q_name):
+            if re.match(r'^\.{1}[^.].+', q_name):
                 q_name = q_name[1:]
             elif re.match(r'^\.{2}.+', q_name):
                 q_name = q_name[2:]
