@@ -13,7 +13,7 @@ def process_projects(args):
 
 def apply_types_projects(args):
     tap = TypeAnnotatingProjects(args.p, args.o)
-    tap.run()
+    tap.run(args.j)
 
 
 def main():
@@ -46,6 +46,7 @@ def main():
     apply_parser = sub_parsers.add_parser('apply')
     apply_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
     apply_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
+    apply_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
     apply_parser.set_defaults(func=apply_types_projects)
 
     args = arg_parser.parse_args()
