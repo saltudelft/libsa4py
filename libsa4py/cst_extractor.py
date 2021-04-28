@@ -1,7 +1,7 @@
 from libsa4py.cst_visitor import Visitor
 from libsa4py.representations import ModuleInfo, create_output_seq
 from libsa4py.cst_transformers import TypeAdder, SpaceAdder, StringRemover, CommentAndDocStringRemover, NumberRemover,\
-    TypeAnnotationRemover
+    TypeAnnotationRemover, TypeQualifierResolver
 from libsa4py.nl_preprocessing import normalize_module_code
 from libsa4py.exceptions import ParseError
 
@@ -21,13 +21,16 @@ class Extractor:
         except Exception as e:
             raise ParseError(str(e))
 
+        # Resolves qualified names for a modules' type annotations
+        program_tqr = cst.metadata.MetadataWrapper(parsed_program).visit(TypeQualifierResolver())
+
         v = Visitor()
         if program_types is not None:
-            mw = cst.metadata.MetadataWrapper(parsed_program,
+            mw = cst.metadata.MetadataWrapper(program_tqr,
                                              cache={cst.metadata.TypeInferenceProvider: program_types})
             mw.visit(v)
         else:
-            mw = cst.metadata.MetadataWrapper(parsed_program, cache={cst.metadata.TypeInferenceProvider: {'types':[]}})
+            mw = cst.metadata.MetadataWrapper(program_tqr, cache={cst.metadata.TypeInferenceProvider: {'types':[]}})
             mw.visit(v)
 
         # Transformers

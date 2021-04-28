@@ -22,19 +22,19 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertListEqual(mod_repr_dict_key_exp, list(processed_f.to_dict().keys()))
 
     def test_mod_repr_cls_dict(self):
-        cls_repr_mod_exp = [{'name': 'MyClass', 'variables': {'cls_var': 'int'},
+        cls_repr_mod_exp = [{'name': 'MyClass', 'variables': {'cls_var': 'builtins.int'},
                              'cls_var_occur': {'cls_var': [['MyClass', 'cls_var', 'c', 'n']]},
-                             'funcs': [{'name': '__init__', 'params': {'self': '', 'y': 'float'}, 'ret_exprs': [],
+                             'funcs': [{'name': '__init__', 'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                                         'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                                         'ret_type': 'None', 'variables': {'y': ''},
                                         'fn_var_occur': {'y': [['self', 'y', 'y']]},
                                         'params_descr': {'self': '', 'y': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}},
-                                       {'name': 'cls_fn', 'params': {'self': '', 'c': 'int'},
+                                       {'name': 'cls_fn', 'params': {'self': '', 'c': 'builtins.int'},
                                         'ret_exprs': ['return MyClass.cls_var + c / (2 + n)'],
                                         'params_occur': {'self': [], 'c': [['n', 'c'],
                                                                            ['MyClass', 'cls_var', 'c', 'n']]},
-                                        'ret_type': 'float', 'variables': {'n': ''},
+                                        'ret_type': 'builtins.float', 'variables': {'n': ''},
                                         'fn_var_occur': {'n': [['n', 'c'], ['MyClass', 'cls_var', 'c', 'n']]},
                                         'params_descr': {'self': '', 'c': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}]},
@@ -47,8 +47,8 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertListEqual(cls_repr_mod_exp, processed_f.to_dict()['classes'])
 
     def test_mod_repr_fn_dict(self):
-        fn_repr_mod_exp = [{'name': 'my_fn', 'params': {'x': 'int'}, 'ret_exprs': ['return x + 10'],
-                            'params_occur': {'x': []}, 'ret_type': 'int', 'variables': {}, 'fn_var_occur': {},
+        fn_repr_mod_exp = [{'name': 'my_fn', 'params': {'x': 'builtins.int'}, 'ret_exprs': ['return x + 10'],
+                            'params_occur': {'x': []}, 'ret_type': 'builtins.int', 'variables': {}, 'fn_var_occur': {},
                             'params_descr': {'x': ''}, 'docstring': {'func': None, 'ret': None, 'long_descr': None}},
                            {'name': 'foo', 'params': {}, 'ret_exprs': [], 'params_occur': {}, 'ret_type': 'None',
                             'variables': {}, 'fn_var_occur': {}, 'params_descr': {},
@@ -71,9 +71,10 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(mod_untyped_seq, processed_f.to_dict()['untyped_seq'])
 
     def test_mod_typed_seq(self):
-        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0" \
-                        " 0 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0" \
-                        " 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 " \
+                        "0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 " \
+                        "0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 " \
+                        "0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
@@ -104,15 +105,15 @@ class TestClassRepresentation(unittest.TestCase):
         self.assertEqual(cls_repr_name, processed_f.to_dict()['classes'][0]['name'])
 
     def test_cls_repr_fns_dict(self):
-        fns_repr_cls_exp = [{'name': '__init__', 'params': {'self': '', 'y': 'float'}, 'ret_exprs': [],
+        fns_repr_cls_exp = [{'name': '__init__', 'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                              'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                              'ret_type': 'None', 'variables': {'y': ''}, 'fn_var_occur': {'y': [['self', 'y', 'y']]},
                              'params_descr': {'self': '', 'y': ''},
                              'docstring': {'func': None, 'ret': None, 'long_descr': None}},
-                            {'name': 'cls_fn', 'params': {'self': '', 'c': 'int'},
+                            {'name': 'cls_fn', 'params': {'self': '', 'c': 'builtins.int'},
                              'ret_exprs': ['return MyClass.cls_var + c / (2 + n)'],
                              'params_occur': {'self': [], 'c': [['n', 'c'], ['MyClass', 'cls_var', 'c', 'n']]},
-                             'ret_type': 'float', 'variables': {'n': ''},
+                             'ret_type': 'builtins.float', 'variables': {'n': ''},
                              'fn_var_occur': {'n': [['n', 'c'], ['MyClass', 'cls_var', 'c', 'n']]},
                              'params_descr': {'self': '', 'c': ''},
                              'docstring': {'func': None, 'ret': None, 'long_descr': None}}]
@@ -141,7 +142,7 @@ class TestFunctionRepresentation(unittest.TestCase):
                              list(processed_f.to_dict()['classes'][0]['funcs'][0]['docstring'].keys()))
 
     def test_fn_repr_dict(self):
-        fn_repr_dict = {'name': '__init__', 'params': {'self': '', 'y': 'float'}, 'ret_exprs': [],
+        fn_repr_dict = {'name': '__init__', 'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                         'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                         'ret_type': 'None', 'variables': {'y': ''}, 'fn_var_occur': {'y': [['self', 'y', 'y']]},
                         'params_descr': {'self': '', 'y': ''},
@@ -165,34 +166,38 @@ class TestOutputSequence(unittest.TestCase):
                          read_file('exp_outputs/normalized_mod_code.txt').strip())
 
     def test_create_output_sequence(self):
-        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertEqual(exp_out_seq, create_output_seq(normalize_module_code(processed_f.typed_seq)))
 
     def test_invalid_type_alignment_with_name(self):
         # Misses one type
-        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertRaises(OutputSequenceException, validate_output_seq,
                           normalize_module_code(processed_f.typed_seq), malformed_out_seq)
 
     def test_invalid_non_name_alignment(self):
         # Has an extra type
-        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 $float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        malformed_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         self.assertRaises(OutputSequenceException, validate_output_seq,
                           normalize_module_code(processed_f.typed_seq), malformed_out_seq)
 
     def test_invalid_input_typed_seq(self):
-        valid_out_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 $float$ 0 0 0 $int$ 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0" \
-                      " 0 0 0 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        valid_out_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
 
         # Don't have required spaces between tokens
         invalid_in_typed_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] " \

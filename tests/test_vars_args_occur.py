@@ -1,5 +1,4 @@
 from libsa4py.cst_extractor import Extractor
-from tests.constans import FN_DICT_REPR
 import unittest
 
 
@@ -48,7 +47,7 @@ class TestVarsArgsOccur(unittest.TestCase):
         self.assertDictEqual(cls_vars_use, self.processed_f['classes'][0]['cls_var_occur'])
 
     def test_local_vars_use(self):
-        local_vars_use = {'v': [['v', 'int', 'sum'], ['v_1', 'v', 'p'], ['range', 'v', 'v_1'], ['i', 'v'],
+        local_vars_use = {'v': [['v', 'builtins', 'int', 'sum'], ['v_1', 'v', 'p'], ['range', 'v', 'v_1'], ['i', 'v'],
                                 ['v', 'v_1', 'v'], ['print', 'v'], ['v', 'v_1'], ['print', 'v', 'v_1'],
                                 ['v', 'v_1', 'p'], ['v', 'v_1'], ['v', 'n'], ['v', 'p', 'p']],
                           'v_1': [['v_1', 'v', 'p'], ['range', 'v', 'v_1'], ['i', 'v_1'], ['v', 'v_1', 'v'],

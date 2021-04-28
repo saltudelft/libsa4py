@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple, Union
+from typing import List, Dict, Tuple, Union, Optional
 from libsa4py.representations import FunctionInfo, ClassInfo
 from libsa4py.nl_preprocessing import extract_docstring_descriptions
 from libsa4py import DEV_TYPE_ANNOT, INF_TYPE_ANNOT, UNK_TYPE_ANNOT
@@ -34,7 +34,7 @@ class Visitor(cst.CSTVisitor):
         self.module_variables: Dict[str, str] = {}
         self.module_variables_use: Dict[str, List[list]] = {}
         self.module_all_annotations: Dict[Tuple, Tuple[str, str]] = {}
-        self.module_pyre_inferred_types: List[str] = []
+        #self.module_pyre_inferred_types: List[str] = []
         self.module_type_annot_cove: float = 0.0
         self.module_no_types: Dict[str, int] = {'U': 0, 'D': 0, 'I': 0}
 
@@ -385,7 +385,8 @@ class Visitor(cst.CSTVisitor):
             # Calculating the type annotation coverage of the module.
             all_annot_filtered = {k: v for k, v in self.module_all_annotations.items() if k[2] != 'self'}
             no_dev_type_annot = sum([1 for k, v in all_annot_filtered.items() if v[0] and v[1] == DEV_TYPE_ANNOT])
-            self.module_no_types['D'], self.module_no_types['I'] = no_dev_type_annot, len(self.module_pyre_inferred_types)
+            no_pyre_inf_annot = sum([1 for k, v in all_annot_filtered.items() if v[0] and v[1] == INF_TYPE_ANNOT])
+            self.module_no_types['D'], self.module_no_types['I'] = no_dev_type_annot, no_pyre_inf_annot
             self.module_no_types['U'] = len(all_annot_filtered.keys()) - (self.module_no_types['D'] + \
                                                                           self.module_no_types['I'])  # UNK_TYPE_ANNOT
             self.module_type_annot_cove = round(sum([1 for k, v in all_annot_filtered.items() if v[0]]) \
@@ -401,6 +402,7 @@ class Visitor(cst.CSTVisitor):
             # Convert annotation directly to code representation
             # TODO: Adapt this to support subtokens/subtypes for generics
             converted = self.__convert_node_to_code(node.annotation)
+            #converted = self.__get_qualified_name(node.annotation)
 
             # Strip away newlines, spaces and tabs from the type
             converted = self.__clean_string_whitespace(converted)
@@ -669,6 +671,10 @@ class Visitor(cst.CSTVisitor):
         # Return empty string if docstring undefined
         return docstring if docstring is not None else ""
 
+    def __get_qualified_name(self, node) -> Optional[str]:
+        q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
+        return q_name[0].name if len(q_name) != 0 else None
+
     def __get_type_for_names(self, names: List[cst.Name]):
         n_types: List[Tuple[cst.Name, str, Union[UNK_TYPE_ANNOT, INF_TYPE_ANNOT]]] = []
         for n in names:
@@ -681,7 +687,6 @@ class Visitor(cst.CSTVisitor):
         Extracts type of a `Name` node if `TypeInferenceProvider` given.
         """
         try:
-            q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))[0].name
             ext_type = self.__clean_string_whitespace(self.get_metadata(cst.metadata.TypeInferenceProvider, node))
             # A workaround for pyre's weird inferred integers
             if bool(re.match("^typing_extensions.Literal\[[0-9]+\]$", ext_type)):
@@ -689,8 +694,9 @@ class Visitor(cst.CSTVisitor):
             elif bool(re.match("^typing_extensions.Literal\[.+\]$", ext_type)):
                 ext_type = "str"
 
-            if q_name not in self.module_pyre_inferred_types:
-                self.module_pyre_inferred_types.append(q_name)
+            # q_name = self.__get_qualified_name(node)
+            # if q_name is not None and q_name not in self.module_pyre_inferred_types:
+            #     self.module_pyre_inferred_types.append(q_name)
 
             return ext_type
 

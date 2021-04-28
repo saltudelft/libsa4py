@@ -41,7 +41,7 @@ class TestExtractorPyre(unittest.TestCase):
         """
         Tests whether pyre's inferred types are incorporated into the module output representation
         """
-        exp_mod_vars_types = {"PI": "float", "no": "int", "CONSTANT": "str", "X": "int", "Y": "int"}
+        exp_mod_vars_types = {"PI": "float", "no": "builtins.int", "CONSTANT": "str", "X": "int", "Y": "int"}
         self.assertDictEqual(exp_mod_vars_types, self.extractor_out.to_dict()['variables'])
 
     def test_class_vars_types(self):
@@ -60,12 +60,13 @@ class TestExtractorPyre(unittest.TestCase):
                              self.extractor_out.to_dict()['classes'][0]['funcs'][1]['variables'])
 
     def test_module_seq2seq_repr(self):
-        exp_mod_seq2seq = "0 0 0 $float$ 0 0 0 $int$ 0 0 0 $str$ 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 $int$ 0 0 0" \
-                          " $str$ 0 0 0 $int$ 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" \
-                          " $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Tuple[typing.Tuple[int,int],str]$" \
-                          " 0 0 0 $typing.Tuple[typing.Tuple[int,int],str]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" \
-                          " $typing.Tuple[typing_extensions.Literal['Hello'],typing_extensions.Literal['World']]$ 0 0 0" \
-                          " 0 0 0 0 $float$ 0 $int$ 0 0 0 0 0 $float$ 0 $float$ 0 $float$ 0 0 0 0"
+        exp_mod_seq2seq = "0 0 0 $float$ 0 0 0 $builtins.int$ 0 0 0 $str$ 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 0 " \
+                          "$int$ 0 0 0 $str$ 0 0 0 $int$ 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " \
+                          "0 0 0 0 0 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " \
+                          "$typing.Tuple[typing.Tuple[int,int],str]$ 0 0 0 $typing.Tuple[typing.Tuple[int,int],str]$ 0 " \
+                          "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 " \
+                          "$typing.Tuple[typing_extensions.Literal['Hello'],typing_extensions.Literal['World']]$ 0 0 0 " \
+                          "0 0 0 0 $float$ 0 $int$ 0 0 0 0 0 $float$ 0 $float$ 0 $float$ 0 0 0 0"
 
         self.assertEqual(exp_mod_seq2seq, self.extractor_out.to_dict()['typed_seq'])
 

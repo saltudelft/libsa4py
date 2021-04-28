@@ -1,4 +1,4 @@
-libcst
+libcst>=0.3.18
 numpy
 pandas
 nltk
