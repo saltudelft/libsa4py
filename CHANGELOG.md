@@ -10,6 +10,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - The `--l` CLI arg for `merge` option to process a specified number of projects.
 - Adding a CST transformer to reduce the depth of parametric types.
 - Extracting type annotations with a qualified name from source code files.
+- Adding `apply` command to apply inferred type annotations to source code files.
 
 ### Fixed
 - Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.

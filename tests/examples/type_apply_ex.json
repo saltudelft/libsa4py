@@ -1,0 +1,107 @@
+{
+  "tests/examples": {
+    "src_files": {
+      "type_apply.py": {
+        "untyped_seq": "from pathlib import Path [EOL] [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] [EOL] class Foo : [EOL] foo_v = [string] [EOL] foo_p = Path ( [string] ) [EOL] [EOL] def foo_fn ( self ) : [EOL] d = { [string] : True } [EOL] [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL]",
+        "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+        "imports": [
+          "Path"
+        ],
+        "variables": {
+          "x": "int",
+          "l": "typing.List[typing.Tuple[int, int]]"
+        },
+        "mod_var_occur": {
+          "x": [
+            "v",
+            "x"
+          ],
+          "l": []
+        },
+        "classes": [
+          {
+            "name": "Foo",
+            "variables": {
+              "foo v": "str",
+              "foo p": "pathlib.Path"
+            },
+            "cls_var_occur": {
+              "foo_v": [],
+              "foo_p": []
+            },
+            "funcs": [
+              {
+                "name": "foo fn",
+                "params": {
+                  "self": ""
+                },
+                "ret_exprs": [],
+                "params_occur": {
+                  "self": []
+                },
+                "ret_type": "",
+                "variables": {
+                  "d": "typing.Dict[str, bool]"
+                },
+                "fn_var_occur": {
+                  "d": [
+                    "",
+                    "true"
+                  ]
+                },
+                "params_descr": {
+                  "self": ""
+                },
+                "docstring": {
+                  "func": null,
+                  "ret": null,
+                  "long_descr": null
+                }
+              }
+            ]
+          }
+        ],
+        "funcs": [
+          {
+            "name": "bar",
+            "params": {
+              "x": ""
+            },
+            "ret_exprs": [],
+            "params_occur": {
+              "x": [
+                "v",
+                "x"
+              ]
+            },
+            "ret_type": "",
+            "variables": {
+              "v": "typing.List[str]"
+            },
+            "fn_var_occur": {
+              "v": [
+                "v",
+                "x"
+              ]
+            },
+            "params_descr": {
+              "x": ""
+            },
+            "docstring": {
+              "func": null,
+              "ret": null,
+              "long_descr": null
+            }
+          }
+        ],
+        "set": null,
+        "no_types_annot": {
+          "U": 9,
+          "D": 0,
+          "I": 0
+        },
+        "type_annot_cove": 0.0
+      }
+    }
+  }
+}

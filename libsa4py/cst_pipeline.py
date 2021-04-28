@@ -9,14 +9,17 @@ from os.path import join
 from pathlib import Path
 from datetime import timedelta
 from joblib import delayed
+from tqdm import tqdm
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
+from libsa4py.cst_transformers import TypeApplier
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
 
+import libcst as cst
 import logging
 import logging.config
 
@@ -231,3 +234,34 @@ class Pipeline:
         if self.use_pyre:
             pyre_kill_all_servers()
         logging.shutdown()
+
+
+class TypeAnnotatingProjects:
+    """
+    It applies the inferred type annotations to the input dataset
+    """
+
+    def __init__(self, projects_path: str, output_path: str):
+        self.projects_path = projects_path
+        self.output_path = output_path
+
+    def process_project(self, proj_json_path: str):
+        proj_json = load_json(proj_json_path)
+        for p in proj_json.keys():
+            for i, (f, f_d) in enumerate(proj_json[p]['src_files'].items()):
+                f_read = read_file(join(self.projects_path, f))
+                if len(f_read) != 0:
+                    try:
+                        f_parsed = cst.parse_module(f_read)
+                        try:
+                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(TypeApplier(f_d))
+                            write_file(join(self.projects_path, f), f_parsed.code)
+                        except KeyError as ke:
+                            print(f"A variable not found | project {proj_json_path} | file {f}", ke)
+                    except cst._exceptions.ParserSyntaxError as pse:
+                        print(f"Can't parsed file {f} in project {proj_json_path}", pse)
+
+    def run(self, jobs: int):
+        proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
+        proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
+        ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) for p_j in proj_jsons)

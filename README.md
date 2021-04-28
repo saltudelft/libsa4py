@@ -52,5 +52,15 @@ Description:
 - `--o $OUTPUT_PATH`: Path to the processed projects, used in the previous processing step.
 - `--l $LIMIT`: Number of projects to be merged. [**Optional**]
 
+## Applying types
+To apply Pyre's inferred types to projects, run the following command:
+```
+libsa4py apply --p $REPOS_PATH --o $OUTPUT_PATH
+```
+
+Description:
+- `--p $REPOS_PATH`: The path to the Python corpus or dataset.
+- `--o $OUTPUT_PATH`: Path to the processed projects, used in the previous processing step.
+
 # JSON Output
 After processing each project, a JSON-formatted file is produced, which is described [here](https://github.com/saltudelft/light-sa-type-inf/blob/master/JSONOutput.md).
