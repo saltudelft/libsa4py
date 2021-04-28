@@ -852,6 +852,7 @@ class ParametricTypeDepthReducer(cst.CSTTransformer):
 class TypeApplier(cst.CSTTransformer):
     """
     It applies (inferred) type annotations to a source code file.
+    Currently, it applies only variables' type annotations.
     """
 
     METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider,)
@@ -859,9 +860,7 @@ class TypeApplier(cst.CSTTransformer):
     def __init__(self, f_processeed_dict: dict):
         self.f_processed_dict = f_processeed_dict
         self.cls_visited = []
-        #self.last_cls_visited_name = None
         self.fn_visited = []
-        #self.last_fn_visited_name = None
 
         self.last_visited_assign_t_name = None
         self.last_visited_assign_t_count = 0
@@ -910,16 +909,12 @@ class TypeApplier(cst.CSTTransformer):
         self.cls_visited.append(node.name.value)
         self.current_cls_vars = self.__get_var_names_counter(node, cst.metadata.ClassScope)
 
-        #self.last_cls_visited_name = node.name.value
-
     def visit_FunctionDef(self, node: "FunctionDef"):
         self.fn_visited.append(node.name.value)
         self.current_fn_vars = self.__get_var_names_counter(node, cst.metadata.FunctionScope)
-        #elf.last_fn_visited_name = node.name.value
 
     def leave_ClassDef(self, original_node: cst.ClassDef, updated_node: cst.ClassDef):
         self.cls_visited.pop()
-        #self.last_cls_visited_name = self.cls_visited[-1]
         return updated_node
 
     def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):
@@ -937,22 +932,18 @@ class TypeApplier(cst.CSTTransformer):
                 if len(self.fn_visited) != 0:
                     # A class method's variable
                     if self.current_fn_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        #print("CMV", self.current_fn_vars[original_node.body[0].targets[0].target.value] )
                         t = self.__get_cls_fn_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
                 else:
                     # A class variable
                     if self.current_cls_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        #print("CV", self.current_cls_vars[original_node.body[0].targets[0].target.value])
                         t = self.__get_cls_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
             elif len(self.fn_visited) != 0:
                 # A module function's variable
                 if self.current_fn_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                    #print("MFV", self.current_fn_vars[original_node.body[0].targets[0].target.value])
                     t = self.__get_fn_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
             else:
                 # A module's variables
                 t = self.__get_mod_vars()[self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value)]
-                #print(original_node)
 
             if t is not None:
                 return updated_node.with_changes(body=[cst.AnnAssign(
