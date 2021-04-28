@@ -29,7 +29,8 @@ class TestQualifiedTypes(unittest.TestCase):
                       's': '[]', 'u': '"Foo"', 'foo': 'Foo', 'b': 'True',
                       'foo_t': 'typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]',
                       'N': 'typing.Union[typing.List, None]',
-                      'rl': 'representations.Bar'}
+                      'rl': 'representations.Bar',
+                      'relative_i': 'test_imports.TestImports'}
 
         self.assertDictEqual(exp_q_type, self.processed_f['variables'])
 

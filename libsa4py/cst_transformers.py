@@ -4,6 +4,7 @@ from libsa4py.nl_preprocessing import NLPreprocessor
 import libcst as cst
 import libcst.matchers as match
 import re
+import regex
 
 
 class CommentAndDocStringRemover(cst.CSTTransformer):
@@ -796,8 +797,10 @@ class TypeQualifierResolver(cst.CSTTransformer):
         q = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
         if len(q) != 0:
             q_name, q_src = q[0].name, q[0].source
-            if q_name[0] == '.':
+            if re.match(r'^\.{1}[^.].+', q_name):
                 q_name = q_name[1:]
+            elif re.match(r'^\.{2}.+', q_name):
+                q_name = q_name[2:]
             if (self.last_visited_name.value, q_src) not in self.q_names_cache:
                 self.q_names_cache[(self.last_visited_name.value, q_src)] = q_name
 
@@ -946,13 +949,15 @@ class TypeApplier(cst.CSTTransformer):
                 t = self.__get_mod_vars()[self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value)]
 
             if t is not None:
-                return updated_node.with_changes(body=[cst.AnnAssign(
-                    target=original_node.body[0].targets[0].target,
-                    value=original_node.body[0].value,
-                    annotation=self.__name2annotation(t),
-                    equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
-                                          whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
-                )
+                t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
+                if t_annot_node is not None:
+                    return updated_node.with_changes(body=[cst.AnnAssign(
+                        target=original_node.body[0].targets[0].target,
+                        value=original_node.body[0].value,
+                        annotation=t_annot_node,
+                        equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
+                                            whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
+                    )
 
         return original_node
 
@@ -963,7 +968,7 @@ class TypeApplier(cst.CSTTransformer):
         try:
             return ext_annot(type_name)
         except cst._exceptions.ParserSyntaxError:
-            return ext_annot('"%s"' % type_name)
+            return None
 
     def visit_AssignTarget(self, node: cst.AssignTarget):
         if match.matches(node, match.AssignTarget(target=match.Name(value=match.DoNotCare()))):
@@ -974,3 +979,25 @@ class TypeApplier(cst.CSTTransformer):
             else:
                 self.last_visited_assign_t_count = 1
             self.last_visited_assign_t_name = node.target.value
+
+    def resolve_type_alias(self, t: str):
+        type_aliases = {'^{}$|^Dict$|(?<=.*)Dict\[\](?<=.*)|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$': 'dict',
+                        '^Set$|(?<=.*)Set\[\](?<=.*)|^Set\[Any\]$': 'set',
+                        '^Tuple$|(?<=.*)Tuple\[\](?<=.*)|^Tuple\[Any\]$|(?<=.*)Tuple\[Any, *?\.\.\.\](?=.*)|^Tuple\[unknown, *?unknown\]$|^Tuple\[unknown, *?Any\]$|(?<=.*)tuple\[\](?<=.*)': 'tuple',
+                        '^Tuple\[(.+), *?\.\.\.\]$': r'Tuple[\1]',
+                        '\\bText\\b': 'str',
+                        '^\[\]$|(?<=.*)List\[\](?<=.*)|^List\[Any\]$|^List$': 'list',
+                        '^\[{}\]$': 'List[dict]',
+                        '(?<=.*)Literal\[\'.*?\'\](?=.*)': 'Literal',
+                        '(?<=.*)Literal\[\d+\](?=.*)': 'Literal',  # Maybe int?!
+                        '^Callable\[\.\.\., *?Any\]$|^Callable\[\[Any\], *?Any\]$|^Callable[[Named(x, Any)], Any]$': 'Callable',
+                        '^Iterator[Any]$': 'Iterator',
+                        '^OrderedDict[Any, *?Any]$': 'OrderedDict',
+                        '^Counter[Any]$': 'Counter',
+                        '(?<=.*)Match[Any](?<=.*)': 'Match',
+                        '^\.(.+)': r'\1',
+                        '(?<=.*)Optional\[\](?<=.*)|': 'Optional'}
+        for t_alias in type_aliases:
+            if regex.search(regex.compile(t_alias), t):
+                t = regex.sub(regex.compile(t_alias), type_aliases[t_alias], t)
+        return t

@@ -75,6 +75,9 @@ def read_file(filename: str) -> str:
     with open(filename) as file:
         return file.read()
 
+def write_file(filename: str, content: str):
+    with open(filename, 'w') as file:
+        file.write(content)
 
 def save_json(filename: str, dict_obj: dict):
     """
