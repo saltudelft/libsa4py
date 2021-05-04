@@ -854,12 +854,12 @@ class ParametricTypeDepthReducer(cst.CSTTransformer):
 class TypeApplier(cst.CSTTransformer):
     """
     It applies (inferred) type annotations to a source code file.
-    Currently, it applies only variables' type annotations.
+    Specifically, it applies the type of arguments, return types, and variables' type.
     """
 
     METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider,)
 
-    def __init__(self, f_processeed_dict: dict):
+    def __init__(self, f_processeed_dict: dict, apply_nlp: bool=True):
         self.f_processed_dict = f_processeed_dict
         self.cls_visited = []
         self.fn_visited = []
@@ -870,33 +870,39 @@ class TypeApplier(cst.CSTTransformer):
         self.current_cls_vars = None
         self.current_fn_vars = None
 
-        self.nlp_p = NLPreprocessor()
+        if apply_nlp:
+            self.nlp_p = NLPreprocessor().process_identifier
+        else:
+            self.nlp_p = lambda x: x
+
+    def __get_fn(self, fn_name: str) -> dict:
+        if len(self.cls_visited) != 0:
+            fns = self.cls_visited[-1]['funcs']
+        else:
+            fns = self.f_processed_dict['funcs']
+
+        for fn in fns:
+            if fn['name'] == self.nlp_p(fn_name):
+                return fn
+
+    def __get_fn_param_type(self, param_name: str):
+        fn_param_type = self.fn_visited[-1]['params'][self.nlp_p(param_name)]
+        if fn_param_type != "":
+            return self.__name2annotation(self.resolve_type_alias(fn_param_type))
+
+    def __get_cls(self, cls_name: str) -> dict:
+        for cls in self.f_processed_dict['classes']:
+            if cls['name'] == cls_name:
+                return cls
 
     def __get_fn_vars(self, var_name: str) -> dict:
-        for fn in self.f_processed_dict['funcs']:
-            if fn['name'] == self.nlp_p.process_identifier(self.fn_visited[-1]):
-                if var_name in fn['variables']:
-                    return fn['variables'][var_name]
-                else:
-                    continue
+        if var_name in self.fn_visited[-1]['variables']:
+            if self.fn_visited[-1]['variables'][var_name] != "":
+                return self.fn_visited[-1]['variables'][var_name]
 
     def __get_cls_vars(self, var_name: str) -> dict:
-        for cls in self.f_processed_dict['classes']:
-            if cls['name'] == self.cls_visited[-1]:
-                if var_name in cls['variables']:
-                    return cls['variables'][var_name]
-                else:
-                    continue
-
-    def __get_cls_fn_vars(self, var_name: str):
-        for cls in self.f_processed_dict['classes']:
-            if cls['name'] == self.cls_visited[-1]:
-                for fn in cls['funcs']:
-                    if fn['name'] == self.nlp_p.process_identifier(self.fn_visited[-1]):
-                        if var_name in fn['variables']:
-                            return fn['variables'][var_name]
-                        else:
-                            continue
+        if var_name in self.cls_visited[-1]['variables']:
+            return self.cls_visited[-1]['variables'][var_name]
 
     def __get_mod_vars(self):
         return self.f_processed_dict['variables']
@@ -908,11 +914,12 @@ class TypeApplier(cst.CSTTransformer):
                                                                                            n['name']), scope)])
 
     def visit_ClassDef(self, node: cst.ClassDef):
-        self.cls_visited.append(node.name.value)
+        self.cls_visited.append(self.__get_cls(node.name.value))
+
         self.current_cls_vars = self.__get_var_names_counter(node, cst.metadata.ClassScope)
 
-    def visit_FunctionDef(self, node: "FunctionDef"):
-        self.fn_visited.append(node.name.value)
+    def visit_FunctionDef(self, node: cst.FunctionDef):
+        self.fn_visited.append(self.__get_fn(node.name.value))
         self.current_fn_vars = self.__get_var_names_counter(node, cst.metadata.FunctionScope)
 
     def leave_ClassDef(self, original_node: cst.ClassDef, updated_node: cst.ClassDef):
@@ -920,7 +927,13 @@ class TypeApplier(cst.CSTTransformer):
         return updated_node
 
     def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):
+        fn_ret_type = self.fn_visited[-1]['ret_type']
         self.fn_visited.pop()
+        if fn_ret_type != "":
+            fn_ret_type = self.__name2annotation(self.resolve_type_alias(fn_ret_type))
+            if fn_ret_type is not None:
+                return updated_node.with_changes(returns=fn_ret_type)
+
         return updated_node
 
     def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
@@ -934,18 +947,18 @@ class TypeApplier(cst.CSTTransformer):
                 if len(self.fn_visited) != 0:
                     # A class method's variable
                     if self.current_fn_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        t = self.__get_cls_fn_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
+                        t = self.__get_fn_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
                 else:
                     # A class variable
                     if self.current_cls_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        t = self.__get_cls_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
+                        t = self.__get_cls_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
             elif len(self.fn_visited) != 0:
                 # A module function's variable
                 if self.current_fn_vars[original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                    t = self.__get_fn_vars(self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value))
+                    t = self.__get_fn_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
             else:
                 # A module's variables
-                t = self.__get_mod_vars()[self.nlp_p.process_identifier(original_node.body[0].targets[0].target.value)]
+                t = self.__get_mod_vars()[self.nlp_p(original_node.body[0].targets[0].target.value)]
 
             if t is not None:
                 t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
@@ -957,6 +970,13 @@ class TypeApplier(cst.CSTTransformer):
                         equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
+
+        return original_node
+
+    def leave_Param(self, original_node: cst.Param, updated_node: cst.Param):
+        fn_param_type = self.__get_fn_param_type(original_node.name.value)
+        if fn_param_type is not None:
+            return updated_node.with_changes(annotation=fn_param_type)
 
         return original_node
 
