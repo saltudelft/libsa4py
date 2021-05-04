@@ -33,13 +33,15 @@
               {
                 "name": "foo fn",
                 "params": {
-                  "self": ""
+                  "self": "",
+                  "y": ""
                 },
-                "ret_exprs": [],
+                "ret_exprs": ["return d"],
                 "params_occur": {
-                  "self": []
+                  "self": [],
+                  "y": []
                 },
-                "ret_type": "",
+                "ret_type": "typing.Dict[str, bool]",
                 "variables": {
                   "d": "typing.Dict[str, bool]"
                 },
@@ -65,16 +67,16 @@
           {
             "name": "bar",
             "params": {
-              "x": ""
+              "x": "typing.List[str]"
             },
-            "ret_exprs": [],
+            "ret_exprs": ["return v"],
             "params_occur": {
               "x": [
                 "v",
                 "x"
               ]
             },
-            "ret_type": "",
+            "ret_type": "typing.List[str]",
             "variables": {
               "v": "typing.List[str]"
             },

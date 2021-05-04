@@ -10,10 +10,12 @@ class Foo:
     foo_v = 'Hello, Foo!'
     foo_p = Path('/home/foo/bar')
 
-    def foo_fn(self):
+    def foo_fn(self, y):
         d = {"foo": True}
+        return d
 def Bar(x=['apple', 'orange']):
     v = x
+    return v
 """
 
 test_file_exp = """from pathlib import Path
@@ -23,10 +25,12 @@ class Foo:
     foo_v: str = 'Hello, Foo!'
     foo_p: pathlib.Path = Path('/home/foo/bar')
 
-    def foo_fn(self):
+    def foo_fn(self, y)-> typing.Dict[str, bool]:
         d: typing.Dict[str, bool] = {"foo": True}
-def Bar(x=['apple', 'orange']):
+        return d
+def Bar(x: typing.List[str]=['apple', 'orange'])-> typing.List[str]:
     v: typing.List[str] = x
+    return v
 """
 
 
