@@ -23,7 +23,8 @@ class TestSpaceAdder(unittest.TestCase):
         cls.out_p = cst.parse_module(read_file('examples/space_tokens.py'))
 
         v = Visitor()
-        cls.out_p.visit(v)
+        mw = cst.metadata.MetadataWrapper(cls.out_p, cache={cst.metadata.TypeInferenceProvider: {'types': []}})
+        mw.visit(v)
 
         cls.out_untyped_s = cls.out_p.visit(SpaceAdder())
         cls.out_typed_s = cls.out_p.visit(TypeAdder(v.module_all_annotations)).visit(SpaceAdder())
@@ -114,7 +115,8 @@ class TestTypeAdder(unittest.TestCase):
     def setUpClass(cls):
         cls.out_p = cst.parse_module(read_file('examples/types_prop.py'))
         v = Visitor()
-        cls.out_p.visit(v)
+        mw = cst.metadata.MetadataWrapper(cls.out_p, cache={cst.metadata.TypeInferenceProvider: {'types': []}})
+        mw.visit(v)
         cls.out_p = cls.out_p.visit(TypeAdder(v.module_all_annotations))
 
     def test_propagated_types_file(self):

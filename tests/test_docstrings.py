@@ -18,6 +18,7 @@ class TestDocstrings(unittest.TestCase):
     def test_basic_docstring(self):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'basic_docstring'
+        fn_expected['q_name'] = 'basic_docstring'
         fn_expected['docstring']['func'] = 'This is a basic docstring'
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][0])
@@ -25,6 +26,7 @@ class TestDocstrings(unittest.TestCase):
     def test_google_docstring(self):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'google_docstring'
+        fn_expected['q_name'] = 'google_docstring'
         fn_expected['params'] = {'param1': '', 'param2': ''}
         fn_expected['ret_exprs'] = ['return True', 'return False']
         fn_expected['params_occur'] = {'param1': [['len', 'param2', 'param1']], 'param2': [['len', 'param2', 'param1']]}
@@ -37,6 +39,7 @@ class TestDocstrings(unittest.TestCase):
     def test_docstring(self):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'rest_docstring'
+        fn_expected['q_name'] = 'rest_docstring'
         fn_expected['params'] = {'param1': '', 'param2': ''}
         fn_expected['ret_exprs'] = ['return True', 'return False']
         fn_expected['params_occur'] = {'param1': [['len', 'param2', 'param1']], 'param2': [['len', 'param2', 'param1']]}
@@ -49,6 +52,7 @@ class TestDocstrings(unittest.TestCase):
     def test_numpy_docstring(self):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'numpy_docstring'
+        fn_expected['q_name'] = 'numpy_docstring'
         fn_expected['params'] = {'param1': '', 'param2': ''}
         fn_expected['ret_exprs'] = ['return True', 'return False']
         fn_expected['params_occur'] = {'param1': [['len', 'param2', 'param1']], 'param2': [['len', 'param2', 'param1']]}
@@ -62,5 +66,6 @@ class TestDocstrings(unittest.TestCase):
     def test_no_docstring(self):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'no_docstring'
+        fn_expected['q_name'] = 'no_docstring'
         fn_expected['ret_exprs'] = ['return None']
         fn_expected['docstring'] = {'func': None, 'ret': None, 'long_descr': None}

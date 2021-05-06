@@ -72,8 +72,7 @@ class Visitor(cst.CSTVisitor):
         # Create function info representation for newly visited function
         func = FunctionInfo(node.name.value)  # Pass in function name
         func.node = node  # Update node
-
-
+        func.q_name = self.__get_qualified_name(node.name)
         # Push function info on top of the stack, thus increasing stack
         # depth to account for the current function.
         self.stack.append(func)

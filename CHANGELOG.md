@@ -11,6 +11,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Adding a CST transformer to reduce the depth of parametric types.
 - Extracting type annotations with a qualified name from source code files.
 - Adding `apply` command to apply inferred type annotations to source code files.
+- Adding a qualified name for functions in the JSON field `q_name`.
 
 ### Fixed
 - Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.
