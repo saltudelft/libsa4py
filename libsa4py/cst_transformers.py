@@ -866,6 +866,7 @@ class TypeApplier(cst.CSTTransformer):
 
         self.last_visited_assign_t_name = None
         self.last_visited_assign_t_count = 0
+        self.lambda_d = 0
 
         self.current_cls_vars = None
         self.current_fn_vars = None
@@ -915,16 +916,15 @@ class TypeApplier(cst.CSTTransformer):
 
     def visit_ClassDef(self, node: cst.ClassDef):
         self.cls_visited.append(self.__get_cls(node.name.value))
-
         self.current_cls_vars = self.__get_var_names_counter(node, cst.metadata.ClassScope)
-
-    def visit_FunctionDef(self, node: cst.FunctionDef):
-        self.fn_visited.append(self.__get_fn(node.name.value))
-        self.current_fn_vars = self.__get_var_names_counter(node, cst.metadata.FunctionScope)
 
     def leave_ClassDef(self, original_node: cst.ClassDef, updated_node: cst.ClassDef):
         self.cls_visited.pop()
         return updated_node
+
+    def visit_FunctionDef(self, node: cst.FunctionDef):
+        self.fn_visited.append(self.__get_fn(node.name.value))
+        self.current_fn_vars = self.__get_var_names_counter(node, cst.metadata.FunctionScope)
 
     def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):
         fn_ret_type = self.fn_visited[-1]['ret_type']
@@ -935,6 +935,13 @@ class TypeApplier(cst.CSTTransformer):
                 return updated_node.with_changes(returns=fn_ret_type)
 
         return updated_node
+
+    def visit_Lambda(self, node: cst.Lambda):
+        self.lambda_d += 1
+
+    def leave_Lambda(self, original_node: cst.Lambda, updated_node: cst.Lambda):
+        self.lambda_d -= 1
+        return original_node
 
     def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
                                   updated_node: cst.SimpleStatementLine):
@@ -974,9 +981,10 @@ class TypeApplier(cst.CSTTransformer):
         return original_node
 
     def leave_Param(self, original_node: cst.Param, updated_node: cst.Param):
-        fn_param_type = self.__get_fn_param_type(original_node.name.value)
-        if fn_param_type is not None:
-            return updated_node.with_changes(annotation=fn_param_type)
+        if self.lambda_d == 0:
+            fn_param_type = self.__get_fn_param_type(original_node.name.value)
+            if fn_param_type is not None:
+                return updated_node.with_changes(annotation=fn_param_type)
 
         return original_node
 

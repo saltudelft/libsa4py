@@ -78,13 +78,15 @@
             },
             "ret_type": "typing.List[str]",
             "variables": {
-              "v": "typing.List[str]"
+              "v": "typing.List[str]",
+              "l": ""
             },
             "fn_var_occur": {
               "v": [
                 "v",
                 "x"
-              ]
+              ],
+              "l": []
             },
             "params_descr": {
               "x": ""

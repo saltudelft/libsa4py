@@ -15,6 +15,7 @@ class Foo:
         return d
 def Bar(x=['apple', 'orange']):
     v = x
+    l = lambda e: e+1
     return v
 """
 
@@ -30,6 +31,7 @@ class Foo:
         return d
 def Bar(x: typing.List[str]=['apple', 'orange'])-> typing.List[str]:
     v: typing.List[str] = x
+    l = lambda e: e+1
     return v
 """
 
