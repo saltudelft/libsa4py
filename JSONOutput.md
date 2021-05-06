@@ -67,6 +67,7 @@ The following JSON Object represents a processed function:
 ```json
 {
   "name": "",
+  "q_name": "",
   "params": {"param_name":  ""},
   "ret_exprs": [],
   "params_occur": {"param_name":  []},
@@ -84,6 +85,7 @@ The following JSON Object represents a processed function:
 
 Description of the fields:
 - `name`: The name of the processed function.
+- `q_name`: The qualified name of the processed function.
 - `params`: Contains the parameters of the processed function and their type if available.
 - `ret_exprs`: Contains the return expressions of the processed function.
 - `ret_type`: Return type of the processed function if available.
