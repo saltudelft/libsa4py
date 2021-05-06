@@ -51,6 +51,7 @@
                         "funcs": [
                             {
                                 "name": "bar",
+                                "q_name": "Foo.bar",
                                 "params": {
                                     "self": ""
                                 },
@@ -76,6 +77,7 @@
                 "funcs": [
                     {
                         "name": "delta",
+                        "q_name": "delta",
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -205,6 +207,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Foo.__init__",
                                 "params": {
                                     "self": "",
                                     "x": "typing.Tuple",
@@ -278,6 +281,7 @@
                             },
                             {
                                 "name": "bar",
+                                "q_name": "Foo.bar",
                                 "params": {
                                     "self": ""
                                 },
@@ -301,6 +305,7 @@
                             },
                             {
                                 "name": "shadow_qn",
+                                "q_name": "Foo.shadow_qn",
                                 "params": {
                                     "self": ""
                                 },
@@ -399,6 +404,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Bar.__init__",
                                 "params": {
                                     "self": ""
                                 },
@@ -470,6 +476,7 @@
                 "funcs": [
                     {
                         "name": "foo",
+                        "q_name": "foo",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -638,6 +645,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "TestVarArgOccur.__init__",
                                 "params": {
                                     "self": "",
                                     "x": "builtins.int",
@@ -706,6 +714,7 @@
                             },
                             {
                                 "name": "fn_params_occur",
+                                "q_name": "TestVarArgOccur.fn_params_occur",
                                 "params": {
                                     "self": "",
                                     "param1": "builtins.int",
@@ -911,6 +920,7 @@
                             },
                             {
                                 "name": "local_vars_usage",
+                                "q_name": "TestVarArgOccur.local_vars_usage",
                                 "params": {
                                     "self": "",
                                     "p": ""
@@ -1068,6 +1078,7 @@
                             },
                             {
                                 "name": "class_vars_usage",
+                                "q_name": "TestVarArgOccur.class_vars_usage",
                                 "params": {
                                     "self": ""
                                 },
@@ -1126,6 +1137,7 @@
                             },
                             {
                                 "name": "module_vars_usage",
+                                "q_name": "TestVarArgOccur.module_vars_usage",
                                 "params": {
                                     "self": "",
                                     "add_something": ""
@@ -1193,6 +1205,7 @@
                             },
                             {
                                 "name": "formatted_str",
+                                "q_name": "TestVarArgOccur.formatted_str",
                                 "params": {
                                     "self": "",
                                     "p": ""
@@ -1280,6 +1293,7 @@
                 "funcs": [
                     {
                         "name": "basic_docstring",
+                        "q_name": "basic_docstring",
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -1295,6 +1309,7 @@
                     },
                     {
                         "name": "google_docstring",
+                        "q_name": "google_docstring",
                         "params": {
                             "param1": "",
                             "param2": ""
@@ -1334,6 +1349,7 @@
                     },
                     {
                         "name": "rest_docstring",
+                        "q_name": "rest_docstring",
                         "params": {
                             "param1": "",
                             "param2": ""
@@ -1373,6 +1389,7 @@
                     },
                     {
                         "name": "numpy_docstring",
+                        "q_name": "numpy_docstring",
                         "params": {
                             "param1": "",
                             "param2": ""
@@ -1412,6 +1429,7 @@
                     },
                     {
                         "name": "no_docstring",
+                        "q_name": "no_docstring",
                         "params": {},
                         "ret_exprs": [
                             "return None"
@@ -1452,6 +1470,7 @@
                 "funcs": [
                     {
                         "name": "inner_imports",
+                        "q_name": "inner_imports",
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -1498,6 +1517,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Bar.__init__",
                                 "params": {
                                     "self": "",
                                     "x": "builtins.float"
@@ -1569,6 +1589,7 @@
                 "funcs": [
                     {
                         "name": "foo",
+                        "q_name": "foo",
                         "params": {
                             "x": "builtins.int",
                             "l": "builtins.list"
@@ -1652,6 +1673,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Test.__init__",
                                 "params": {
                                     "self": "",
                                     "x": "builtins.int"
@@ -1754,6 +1776,7 @@
                             },
                             {
                                 "name": "local_var_assings",
+                                "q_name": "Test.local_var_assings",
                                 "params": {
                                     "self": ""
                                 },
@@ -1803,6 +1826,7 @@
                             },
                             {
                                 "name": "tuple_assigns",
+                                "q_name": "Test.tuple_assigns",
                                 "params": {
                                     "self": ""
                                 },
@@ -1976,6 +2000,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Foo.__init__",
                                 "params": {
                                     "self": "",
                                     "t": ""
@@ -2057,6 +2082,7 @@
                             },
                             {
                                 "name": "local_vars",
+                                "q_name": "Foo.local_vars",
                                 "params": {
                                     "self": ""
                                 },
@@ -2190,6 +2216,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Delta.__init__",
                                 "params": {
                                     "self": ""
                                 },
@@ -2229,6 +2256,7 @@
                 "funcs": [
                     {
                         "name": "foo",
+                        "q_name": "foo",
                         "params": {
                             "x": "",
                             "y": "",
@@ -2403,6 +2431,7 @@
                     },
                     {
                         "name": "bar",
+                        "q_name": "bar",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2485,6 +2514,7 @@
                 "funcs": [
                     {
                         "name": "add",
+                        "q_name": "add",
                         "params": {
                             "x": "builtins.int",
                             "y": "builtins.int"
@@ -2521,6 +2551,7 @@
                     },
                     {
                         "name": "noargs",
+                        "q_name": "noargs",
                         "params": {},
                         "ret_exprs": [
                             "return 5"
@@ -2538,6 +2569,7 @@
                     },
                     {
                         "name": "no_params",
+                        "q_name": "no_params",
                         "params": {},
                         "ret_exprs": [
                             "return 0"
@@ -2555,6 +2587,7 @@
                     },
                     {
                         "name": "noreturn",
+                        "q_name": "noreturn",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2581,6 +2614,7 @@
                     },
                     {
                         "name": "return_none",
+                        "q_name": "return_none",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2607,6 +2641,7 @@
                     },
                     {
                         "name": "return_optional",
+                        "q_name": "return_optional",
                         "params": {
                             "y": "builtins.list"
                         },
@@ -2636,6 +2671,7 @@
                     },
                     {
                         "name": "untyped_args",
+                        "q_name": "untyped_args",
                         "params": {
                             "x": "",
                             "y": ""
@@ -2672,6 +2708,7 @@
                     },
                     {
                         "name": "inner",
+                        "q_name": "with_inner.<locals>.inner",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2695,6 +2732,7 @@
                     },
                     {
                         "name": "with_inner",
+                        "q_name": "with_inner",
                         "params": {},
                         "ret_exprs": [
                             "return inner(10)"
@@ -2712,6 +2750,7 @@
                     },
                     {
                         "name": "varargs",
+                        "q_name": "varargs",
                         "params": {
                             "xs": "builtins.int"
                         },
@@ -2749,6 +2788,7 @@
                     },
                     {
                         "name": "untyped_varargs",
+                        "q_name": "untyped_varargs",
                         "params": {
                             "xs": ""
                         },
@@ -2786,6 +2826,7 @@
                     },
                     {
                         "name": "kwarg_method",
+                        "q_name": "kwarg_method",
                         "params": {
                             "a": "builtins.int",
                             "b": "builtins.int",
@@ -2815,6 +2856,7 @@
                     },
                     {
                         "name": "async_fn",
+                        "q_name": "async_fn",
                         "params": {
                             "y": "builtins.int"
                         },
@@ -2838,6 +2880,7 @@
                     },
                     {
                         "name": "abstract_fn",
+                        "q_name": "abstract_fn",
                         "params": {
                             "name": "builtins.str"
                         },
@@ -2898,6 +2941,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "MyClass.__init__",
                                 "params": {
                                     "self": "",
                                     "y": "builtins.float"
@@ -2944,6 +2988,7 @@
                             },
                             {
                                 "name": "cls_fn",
+                                "q_name": "MyClass.cls_fn",
                                 "params": {
                                     "self": "",
                                     "c": "builtins.int"
@@ -3003,6 +3048,7 @@
                         "funcs": [
                             {
                                 "name": "__init__",
+                                "q_name": "Bar.__init__",
                                 "params": {
                                     "self": ""
                                 },
@@ -3028,6 +3074,7 @@
                 "funcs": [
                     {
                         "name": "my_fn",
+                        "q_name": "my_fn",
                         "params": {
                             "x": "builtins.int"
                         },
@@ -3051,6 +3098,7 @@
                     },
                     {
                         "name": "foo",
+                        "q_name": "foo",
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},

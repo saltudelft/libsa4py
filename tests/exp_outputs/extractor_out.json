@@ -30,6 +30,7 @@
             "funcs": [
                 {
                     "name": "__init__",
+                    "q_name": "MyClass.__init__",
                     "params": {
                         "self": "",
                         "y": "builtins.float"
@@ -76,6 +77,7 @@
                 },
                 {
                     "name": "cls_fn",
+                    "q_name": "MyClass.cls_fn",
                     "params": {
                         "self": "",
                         "c": "builtins.int"
@@ -135,6 +137,7 @@
             "funcs": [
                 {
                     "name": "__init__",
+                    "q_name": "Bar.__init__",
                     "params": {
                         "self": ""
                     },
@@ -160,6 +163,7 @@
     "funcs": [
         {
             "name": "my_fn",
+            "q_name": "my_fn",
             "params": {
                 "x": "builtins.int"
             },
@@ -183,6 +187,7 @@
         },
         {
             "name": "foo",
+            "q_name": "foo",
             "params": {},
             "ret_exprs": [],
             "params_occur": {},
