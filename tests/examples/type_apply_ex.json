@@ -2,110 +2,219 @@
   "tests/examples": {
     "src_files": {
       "type_apply.py": {
-        "untyped_seq": "from pathlib import Path [EOL] [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] [EOL] class Foo : [EOL] foo_v = [string] [EOL] foo_p = Path ( [string] ) [EOL] [EOL] def foo_fn ( self ) : [EOL] d = { [string] : True } [EOL] [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL]",
-        "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
-        "imports": [
-          "Path"
-        ],
-        "variables": {
-          "x": "int",
-          "l": "typing.List[typing.Tuple[int, int]]"
-        },
-        "mod_var_occur": {
-          "x": [
-            "v",
-            "x"
-          ],
-          "l": []
-        },
-        "classes": [
-          {
-            "name": "Foo",
-            "variables": {
-              "foo v": "str",
-              "foo p": "pathlib.Path"
-            },
-            "cls_var_occur": {
-              "foo_v": [],
-              "foo_p": []
-            },
-            "funcs": [
-              {
-                "name": "foo fn",
-                "params": {
-                  "self": "",
-                  "y": ""
-                },
-                "ret_exprs": ["return d"],
-                "params_occur": {
-                  "self": [],
-                  "y": []
-                },
-                "ret_type": "typing.Dict[str, bool]",
-                "variables": {
-                  "d": "typing.Dict[str, bool]"
-                },
-                "fn_var_occur": {
-                  "d": [
-                    "",
-                    "true"
-                  ]
-                },
-                "params_descr": {
-                  "self": ""
-                },
-                "docstring": {
-                  "func": null,
-                  "ret": null,
-                  "long_descr": null
-                }
-              }
-            ]
-          }
-        ],
-        "funcs": [
-          {
-            "name": "bar",
-            "params": {
-              "x": "typing.List[str]"
-            },
-            "ret_exprs": ["return v"],
-            "params_occur": {
-              "x": [
+    "untyped_seq": "from pathlib import Path [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] class Foo : [EOL] foo_v = [string] [EOL] foo_p = Path ( [string] ) [EOL] def __init__ ( ) : [EOL] def foo_inner ( c , d ) : [EOL] pass [EOL] [EOL] def foo_fn ( self , y ) : [EOL] def foo_inner ( a , b , c , d ) : [EOL] pass [EOL] d = { [string] : True } [EOL] return d [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL] l = lambda e : e + [number] [EOL] return v [EOL]",
+    "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+    "imports": [
+        "Path"
+    ],
+    "variables": {
+        "x": "int",
+        "l": "typing.List[typing.Tuple[int, int]]"
+    },
+    "mod_var_occur": {
+        "x": [
+            [
                 "v",
                 "x"
-              ]
+            ]
+        ],
+        "l": [
+            [
+                "l",
+                "e",
+                "e"
+            ]
+        ]
+    },
+    "classes": [
+        {
+            "name": "Delta",
+            "variables": {
+                "foo d": ""
+            },
+            "cls_var_occur": {
+                "foo d": []
+            },
+            "funcs": []
+        },
+        {
+            "name": "Foo",
+            "variables": {
+                "foo v": "str",
+                "foo p": "pathlib.Path"
+            },
+            "cls_var_occur": {
+                "foo v": [],
+                "foo p": []
+            },
+            "funcs": [
+                {
+                    "name": "foo inner",
+                    "q_name": "Foo.__init__.<locals>.foo_inner",
+                    "params": {
+                        "c": "",
+                        "d": ""
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "c": [],
+                        "d": []
+                    },
+                    "ret_type": "",
+                    "variables": {},
+                    "fn_var_occur": {},
+                    "params_descr": {
+                        "c": "",
+                        "d": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                },
+                {
+                    "name": "init",
+                    "q_name": "Foo.__init__",
+                    "params": {},
+                    "ret_exprs": [],
+                    "params_occur": {},
+                    "ret_type": "",
+                    "variables": {},
+                    "fn_var_occur": {},
+                    "params_descr": {},
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                },
+                {
+                    "name": "foo inner",
+                    "q_name": "Foo.foo_fn.<locals>.foo_inner",
+                    "params": {
+                        "a": "",
+                        "b": "",
+                        "c": "",
+                        "d": ""
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "a": [],
+                        "b": [],
+                        "c": [],
+                        "d": []
+                    },
+                    "ret_type": "",
+                    "variables": {},
+                    "fn_var_occur": {},
+                    "params_descr": {
+                        "a": "",
+                        "b": "",
+                        "c": "",
+                        "d": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                },
+                {
+                    "name": "foo fn",
+                    "q_name": "Foo.foo_fn",
+                    "params": {
+                        "self": "",
+                        "y": ""
+                    },
+                    "ret_exprs": [
+                        "return d"
+                    ],
+                    "params_occur": {
+                        "self": [],
+                        "y": []
+                    },
+                    "ret_type": "typing.Dict[str, bool]",
+                    "variables": {
+                        "d": "typing.Dict[str, bool]"
+                    },
+                    "fn_var_occur": {
+                        "d": [
+                            [
+                                "d",
+                                "True"
+                            ]
+                        ]
+                    },
+                    "params_descr": {
+                        "self": "",
+                        "y": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                }
+            ]
+        }
+    ],
+    "funcs": [
+        {
+            "name": "bar",
+            "q_name": "Bar",
+            "params": {
+                "x": "typing.List[str]"
+            },
+            "ret_exprs": [
+                "return v"
+            ],
+            "params_occur": {
+                "x": [
+                    [
+                        "v",
+                        "x"
+                    ]
+                ]
             },
             "ret_type": "typing.List[str]",
             "variables": {
-              "v": "typing.List[str]",
-              "l": ""
+                "v": "typing.List[str]",
+                "l": ""
             },
             "fn_var_occur": {
-              "v": [
-                "v",
-                "x"
-              ],
-              "l": []
+                "v": [
+                    [
+                        "v",
+                        "x"
+                    ]
+                ],
+                "l": [
+                    [
+                        "l",
+                        "e",
+                        "e"
+                    ]
+                ]
             },
             "params_descr": {
-              "x": ""
+                "x": ""
             },
             "docstring": {
-              "func": null,
-              "ret": null,
-              "long_descr": null
+                "func": null,
+                "ret": null,
+                "long_descr": null
             }
-          }
-        ],
-        "set": null,
-        "no_types_annot": {
-          "U": 9,
-          "D": 0,
-          "I": 0
-        },
-        "type_annot_cove": 0.0
-      }
+        }
+    ],
+    "set": null,
+    "no_types_annot": {
+        "U": 17,
+        "D": 0,
+        "I": 0
+    },
+    "type_annot_cove": 0.0
+    }
     }
   }
 }
