@@ -4,10 +4,10 @@ import unittest
 import shutil
 
 test_file = """from pathlib import Path
-x = 12
+x: int = 12
 l = [(1, 2)]
 class Foo:
-    foo_v = 'Hello, Foo!'
+    foo_v: str = 'Hello, Foo!'
     class Delta:
         foo_d = 'Hello, Delta!'
     foo_p = Path('/home/foo/bar')
@@ -17,8 +17,9 @@ class Foo:
     def foo_fn(self, y):
         def foo_inner(a, b, c, d):
             pass
-        d = {"foo": True}
+        d: dict = {"foo": True}
         return d
+    foo_v = "No"
 def Bar(x=['apple', 'orange']):
     v = x
     l = lambda e: e+1
@@ -41,6 +42,7 @@ class Foo:
             pass
         d: typing.Dict[str, bool] = {"foo": True}
         return d
+    foo_v = "No"
 def Bar(x: typing.List[str]=['apple', 'orange'])-> typing.List[str]:
     v: typing.List[str] = x
     l = lambda e: e+1

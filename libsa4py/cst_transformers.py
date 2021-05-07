@@ -905,9 +905,46 @@ class TypeApplier(cst.CSTTransformer):
     def __get_mod_vars(self):
         return self.f_processed_dict['variables']
 
+    def __get_var_type_assign_t(self, var_name: str):
+        t: str = None
+        if len(self.cls_visited) != 0:
+            if len(self.fn_visited) != 0:
+                # A class method's variable
+                if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                    t = self.__get_fn_vars(self.nlp_p(var_name))
+            else:
+                # A class variable
+                if self.cls_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                    t = self.__get_cls_vars(self.nlp_p(var_name))
+        elif len(self.fn_visited) != 0:
+            # A module function's variable
+            if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                t = self.__get_fn_vars(self.nlp_p(var_name))
+        else:
+            # A module's variables
+            t = self.__get_mod_vars()[self.nlp_p(var_name)]
+        return t
+
+    def __get_var_type_an_assign(self, var_name: str):
+        if len(self.cls_visited) != 0:
+            if len(self.fn_visited) != 0:
+                # A class method's variable
+                t = self.__get_fn_vars(self.nlp_p(var_name))
+            else:
+                # A class variable
+                t = self.__get_cls_vars(self.nlp_p(var_name))
+        elif len(self.fn_visited) != 0:
+            # A module function's variable
+            t = self.__get_fn_vars(self.nlp_p(var_name))
+        else:
+            # A module's variables
+            t = self.__get_mod_vars()[self.nlp_p(var_name)]
+        return t
+
     def __get_var_names_counter(self, node, scope):
-        vars_name = match.extractall(node, match.AssignTarget(target=match.SaveMatchedNode(
-            match.Name(value=match.DoNotCare()), "name")))
+        vars_name = match.extractall(node, match.OneOf(match.AssignTarget(target=match.SaveMatchedNode(
+            match.Name(value=match.DoNotCare()), "name")), match.AnnAssign(target=match.SaveMatchedNode(
+            match.Name(value=match.DoNotCare()), "name"))))
         return Counter([n['name'].value for n in vars_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
                                                                                            n['name']), scope)])
 
@@ -942,27 +979,9 @@ class TypeApplier(cst.CSTTransformer):
 
     def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
                                   updated_node: cst.SimpleStatementLine):
-
         if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Name(value=match.DoNotCare()))])])):
-
-            t: str = None
-            if len(self.cls_visited) != 0:
-                if len(self.fn_visited) != 0:
-                    # A class method's variable
-                    if self.fn_visited[-1][1][original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        t = self.__get_fn_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
-                else:
-                    # A class variable
-                    if self.cls_visited[-1][1][original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                        t = self.__get_cls_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
-            elif len(self.fn_visited) != 0:
-                # A module function's variable
-                if self.fn_visited[-1][1][original_node.body[0].targets[0].target.value] == self.last_visited_assign_t_count:
-                    t = self.__get_fn_vars(self.nlp_p(original_node.body[0].targets[0].target.value))
-            else:
-                # A module's variables
-                t = self.__get_mod_vars()[self.nlp_p(original_node.body[0].targets[0].target.value)]
+            t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
 
             if t is not None:
                 t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
@@ -974,6 +993,16 @@ class TypeApplier(cst.CSTTransformer):
                         equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
+        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
+            t = self.__get_var_type_an_assign(original_node.body[0].target.value)
+            if t is not None:
+                t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
+                if t_annot_node is not None:
+                    return updated_node.with_changes(body=[cst.AnnAssign(
+                        target=original_node.body[0].target,
+                        value=original_node.body[0].value,
+                        annotation=t_annot_node,
+                        equal=original_node.body[0].equal)])
 
         return original_node
 
