@@ -1,6 +1,8 @@
 from typing import Union, Dict, Tuple, List, Optional
 from collections import Counter
+from itertools import chain
 from libsa4py.nl_preprocessing import NLPreprocessor
+from libsa4py import PY_TYPING_MOD
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -868,6 +870,8 @@ class TypeApplier(cst.CSTTransformer):
         self.last_visited_assign_t_count = 0
         self.lambda_d = 0
 
+        self.all_applied_types = set()
+
         if apply_nlp:
             self.nlp_p = NLPreprocessor().process_identifier
         else:
@@ -886,7 +890,11 @@ class TypeApplier(cst.CSTTransformer):
     def __get_fn_param_type(self, param_name: str):
         fn_param_type = self.fn_visited[-1][0]['params'][self.nlp_p(param_name)]
         if fn_param_type != "":
-            return self.__name2annotation(self.resolve_type_alias(fn_param_type))
+            fn_param_type_resolved = self.resolve_type_alias(fn_param_type)
+            fn_param_type = self.__name2annotation(fn_param_type_resolved)
+            if fn_param_type is not None:
+                self.all_applied_types.add(fn_param_type_resolved)
+                return fn_param_type
 
     def __get_cls(self, cls_name: str) -> dict:
         for cls in self.f_processed_dict['classes']:
@@ -964,8 +972,10 @@ class TypeApplier(cst.CSTTransformer):
         fn_ret_type = self.fn_visited[-1][0]['ret_type']
         self.fn_visited.pop()
         if fn_ret_type != "":
-            fn_ret_type = self.__name2annotation(self.resolve_type_alias(fn_ret_type))
+            fn_ret_type_resolved = self.resolve_type_alias(fn_ret_type)
+            fn_ret_type = self.__name2annotation(fn_ret_type_resolved)
             if fn_ret_type is not None:
+                self.all_applied_types.add(fn_ret_type_resolved)
                 return updated_node.with_changes(returns=fn_ret_type)
 
         return updated_node
@@ -984,8 +994,10 @@ class TypeApplier(cst.CSTTransformer):
             t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
 
             if t is not None:
-                t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
+                t_annot_node_resolved = self.resolve_type_alias(t)
+                t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
+                    self.all_applied_types.add(t_annot_node_resolved)
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].targets[0].target,
                         value=original_node.body[0].value,
@@ -996,8 +1008,10 @@ class TypeApplier(cst.CSTTransformer):
         elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
             t = self.__get_var_type_an_assign(original_node.body[0].target.value)
             if t is not None:
-                t_annot_node = self.__name2annotation(self.resolve_type_alias(t))
+                t_annot_node_resolved = self.resolve_type_alias(t)
+                t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
+                    self.all_applied_types.add(t_annot_node_resolved)
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].target,
                         value=original_node.body[0].value,
@@ -1023,6 +1037,21 @@ class TypeApplier(cst.CSTTransformer):
             else:
                 self.last_visited_assign_t_count = 1
             self.last_visited_assign_t_name = node.target.value
+
+    def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
+        return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
+
+    def __get_required_imports(self):
+        typing_imports = PY_TYPING_MOD & \
+                         set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t), self.all_applied_types)))
+
+        if len(typing_imports) > 0:
+            return [cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="typing"),
+                                                                 names=[cst.ImportAlias(name=cst.Name(value=t),
+                                                                                        asname=None) for t in
+                                                                        typing_imports]),]),
+                    cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value="typing"),
+                                                                                    asname=None)])])]
 
     def __name2annotation(self, type_name: str):
         ext_annot = lambda t: match.extract(cst.parse_module("x: %s=None" % t).body[0].body[0],

@@ -179,7 +179,7 @@
             },
             "ret_type": "typing.List[str]",
             "variables": {
-                "v": "typing.List[str]",
+                "v": "List[str]",
                 "l": ""
             },
             "fn_var_occur": {
