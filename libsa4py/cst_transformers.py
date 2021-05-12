@@ -2,7 +2,7 @@ from typing import Union, Dict, Tuple, List, Optional
 from collections import Counter
 from itertools import chain
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py import PY_TYPING_MOD
+from libsa4py import PY_TYPING_MOD, PY_COLLECTION_MOD
 import libcst as cst
 import libcst.matchers as match
 import re
@@ -1042,16 +1042,24 @@ class TypeApplier(cst.CSTTransformer):
         return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
 
     def __get_required_imports(self):
-        typing_imports = PY_TYPING_MOD & \
-                         set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t), self.all_applied_types)))
+        req_imports = []
+        all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t), self.all_applied_types)))
+        typing_imports = PY_TYPING_MOD & all_type_names
+        collection_imports = PY_COLLECTION_MOD & all_type_names
 
         if len(typing_imports) > 0:
-            return [cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="typing"),
+            req_imports.append(cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="typing"),
                                                                  names=[cst.ImportAlias(name=cst.Name(value=t),
                                                                                         asname=None) for t in
-                                                                        typing_imports]),]),
-                    cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value="typing"),
-                                                                                    asname=None)])])]
+                                                                        typing_imports]),]))
+            req_imports.append(cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value="typing"),
+                                                                                    asname=None)])]))
+        if len(collection_imports) > 0:
+            req_imports.append(cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="collections"),
+                                                       names=[cst.ImportAlias(name=cst.Name(value=t), asname=None) \
+                                                              for t in collection_imports]),]))
+
+        return req_imports
 
     def __name2annotation(self, type_name: str):
         ext_annot = lambda t: match.extract(cst.parse_module("x: %s=None" % t).body[0].body[0],

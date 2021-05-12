@@ -9,7 +9,8 @@
     ],
     "variables": {
         "x": "int",
-        "l": "typing.List[typing.Tuple[int, int]]"
+        "l": "typing.List[typing.Tuple[int, int]]",
+        "c": "defaultdict"
     },
     "mod_var_occur": {
         "x": [

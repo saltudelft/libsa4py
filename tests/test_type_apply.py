@@ -7,6 +7,7 @@ import shutil
 test_file = """from pathlib import Path
 x: int = 12
 l = [(1, 2)]
+c = defaultdict(int)
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -29,9 +30,11 @@ def Bar(x=['apple', 'orange']):
 
 test_file_exp = """from typing import Tuple, Dict, List
 import typing
+from collections import defaultdict
 from pathlib import Path
 x: int = 12
 l: typing.List[typing.Tuple[int, int]] = [(1, 2)]
+c: defaultdict = defaultdict(int)
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:

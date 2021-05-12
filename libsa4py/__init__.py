@@ -17,3 +17,10 @@ PY_TYPING_MOD = {'AbstractSet', 'Any', 'AnyStr', 'AsyncContextManager', 'AsyncGe
                  'VT_co', 'V_co', 'ValuesView', 'WrapperDescriptorType', '_Final', '_GenericAlias', '_Immutable',
                  '_Protocol', '_ProtocolMeta', '_SpecialForm', '_TypingEllipsis', '_TypingEmpty',
                  '_VariadicGenericAlias'}
+
+PY_COLLECTION_MOD = {'ChainMap', 'Counter', 'OrderedDict', 'UserDict', 'UserList', 'UserString', '_Link',
+                     '_OrderedDictItemsView', '_OrderedDictKeysView', '_OrderedDictValuesView', 'defaultdict',
+                     'deque', 'namedtuple'} - PY_TYPING_MOD
+
+
+
