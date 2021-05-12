@@ -893,7 +893,7 @@ class TypeApplier(cst.CSTTransformer):
             fn_param_type_resolved = self.resolve_type_alias(fn_param_type)
             fn_param_type = self.__name2annotation(fn_param_type_resolved)
             if fn_param_type is not None:
-                self.all_applied_types.add(fn_param_type_resolved)
+                self.all_applied_types.add((fn_param_type_resolved, fn_param_type))
                 return fn_param_type
 
     def __get_cls(self, cls_name: str) -> dict:
@@ -975,7 +975,7 @@ class TypeApplier(cst.CSTTransformer):
             fn_ret_type_resolved = self.resolve_type_alias(fn_ret_type)
             fn_ret_type = self.__name2annotation(fn_ret_type_resolved)
             if fn_ret_type is not None:
-                self.all_applied_types.add(fn_ret_type_resolved)
+                self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
                 return updated_node.with_changes(returns=fn_ret_type)
 
         return updated_node
@@ -997,7 +997,7 @@ class TypeApplier(cst.CSTTransformer):
                 t_annot_node_resolved = self.resolve_type_alias(t)
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
-                    self.all_applied_types.add(t_annot_node_resolved)
+                    self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].targets[0].target,
                         value=original_node.body[0].value,
@@ -1011,7 +1011,7 @@ class TypeApplier(cst.CSTTransformer):
                 t_annot_node_resolved = self.resolve_type_alias(t)
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
-                    self.all_applied_types.add(t_annot_node_resolved)
+                    self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].target,
                         value=original_node.body[0].value,
@@ -1041,9 +1041,20 @@ class TypeApplier(cst.CSTTransformer):
     def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
         return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
 
+    # TODO: Check the imported modules before adding new ones
     def __get_required_imports(self):
+        def find_required_modules(all_types):
+            req_mod = set()
+            for _, a_node in all_types:
+                m = match.findall(a_node.annotation, match.Attribute(value=match.DoNotCare(), attr=match.DoNotCare()))
+                if len(m) != 0:
+                    req_mod.add([n.value for n in match.findall(m[0], match.Name(value=match.DoNotCare()))][0])
+            return req_mod
+
         req_imports = []
-        all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t), self.all_applied_types)))
+        all_req_mods = find_required_modules(self.all_applied_types)
+        all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t[0]), self.all_applied_types)))
+
         typing_imports = PY_TYPING_MOD & all_type_names
         collection_imports = PY_COLLECTION_MOD & all_type_names
 
@@ -1052,12 +1063,14 @@ class TypeApplier(cst.CSTTransformer):
                                                                  names=[cst.ImportAlias(name=cst.Name(value=t),
                                                                                         asname=None) for t in
                                                                         typing_imports]),]))
-            req_imports.append(cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value="typing"),
-                                                                                    asname=None)])]))
         if len(collection_imports) > 0:
             req_imports.append(cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="collections"),
                                                        names=[cst.ImportAlias(name=cst.Name(value=t), asname=None) \
                                                               for t in collection_imports]),]))
+        if len(all_req_mods) > 0:
+            for mod_name in all_req_mods:
+                req_imports.append(cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value=mod_name),
+                                                                                    asname=None)])]))
 
         return req_imports
 

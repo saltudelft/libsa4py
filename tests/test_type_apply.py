@@ -8,6 +8,7 @@ test_file = """from pathlib import Path
 x: int = 12
 l = [(1, 2)]
 c = defaultdict(int)
+df = pd.Dataframe([1,2])
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -29,12 +30,15 @@ def Bar(x=['apple', 'orange']):
 """
 
 test_file_exp = """from typing import Tuple, Dict, List
-import typing
 from collections import defaultdict
+import pandas
+import pathlib
+import typing
 from pathlib import Path
 x: int = 12
 l: typing.List[typing.Tuple[int, int]] = [(1, 2)]
 c: defaultdict = defaultdict(int)
+df: List[pandas.arrays.PandasArray] = pd.Dataframe([1,2])
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -78,8 +82,8 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         exp_split = test_file_exp.splitlines()
         out_split = read_file('./tmp_ta/type_apply.py').splitlines()
 
-        exp = """{}""".format("\n".join(exp_split[1:]))
-        out = """{}""".format("\n".join(out_split[1:]))
+        exp = """{}""".format("\n".join(exp_split[5:]))
+        out = """{}""".format("\n".join(out_split[5:]))
 
         self.assertEqual(exp, out)
         # The imported types from typing

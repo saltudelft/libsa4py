@@ -10,7 +10,8 @@
     "variables": {
         "x": "int",
         "l": "typing.List[typing.Tuple[int, int]]",
-        "c": "defaultdict"
+        "c": "defaultdict",
+        "df": "List[pandas.arrays.PandasArray]"
     },
     "mod_var_occur": {
         "x": [
