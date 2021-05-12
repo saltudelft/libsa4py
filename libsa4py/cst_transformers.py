@@ -1048,7 +1048,8 @@ class TypeApplier(cst.CSTTransformer):
             for _, a_node in all_types:
                 m = match.findall(a_node.annotation, match.Attribute(value=match.DoNotCare(), attr=match.DoNotCare()))
                 if len(m) != 0:
-                    req_mod.add([n.value for n in match.findall(m[0], match.Name(value=match.DoNotCare()))][0])
+                    for i in m:
+                        req_mod.add([n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0])
             return req_mod
 
         req_imports = []

@@ -8,7 +8,8 @@ test_file = """from pathlib import Path
 x: int = 12
 l = [(1, 2)]
 c = defaultdict(int)
-df = pd.Dataframe([1,2])
+df = pd.DataFrame([2, 3])
+dff = pd.DataFrame([1,2])
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -38,7 +39,8 @@ from pathlib import Path
 x: int = 12
 l: typing.List[typing.Tuple[int, int]] = [(1, 2)]
 c: defaultdict = defaultdict(int)
-df: List[pandas.arrays.PandasArray] = pd.Dataframe([1,2])
+df: pandas.DataFrame = pd.DataFrame([2, 3])
+dff: typing.List[pandas.arrays.PandasArray] = pd.DataFrame([1,2])
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
