@@ -12,13 +12,16 @@ class TestExtractor(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
     @classmethod
     def setUpClass(cls):
         cls.extractor_out = Extractor().extract(read_file('./examples/representations.py'))
 
     def test_extractor_output(self):
+        #save_json('./exp_outputs/extractor_out.json', self.extractor_out.to_dict())
         expected_out = load_json('./exp_outputs/extractor_out.json')
+
         expected_out = ModuleInfo.from_dict(expected_out)
 
         self.assertEqual(expected_out, self.extractor_out)
