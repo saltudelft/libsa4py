@@ -12,6 +12,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Extracting type annotations with a qualified name from source code files.
 - Adding `apply` command to apply inferred type annotations to source code files.
 - Adding a qualified name for functions in the JSON field `q_name`.
+- Adding line and column no. for the start and end of functions in the JSON field `fn_lc`.
 
 ### Fixed
 - Malformed output sequences containing string literal type, i.e., `Literal['Blah \n blah']`.
