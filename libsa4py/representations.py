@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Pattern, Match
+from typing import Dict, List, Tuple
 from libsa4py.exceptions import OutputSequenceException
 
 import re
@@ -16,6 +16,8 @@ class FunctionInfo:
     def __init__(self, name) -> None:
         self.name = name
         self.q_name = None
+        # Line, Column no. for the start and end of the function
+        self.ln_col: Tuple[Tuple[int, int], Tuple[int, int]] = None
         self.parameters: Dict[str, str] = {}
         self.parameters_occur: Dict[str, list] = {}
         self.params_descr: Dict[str, str] = {}
@@ -27,13 +29,15 @@ class FunctionInfo:
         self.node = None
 
     def to_dict(self):
-        return {"name": self.name, "q_name": self.q_name, "params": self.parameters, "ret_exprs": self.return_exprs,
-                "params_occur": self.parameters_occur, "ret_type": self.return_type, "variables": self.variables,
-                "fn_var_occur": self.variables_occur, "params_descr": self.params_descr, "docstring": self.docstring}
+        return {"name": self.name, "q_name": self.q_name, "fn_lc": self.ln_col, "params": self.parameters,
+                "ret_exprs": self.return_exprs, "params_occur": self.parameters_occur, "ret_type": self.return_type,
+                "variables": self.variables, "fn_var_occur": self.variables_occur, "params_descr": self.params_descr,
+                "docstring": self.docstring}
 
     def from_dict(self, fn_dict_repr: dict):
         self.name = fn_dict_repr['name']
         self.q_name = fn_dict_repr['q_name']
+        self.ln_col = (tuple(fn_dict_repr['fn_lc'][0]), tuple(fn_dict_repr['fn_lc'][1]))
         self.parameters = fn_dict_repr['params']
         self.parameters_occur = fn_dict_repr['params_occur']
         self.params_descr = fn_dict_repr['params_descr']
@@ -48,6 +52,7 @@ class FunctionInfo:
     def __eq__(self, other_func_info_obj: 'FunctionInfo'):
         return other_func_info_obj.name == self.name and \
                other_func_info_obj.q_name == self.q_name and \
+               other_func_info_obj.ln_col == self.ln_col and \
                other_func_info_obj.parameters == self.parameters and \
                other_func_info_obj.parameters_occur == self.parameters_occur and \
                other_func_info_obj.params_descr == self.params_descr and \

@@ -90,6 +90,7 @@ class Visitor(cst.CSTVisitor):
         # Decrease stack depth of the current function
         fn = self.stack.pop()
 
+        fn.ln_col = self.__get_line_column_no(fn.node)
         fn.docstring, params_descr = extract_docstring_descriptions(self.__extract_docstring(node))
         fn.params_descr = {p: params_descr[p] if p in params_descr else '' for p in fn.parameters.keys()}
 
@@ -701,3 +702,7 @@ class Visitor(cst.CSTVisitor):
 
         except KeyError:
             return ''
+
+    def __get_line_column_no(self, node) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+        lc = self.get_metadata(cst.metadata.PositionProvider, node)
+        return (lc.start.line, lc.start.column), (lc.end.line, lc.end.column)

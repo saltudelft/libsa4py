@@ -78,3 +78,8 @@ async def async_fn(y: int) -> int:
 
 # An abstract function with typed args
 def abstract_fn(name: str) -> str: ...
+
+
+# For extracting line and column no. of a function
+def fn_lineno(x):
+    print(x)

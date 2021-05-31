@@ -31,6 +31,16 @@
                 {
                     "name": "__init__",
                     "q_name": "MyClass.__init__",
+                    "fn_lc": [
+                        [
+                            18,
+                            4
+                        ],
+                        [
+                            19,
+                            18
+                        ]
+                    ],
                     "params": {
                         "self": "",
                         "y": "builtins.float"
@@ -78,6 +88,16 @@
                 {
                     "name": "cls_fn",
                     "q_name": "MyClass.cls_fn",
+                    "fn_lc": [
+                        [
+                            21,
+                            4
+                        ],
+                        [
+                            23,
+                            44
+                        ]
+                    ],
                     "params": {
                         "self": "",
                         "c": "builtins.int"
@@ -138,6 +158,16 @@
                 {
                     "name": "__init__",
                     "q_name": "Bar.__init__",
+                    "fn_lc": [
+                        [
+                            27,
+                            4
+                        ],
+                        [
+                            28,
+                            12
+                        ]
+                    ],
                     "params": {
                         "self": ""
                     },
@@ -164,6 +194,16 @@
         {
             "name": "my_fn",
             "q_name": "my_fn",
+            "fn_lc": [
+                [
+                    31,
+                    0
+                ],
+                [
+                    32,
+                    17
+                ]
+            ],
             "params": {
                 "x": "builtins.int"
             },
@@ -188,6 +228,16 @@
         {
             "name": "foo",
             "q_name": "foo",
+            "fn_lc": [
+                [
+                    35,
+                    0
+                ],
+                [
+                    39,
+                    16
+                ]
+            ],
             "params": {},
             "ret_exprs": [],
             "params_occur": {},

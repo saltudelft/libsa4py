@@ -15,6 +15,7 @@ class TestModuleRepresentations(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
     def test_mod_repr_dict_keys(self):
         mod_repr_dict_key_exp = ['untyped_seq', 'typed_seq', 'imports', 'variables', 'mod_var_occur', 'classes', 'funcs',
@@ -24,14 +25,14 @@ class TestModuleRepresentations(unittest.TestCase):
     def test_mod_repr_cls_dict(self):
         cls_repr_mod_exp = [{'name': 'MyClass', 'variables': {'cls_var': 'builtins.int'},
                              'cls_var_occur': {'cls_var': [['MyClass', 'cls_var', 'c', 'n']]},
-                             'funcs': [{'name': '__init__', 'q_name': 'MyClass.__init__',
+                             'funcs': [{'name': '__init__', 'q_name': 'MyClass.__init__', 'fn_lc': ((18, 4), (19, 18)),
                                         'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                                         'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                                         'ret_type': 'None', 'variables': {'y': ''},
                                         'fn_var_occur': {'y': [['self', 'y', 'y']]},
                                         'params_descr': {'self': '', 'y': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}},
-                                       {'name': 'cls_fn', 'q_name': 'MyClass.cls_fn',
+                                       {'name': 'cls_fn', 'q_name': 'MyClass.cls_fn', 'fn_lc': ((21, 4), (23, 44)),
                                         'params': {'self': '', 'c': 'builtins.int'},
                                         'ret_exprs': ['return MyClass.cls_var + c / (2 + n)'],
                                         'params_occur': {'self': [], 'c': [['n', 'c'],
@@ -41,7 +42,8 @@ class TestModuleRepresentations(unittest.TestCase):
                                         'params_descr': {'self': '', 'c': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}]},
                             {'name': 'Bar', 'variables': {}, 'cls_var_occur': {},
-                             'funcs': [{'name': '__init__', 'q_name': 'Bar.__init__', 'params': {'self': ''}, 'ret_exprs': [],
+                             'funcs': [{'name': '__init__', 'q_name': 'Bar.__init__', 'fn_lc': ((27, 4), (28, 12)),
+                                        'params': {'self': ''}, 'ret_exprs': [],
                                         'params_occur': {'self': []}, 'ret_type': '', 'variables': {},
                                         'fn_var_occur': {}, 'params_descr': {'self': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}]}]
@@ -49,12 +51,14 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertListEqual(cls_repr_mod_exp, processed_f.to_dict()['classes'])
 
     def test_mod_repr_fn_dict(self):
-        fn_repr_mod_exp = [{'name': 'my_fn', 'q_name': 'my_fn', 'params': {'x': 'builtins.int'}, 'ret_exprs': ['return x + 10'],
+        fn_repr_mod_exp = [{'name': 'my_fn', 'q_name': 'my_fn', 'fn_lc': ((31, 0), (32, 17)),
+                            'params': {'x': 'builtins.int'}, 'ret_exprs': ['return x + 10'],
                             'params_occur': {'x': []}, 'ret_type': 'builtins.int', 'variables': {}, 'fn_var_occur': {},
                             'params_descr': {'x': ''}, 'docstring': {'func': None, 'ret': None, 'long_descr': None}},
-                           {'name': 'foo', 'q_name': 'foo', 'params': {}, 'ret_exprs': [], 'params_occur': {}, 'ret_type': 'None',
-                            'variables': {}, 'fn_var_occur': {}, 'params_descr': {},
-                            'docstring': {'func': 'Foo docstring', 'ret': None, 'long_descr': None}}]
+                           {'name': 'foo', 'q_name': 'foo', 'fn_lc': ((35, 0), (39, 16)), 'params': {}, 'ret_exprs': [],
+                            'params_occur': {}, 'ret_type': 'None', 'variables': {}, 'fn_var_occur': {},
+                            'params_descr': {}, 'docstring': {'func': 'Foo docstring', 'ret': None,
+                                                              'long_descr': None}}]
 
         self.assertListEqual(fn_repr_mod_exp, processed_f.to_dict()['funcs'])
 
@@ -98,6 +102,10 @@ class TestClassRepresentation(unittest.TestCase):
     It tests the Dict-based representation of classes
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.maxDiff = None
+
     def test_cls_repr_dict_keys(self):
         cls_repr_dict_keys = ['name', 'variables', 'cls_var_occur', 'funcs']
         self.assertListEqual(cls_repr_dict_keys, list((processed_f.to_dict()['classes'][0].keys())))
@@ -107,13 +115,14 @@ class TestClassRepresentation(unittest.TestCase):
         self.assertEqual(cls_repr_name, processed_f.to_dict()['classes'][0]['name'])
 
     def test_cls_repr_fns_dict(self):
-        fns_repr_cls_exp = [{'name': '__init__', 'q_name': 'MyClass.__init__',
+        fns_repr_cls_exp = [{'name': '__init__', 'q_name': 'MyClass.__init__', 'fn_lc': ((18, 4), (19, 18)),
                              'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                              'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                              'ret_type': 'None', 'variables': {'y': ''}, 'fn_var_occur': {'y': [['self', 'y', 'y']]},
                              'params_descr': {'self': '', 'y': ''},
                              'docstring': {'func': None, 'ret': None, 'long_descr': None}},
-                            {'name': 'cls_fn', 'q_name': 'MyClass.cls_fn', 'params': {'self': '', 'c': 'builtins.int'},
+                            {'name': 'cls_fn', 'q_name': 'MyClass.cls_fn', 'fn_lc': ((21, 4), (23, 44)),
+                             'params': {'self': '', 'c': 'builtins.int'},
                              'ret_exprs': ['return MyClass.cls_var + c / (2 + n)'],
                              'params_occur': {'self': [], 'c': [['n', 'c'], ['MyClass', 'cls_var', 'c', 'n']]},
                              'ret_type': 'builtins.float', 'variables': {'n': ''},
@@ -137,7 +146,7 @@ class TestFunctionRepresentation(unittest.TestCase):
     """
 
     def test_fn_repr_dict_keys(self):
-        fn_repr_dict_keys = ['name', 'q_name', 'params', 'ret_exprs', 'params_occur', 'ret_type', 'variables',
+        fn_repr_dict_keys = ['name', 'q_name', 'fn_lc', 'params', 'ret_exprs', 'params_occur', 'ret_type', 'variables',
                              'fn_var_occur', 'params_descr', 'docstring']
         fn_doc_repr_dict_keys = ['func', 'ret', 'long_descr']
         self.assertListEqual(fn_repr_dict_keys + fn_doc_repr_dict_keys,
@@ -145,8 +154,9 @@ class TestFunctionRepresentation(unittest.TestCase):
                              list(processed_f.to_dict()['classes'][0]['funcs'][0]['docstring'].keys()))
 
     def test_fn_repr_dict(self):
-        fn_repr_dict = {'name': '__init__', 'q_name': 'MyClass.__init__', 'params': {'self': '', 'y': 'builtins.float'},
-                        'ret_exprs': [], 'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
+        fn_repr_dict = {'name': '__init__', 'q_name': 'MyClass.__init__', 'fn_lc': ((18, 4), (19, 18)),
+                        'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
+                        'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
                         'ret_type': 'None', 'variables': {'y': ''}, 'fn_var_occur': {'y': [['self', 'y', 'y']]},
                         'params_descr': {'self': '', 'y': ''},
                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}

@@ -52,6 +52,16 @@
                             {
                                 "name": "bar",
                                 "q_name": "Foo.bar",
+                                "fn_lc": [
+                                    [
+                                        24,
+                                        4
+                                    ],
+                                    [
+                                        29,
+                                        12
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -78,6 +88,16 @@
                     {
                         "name": "delta",
                         "q_name": "delta",
+                        "fn_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                16,
+                                8
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -200,6 +220,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Foo.__init__",
+                                "fn_lc": [
+                                    [
+                                        32,
+                                        4
+                                    ],
+                                    [
+                                        37,
+                                        26
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "x": "typing.Tuple",
@@ -264,6 +294,16 @@
                             {
                                 "name": "bar",
                                 "q_name": "Foo.bar",
+                                "fn_lc": [
+                                    [
+                                        39,
+                                        4
+                                    ],
+                                    [
+                                        40,
+                                        34
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -288,6 +328,16 @@
                             {
                                 "name": "shadow qn",
                                 "q_name": "Foo.shadow_qn",
+                                "fn_lc": [
+                                    [
+                                        42,
+                                        4
+                                    ],
+                                    [
+                                        46,
+                                        22
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -375,6 +425,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Bar.__init__",
+                                "fn_lc": [
+                                    [
+                                        15,
+                                        4
+                                    ],
+                                    [
+                                        17,
+                                        34
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -437,6 +497,16 @@
                     {
                         "name": "foo",
                         "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                8,
+                                0
+                            ],
+                            [
+                                10,
+                                23
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -566,6 +636,16 @@
                             {
                                 "name": "init",
                                 "q_name": "TestVarArgOccur.__init__",
+                                "fn_lc": [
+                                    [
+                                        18,
+                                        4
+                                    ],
+                                    [
+                                        20,
+                                        18
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "x": "builtins.int",
@@ -623,6 +703,16 @@
                             {
                                 "name": "fn params occur",
                                 "q_name": "TestVarArgOccur.fn_params_occur",
+                                "fn_lc": [
+                                    [
+                                        22,
+                                        4
+                                    ],
+                                    [
+                                        45,
+                                        38
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "param": "builtins.int"
@@ -767,6 +857,16 @@
                             {
                                 "name": "local var usage",
                                 "q_name": "TestVarArgOccur.local_vars_usage",
+                                "fn_lc": [
+                                    [
+                                        47,
+                                        4
+                                    ],
+                                    [
+                                        69,
+                                        29
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "p": ""
@@ -872,6 +972,16 @@
                             {
                                 "name": "class var usage",
                                 "q_name": "TestVarArgOccur.class_vars_usage",
+                                "fn_lc": [
+                                    [
+                                        72,
+                                        4
+                                    ],
+                                    [
+                                        89,
+                                        47
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -921,6 +1031,16 @@
                             {
                                 "name": "module var usage",
                                 "q_name": "TestVarArgOccur.module_vars_usage",
+                                "fn_lc": [
+                                    [
+                                        92,
+                                        4
+                                    ],
+                                    [
+                                        103,
+                                        20
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "add something": ""
@@ -973,6 +1093,16 @@
                             {
                                 "name": "format str",
                                 "q_name": "TestVarArgOccur.formatted_str",
+                                "fn_lc": [
+                                    [
+                                        105,
+                                        4
+                                    ],
+                                    [
+                                        108,
+                                        63
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "p": ""
@@ -1055,6 +1185,16 @@
                     {
                         "name": "basic docstring",
                         "q_name": "basic_docstring",
+                        "fn_lc": [
+                            [
+                                1,
+                                0
+                            ],
+                            [
+                                3,
+                                8
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -1071,6 +1211,16 @@
                     {
                         "name": "google docstring",
                         "q_name": "google_docstring",
+                        "fn_lc": [
+                            [
+                                7,
+                                0
+                            ],
+                            [
+                                22,
+                                20
+                            ]
+                        ],
                         "params": {
                             "param": ""
                         },
@@ -1105,6 +1255,16 @@
                     {
                         "name": "rest docstring",
                         "q_name": "rest_docstring",
+                        "fn_lc": [
+                            [
+                                26,
+                                0
+                            ],
+                            [
+                                41,
+                                20
+                            ]
+                        ],
                         "params": {
                             "param": ""
                         },
@@ -1139,6 +1299,16 @@
                     {
                         "name": "numpy docstring",
                         "q_name": "numpy_docstring",
+                        "fn_lc": [
+                            [
+                                45,
+                                0
+                            ],
+                            [
+                                75,
+                                20
+                            ]
+                        ],
                         "params": {
                             "param": ""
                         },
@@ -1173,6 +1343,16 @@
                     {
                         "name": "no docstring",
                         "q_name": "no_docstring",
+                        "fn_lc": [
+                            [
+                                79,
+                                0
+                            ],
+                            [
+                                80,
+                                15
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [
                             "none"
@@ -1214,6 +1394,16 @@
                     {
                         "name": "inner import",
                         "q_name": "inner_imports",
+                        "fn_lc": [
+                            [
+                                11,
+                                0
+                            ],
+                            [
+                                13,
+                                25
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},
@@ -1261,6 +1451,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Bar.__init__",
+                                "fn_lc": [
+                                    [
+                                        13,
+                                        4
+                                    ],
+                                    [
+                                        15,
+                                        28
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "x": "builtins.float"
@@ -1323,6 +1523,16 @@
                     {
                         "name": "foo",
                         "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                8,
+                                0
+                            ],
+                            [
+                                9,
+                                15
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int",
                             "l": "builtins.list"
@@ -1403,6 +1613,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Test.__init__",
+                                "fn_lc": [
+                                    [
+                                        23,
+                                        4
+                                    ],
+                                    [
+                                        27,
+                                        31
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "x": "builtins.int"
@@ -1486,6 +1706,16 @@
                             {
                                 "name": "local var assings",
                                 "q_name": "Test.local_var_assings",
+                                "fn_lc": [
+                                    [
+                                        29,
+                                        4
+                                    ],
+                                    [
+                                        32,
+                                        25
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -1530,6 +1760,16 @@
                             {
                                 "name": "tuple assigns",
                                 "q_name": "Test.tuple_assigns",
+                                "fn_lc": [
+                                    [
+                                        34,
+                                        4
+                                    ],
+                                    [
+                                        37,
+                                        49
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -1680,6 +1920,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Foo.__init__",
+                                "fn_lc": [
+                                    [
+                                        15,
+                                        4
+                                    ],
+                                    [
+                                        18,
+                                        43
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "t": ""
@@ -1746,6 +1996,16 @@
                             {
                                 "name": "local var",
                                 "q_name": "Foo.local_vars",
+                                "fn_lc": [
+                                    [
+                                        20,
+                                        4
+                                    ],
+                                    [
+                                        23,
+                                        20
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -1856,6 +2116,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Delta.__init__",
+                                "fn_lc": [
+                                    [
+                                        22,
+                                        4
+                                    ],
+                                    [
+                                        23,
+                                        24
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -1892,6 +2162,16 @@
                     {
                         "name": "foo",
                         "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                25,
+                                0
+                            ],
+                            [
+                                43,
+                                17
+                            ]
+                        ],
                         "params": {
                             "x": "",
                             "y": "",
@@ -2011,6 +2291,16 @@
                     {
                         "name": "bar",
                         "q_name": "bar",
+                        "fn_lc": [
+                            [
+                                46,
+                                0
+                            ],
+                            [
+                                59,
+                                12
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2068,8 +2358,8 @@
                 "type_annot_cove": 0.24
             },
             "libsa4py/tests/examples/different_fns.py": {
-                "untyped_seq": "[docstring] [EOL] [EOL] from typing import Optional [EOL] [EOL] [EOL] [comment] [EOL] def add ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def noargs ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def no_params ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def noreturn ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_none ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_optional ( y ) : [EOL] if len ( y ) == [number] : [EOL] return None [EOL] return y [EOL] [EOL] [EOL] [comment] [EOL] def untyped_args ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def with_inner ( ) : [EOL] def inner ( x ) : [EOL] [docstring] [EOL] return [number] + x [EOL] return inner ( [number] ) [EOL] [EOL] [EOL] [comment] [EOL] def varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def untyped_varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def kwarg_method ( a , * b , ** c ) : [EOL] return c [EOL] [EOL] [EOL] [comment] [EOL] async def async_fn ( y ) : [EOL] return await y [EOL] [EOL] [EOL] [comment] [EOL] def abstract_fn ( name ) : ... [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Optional[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0",
+                "untyped_seq": "[docstring] [EOL] [EOL] from typing import Optional [EOL] [EOL] [EOL] [comment] [EOL] def add ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def noargs ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def no_params ( ) : [EOL] return [number] [EOL] [EOL] [EOL] [comment] [EOL] def noreturn ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_none ( x ) : [EOL] print ( x ) [EOL] [EOL] [EOL] [comment] [EOL] def return_optional ( y ) : [EOL] if len ( y ) == [number] : [EOL] return None [EOL] return y [EOL] [EOL] [EOL] [comment] [EOL] def untyped_args ( x , y ) : [EOL] return x + y [EOL] [EOL] [EOL] [comment] [EOL] def with_inner ( ) : [EOL] def inner ( x ) : [EOL] [docstring] [EOL] return [number] + x [EOL] return inner ( [number] ) [EOL] [EOL] [EOL] [comment] [EOL] def varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def untyped_varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [EOL] [EOL] [comment] [EOL] def kwarg_method ( a , * b , ** c ) : [EOL] return c [EOL] [EOL] [EOL] [comment] [EOL] async def async_fn ( y ) : [EOL] return await y [EOL] [EOL] [EOL] [comment] [EOL] def abstract_fn ( name ) : ... [EOL] [EOL] [EOL] [comment] [EOL] def fn_lineno ( x ) : [EOL] print ( x )",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Optional[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "Optional"
                 ],
@@ -2080,6 +2370,16 @@
                     {
                         "name": "add",
                         "q_name": "add",
+                        "fn_lc": [
+                            [
+                                9,
+                                0
+                            ],
+                            [
+                                10,
+                                16
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int",
                             "y": "builtins.int"
@@ -2113,6 +2413,16 @@
                     {
                         "name": "noargs",
                         "q_name": "noargs",
+                        "fn_lc": [
+                            [
+                                14,
+                                0
+                            ],
+                            [
+                                15,
+                                12
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [
                             ""
@@ -2131,6 +2441,16 @@
                     {
                         "name": "no params",
                         "q_name": "no_params",
+                        "fn_lc": [
+                            [
+                                19,
+                                0
+                            ],
+                            [
+                                20,
+                                12
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [
                             ""
@@ -2149,6 +2469,16 @@
                     {
                         "name": "noreturn",
                         "q_name": "noreturn",
+                        "fn_lc": [
+                            [
+                                24,
+                                0
+                            ],
+                            [
+                                25,
+                                12
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2174,6 +2504,16 @@
                     {
                         "name": "return none",
                         "q_name": "return_none",
+                        "fn_lc": [
+                            [
+                                29,
+                                0
+                            ],
+                            [
+                                30,
+                                12
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2199,6 +2539,16 @@
                     {
                         "name": "return optional",
                         "q_name": "return_optional",
+                        "fn_lc": [
+                            [
+                                34,
+                                0
+                            ],
+                            [
+                                37,
+                                12
+                            ]
+                        ],
                         "params": {
                             "y": "builtins.list"
                         },
@@ -2227,6 +2577,16 @@
                     {
                         "name": "untyped args",
                         "q_name": "untyped_args",
+                        "fn_lc": [
+                            [
+                                41,
+                                0
+                            ],
+                            [
+                                42,
+                                16
+                            ]
+                        ],
                         "params": {
                             "x": "",
                             "y": ""
@@ -2260,6 +2620,16 @@
                     {
                         "name": "inner",
                         "q_name": "with_inner.<locals>.inner",
+                        "fn_lc": [
+                            [
+                                47,
+                                4
+                            ],
+                            [
+                                49,
+                                21
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2284,6 +2654,16 @@
                     {
                         "name": "with inner",
                         "q_name": "with_inner",
+                        "fn_lc": [
+                            [
+                                46,
+                                0
+                            ],
+                            [
+                                50,
+                                20
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [
                             "inner"
@@ -2302,6 +2682,16 @@
                     {
                         "name": "varargs",
                         "q_name": "varargs",
+                        "fn_lc": [
+                            [
+                                54,
+                                0
+                            ],
+                            [
+                                58,
+                                14
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2336,6 +2726,16 @@
                     {
                         "name": "untyped varargs",
                         "q_name": "untyped_varargs",
+                        "fn_lc": [
+                            [
+                                62,
+                                0
+                            ],
+                            [
+                                66,
+                                14
+                            ]
+                        ],
                         "params": {
                             "x": ""
                         },
@@ -2370,6 +2770,16 @@
                     {
                         "name": "kwarg method",
                         "q_name": "kwarg_method",
+                        "fn_lc": [
+                            [
+                                70,
+                                0
+                            ],
+                            [
+                                71,
+                                12
+                            ]
+                        ],
                         "params": {
                             "a": "builtins.int",
                             "b": "builtins.int",
@@ -2400,6 +2810,16 @@
                     {
                         "name": "async fn",
                         "q_name": "async_fn",
+                        "fn_lc": [
+                            [
+                                75,
+                                0
+                            ],
+                            [
+                                76,
+                                18
+                            ]
+                        ],
                         "params": {
                             "y": "builtins.int"
                         },
@@ -2424,6 +2844,16 @@
                     {
                         "name": "abstract fn",
                         "q_name": "abstract_fn",
+                        "fn_lc": [
+                            [
+                                80,
+                                0
+                            ],
+                            [
+                                80,
+                                56
+                            ]
+                        ],
                         "params": {
                             "name": "builtins.str"
                         },
@@ -2442,15 +2872,50 @@
                             "ret": null,
                             "long_descr": null
                         }
+                    },
+                    {
+                        "name": "fn lineno",
+                        "q_name": "fn_lineno",
+                        "fn_lc": [
+                            [
+                                84,
+                                0
+                            ],
+                            [
+                                85,
+                                12
+                            ]
+                        ],
+                        "params": {
+                            "x": ""
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "x": [
+                                "print",
+                                "x"
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {},
+                        "fn_var_occur": {},
+                        "params_descr": {
+                            "x": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
                     }
                 ],
                 "set": null,
                 "no_types_annot": {
-                    "U": 7,
+                    "U": 9,
                     "D": 24,
                     "I": 0
                 },
-                "type_annot_cove": 0.77
+                "type_annot_cove": 0.73
             },
             "libsa4py/tests/examples/representations.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
@@ -2483,6 +2948,16 @@
                             {
                                 "name": "init",
                                 "q_name": "MyClass.__init__",
+                                "fn_lc": [
+                                    [
+                                        18,
+                                        4
+                                    ],
+                                    [
+                                        19,
+                                        18
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "y": "builtins.float"
@@ -2524,6 +2999,16 @@
                             {
                                 "name": "cl fn",
                                 "q_name": "MyClass.cls_fn",
+                                "fn_lc": [
+                                    [
+                                        21,
+                                        4
+                                    ],
+                                    [
+                                        23,
+                                        44
+                                    ]
+                                ],
                                 "params": {
                                     "self": "",
                                     "c": "builtins.int"
@@ -2576,6 +3061,16 @@
                             {
                                 "name": "init",
                                 "q_name": "Bar.__init__",
+                                "fn_lc": [
+                                    [
+                                        27,
+                                        4
+                                    ],
+                                    [
+                                        28,
+                                        12
+                                    ]
+                                ],
                                 "params": {
                                     "self": ""
                                 },
@@ -2602,6 +3097,16 @@
                     {
                         "name": "my fn",
                         "q_name": "my_fn",
+                        "fn_lc": [
+                            [
+                                31,
+                                0
+                            ],
+                            [
+                                32,
+                                17
+                            ]
+                        ],
                         "params": {
                             "x": "builtins.int"
                         },
@@ -2626,6 +3131,16 @@
                     {
                         "name": "foo",
                         "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                35,
+                                0
+                            ],
+                            [
+                                39,
+                                16
+                            ]
+                        ],
                         "params": {},
                         "ret_exprs": [],
                         "params_occur": {},

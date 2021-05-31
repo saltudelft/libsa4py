@@ -19,6 +19,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'add'
         fn_expected['q_name'] = 'add'
+        fn_expected['fn_lc'] = ((9, 0), (10, 16))
         fn_expected['params'] = {'x': 'builtins.int', 'y': 'builtins.int'}
         fn_expected['ret_exprs'] = ['return x + y']
         fn_expected['params_occur'] = {'x': [['x', 'y']], 'y': [['x', 'y']]}
@@ -31,6 +32,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'noargs'
         fn_expected['q_name'] = 'noargs'
+        fn_expected['fn_lc'] = ((14, 0), (15, 12))
         fn_expected['ret_exprs'] = ['return 5']
         fn_expected['ret_type'] = 'builtins.int'
 
@@ -40,6 +42,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'no_params'
         fn_expected['q_name'] = 'no_params'
+        fn_expected['fn_lc'] = ((19, 0), (20, 12))
         fn_expected['ret_exprs'] = ['return 0']
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][2])
@@ -48,6 +51,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'noreturn'
         fn_expected['q_name'] = 'noreturn'
+        fn_expected['fn_lc'] = ((24, 0), (25, 12))
         fn_expected['params'] = {'x': 'builtins.int'}
         fn_expected['params_occur'] = {'x': [['print', 'x']]}
         fn_expected['params_descr'] = {'x': ''}
@@ -58,6 +62,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'return_none'
         fn_expected['q_name'] = 'return_none'
+        fn_expected['fn_lc'] = ((29, 0), (30, 12))
         fn_expected['params'] = {'x': 'builtins.int'}
         fn_expected['params_occur'] = {'x': [['print', 'x']]}
         fn_expected['ret_type'] = 'None'
@@ -69,6 +74,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'return_optional'
         fn_expected['q_name'] = 'return_optional'
+        fn_expected['fn_lc'] = ((34, 0), (37, 12))
         fn_expected['params'] = {'y': 'builtins.list'}
         fn_expected['ret_exprs'] = ['return None', 'return y']
         fn_expected['params_occur'] = {'y': [['len', 'y']]}
@@ -81,6 +87,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'untyped_args'
         fn_expected['q_name'] = 'untyped_args'
+        fn_expected['fn_lc'] = ((41, 0), (42, 16))
         fn_expected['params'] = {'x': '', 'y': ''}
         fn_expected['ret_exprs'] = ['return x + y']
         fn_expected['params_occur'] = {'x': [['x', 'y']], 'y': [['x', 'y']]}
@@ -93,6 +100,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'inner'
         fn_expected['q_name'] = 'with_inner.<locals>.inner'
+        fn_expected['fn_lc'] = ((47, 4), (49, 21))
         fn_expected['params'] = {'x': 'builtins.int'}
         fn_expected['ret_exprs'] = ['return 12 + x']
         fn_expected['params_occur'] = {'x': []}
@@ -106,6 +114,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'with_inner'
         fn_expected['q_name'] = 'with_inner'
+        fn_expected['fn_lc'] = ((46, 0), (50, 20))
         fn_expected['ret_exprs'] = ['return inner(10)']
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][8])
@@ -114,6 +123,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'varargs'
         fn_expected['q_name'] = 'varargs'
+        fn_expected['fn_lc'] = ((54, 0), (58, 14))
         fn_expected['params'] = {'xs': 'builtins.int'}
         fn_expected['ret_exprs'] = ['return sum']
         fn_expected['params_occur'] = {'xs': []}
@@ -128,6 +138,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'untyped_varargs'
         fn_expected['q_name'] = 'untyped_varargs'
+        fn_expected['fn_lc'] = ((62, 0), (66, 14))
         fn_expected['params'] = {'xs': ''}
         fn_expected['ret_exprs'] = ['return sum']
         fn_expected['params_occur'] = {'xs': []}
@@ -142,6 +153,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'kwarg_method'
         fn_expected['q_name'] = 'kwarg_method'
+        fn_expected['fn_lc'] = ((70, 0), (71, 12))
         fn_expected['params'] = {'a': 'builtins.int', 'b': 'builtins.int', 'c': 'builtins.float'}
         fn_expected['ret_exprs'] = ['return c']
         fn_expected['params_descr'] = {'a': '', 'b': '', 'c': ''}
@@ -153,6 +165,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'async_fn'
         fn_expected['q_name'] = 'async_fn'
+        fn_expected['fn_lc'] = ((75, 0), (76, 18))
         fn_expected['params'] = {'y': 'builtins.int'}
         fn_expected['ret_exprs'] = ['return await y']
         fn_expected['params_occur'] = {'y': []}
@@ -165,9 +178,22 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected = FN_DICT_REPR.copy()
         fn_expected['name'] = 'abstract_fn'
         fn_expected['q_name'] = 'abstract_fn'
+        fn_expected['fn_lc'] = ((80, 0), (80, 56))
         fn_expected['params'] = {'name': 'builtins.str'}
         fn_expected['params_descr'] = {'name': ''}
         fn_expected['params_occur'] = {'name': []}
         fn_expected['ret_type'] = 'builtins.str'
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][13])
+
+    def test_fn_lineno(self):
+        fn_expected = FN_DICT_REPR.copy()
+        fn_expected['name'] = 'fn_lineno'
+        fn_expected['q_name'] = 'fn_lineno'
+        fn_expected['fn_lc'] = ((84, 0), (85, 12))
+        fn_expected['params'] = {'x': ''}
+        fn_expected['params_descr'] = {'x': ''}
+        fn_expected['params_occur'] = {'x': [['print', 'x']]}
+        fn_expected['ret_type'] = ''
+
+        self.assertDictEqual(fn_expected, self.processed_f['funcs'][14])
