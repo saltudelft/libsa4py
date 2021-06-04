@@ -32,7 +32,7 @@ setup(
     packages=['libsa4py'],
     python_requries='>=3.5',
     install_requires=['libcst', 'numpy', 'pandas', 'nltk', 'joblib', 'tqdm', 'docstring_parser', 'dpu_utils',
-                      'pyre-check'],
+                      'pyre-check', 'toml', 'mypy'],
     entry_points={
         'console_scripts': [
             'libsa4py = libsa4py.__main__:main',

@@ -7,7 +7,7 @@ from libsa4py.merge import merge_projects
 
 def process_projects(args):
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
-    p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.use_pyre, args.d, args.s)
+    p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.use_pyre, args.use_tc, args.d, args.s)
     p.run(input_repos, args.j)
 
 
@@ -31,11 +31,15 @@ def main():
     process_parser.add_argument("--c", "--cache", dest='use_cache', action='store_true', help="Whether to ignore processed projects")
     process_parser.add_argument("--no-nlp", dest='no_nlp', action='store_true', help="Whether to apply standard NLP "
                                                                                  "techniques to extracted identifiers")
-    process_parser.add_argument("--pyre", dest='use_pyre', action='store_true', help="Whether to run pyre to infer types of variables in files")
+    process_parser.add_argument("--pyre", dest='use_pyre', action='store_true',
+                                help="Whether to run pyre to infer types of variables in files")
+    process_parser.add_argument("--tc", dest='use_tc', action='store_true',
+                                help="Whether to type-check type annotations in projects")
 
     process_parser.set_defaults(no_nlp=False)
     process_parser.set_defaults(use_cache=False)
     process_parser.set_defaults(use_pyre=False)
+    process_parser.set_defaults(use_tc=False)
     process_parser.set_defaults(func=process_projects)
 
     merge_parser = sub_parsers.add_parser('merge')
