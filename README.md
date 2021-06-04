@@ -13,7 +13,7 @@
 
 # Requirements
 
-- Python 3.6 or newer (Python 3.8 is recommended)
+- Python 3.7 or newer (Python 3.8 is recommended)
 - [Watchman](https://facebook.github.io/watchman/) (for running [pyre](https://pyre-check.org/)) [**Optional**]
 - MacOS or Linux systems
 
