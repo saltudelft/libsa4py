@@ -26,6 +26,7 @@
                 "classes": [],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 7,
                     "D": 0,
@@ -113,6 +114,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 3,
                     "D": 0,
@@ -370,6 +372,7 @@
                 ],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 2,
                     "D": 26,
@@ -545,6 +548,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 5,
                     "D": 5,
@@ -1151,6 +1155,7 @@
                 ],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 22,
                     "D": 5,
@@ -1167,6 +1172,7 @@
                 "classes": [],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 0,
                     "D": 0,
@@ -1370,6 +1376,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 11,
                     "D": 0,
@@ -1419,6 +1426,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 1,
                     "D": 0,
@@ -1565,6 +1573,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 0,
                     "D": 9,
@@ -1872,6 +1881,7 @@
                 ],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 24,
                     "D": 8,
@@ -2053,6 +2063,7 @@
                 ],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 19,
                     "D": 1,
@@ -2350,6 +2361,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 13,
                     "D": 4,
@@ -2910,6 +2922,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 9,
                     "D": 24,
@@ -3156,6 +3169,7 @@
                     }
                 ],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 4,
                     "D": 7,
@@ -3183,6 +3197,7 @@
                 "classes": [],
                 "funcs": [],
                 "set": null,
+                "tc": false,
                 "no_types_annot": {
                     "U": 3,
                     "D": 0,

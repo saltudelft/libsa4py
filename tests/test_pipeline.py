@@ -36,6 +36,10 @@ class TestPipeline(unittest.TestCase):
 
         self.assertDictEqual(pipeline_out_nonlp_exp, pipeline_out_nonlp)
 
+    # TODO: Test the pipeline when using mypy
+    # def test_pipeline_output_mypy(self):
+    #     pass
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree("./tmp/")
