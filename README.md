@@ -41,6 +41,7 @@ Description:
 - `--c`: Whether to ignore processed projects. [**Optional**, default=False]
 - `--no-nlp`: Whether to apply standard NLP techniques to extracted identifiers. [**Optional**, default=True]
 - `--pyre`: Whether to run `pyre` to infer the types of variables for given projects. [**Optional**, default=False]
+- `--tc`: Whether to type-check type annotations in projects. [**Optional**, default=False]
 
 ## Merging projects
 To merge all the processed JSON-formatted projects into a single dataframe, run the following command:
