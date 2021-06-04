@@ -20,9 +20,9 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Environment :: Console',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Operating System :: Unix',
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Artificial Intelligence',
@@ -32,7 +32,7 @@ setup(
     packages=['libsa4py'],
     python_requries='>=3.5',
     install_requires=['libcst', 'numpy', 'pandas', 'nltk', 'joblib', 'tqdm', 'docstring_parser', 'dpu_utils',
-                      'pyre-check'],
+                      'pyre-check', 'toml', 'mypy'],
     entry_points={
         'console_scripts': [
             'libsa4py = libsa4py.__main__:main',

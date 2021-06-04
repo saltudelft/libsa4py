@@ -9,7 +9,6 @@ from os.path import join
 from pathlib import Path
 from datetime import timedelta
 from joblib import delayed
-from tqdm import tqdm
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.cst_transformers import TypeApplier
@@ -18,6 +17,7 @@ from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
+from libsa4py.type_check import MypyManager, type_check_single_file
 
 import libcst as cst
 import logging
@@ -30,7 +30,8 @@ class Pipeline:
     """
 
     def __init__(self, projects_path, output_dir, nlp_transf: bool = True,
-                 use_cache: bool = True, use_pyre: bool = False, dups_files_path=None, split_files_path=None):
+                 use_cache: bool = True, use_pyre: bool = False, use_tc: bool = False,
+                 dups_files_path=None, split_files_path=None):
         self.projects_path = projects_path
         self.output_dir = output_dir
         self.processed_projects = None
@@ -39,6 +40,7 @@ class Pipeline:
         self.nlp_transf = nlp_transf
         self.use_cache = use_cache
         self.use_pyre = use_pyre
+        self.use_tc = use_tc
         self.nlp_prep = NLPreprocessor()
 
         self.__make_output_dirs()
@@ -50,6 +52,9 @@ class Pipeline:
             self.is_file_duplicate = lambda x: True if x in self.duplicate_files else False
         else:
             self.is_file_duplicate = lambda x: False
+
+        if self.use_tc:
+            self.tc = MypyManager('mypy', 20)
 
         self.split_dataset_files = {f:s for s, f in csv.reader(open(split_files_path, 'r'))} if split_files_path is not None else {}
 
@@ -168,6 +173,10 @@ class Pipeline:
                                 else Extractor.extract(read_file(filename), pyre_data_file).to_dict()
 
                         project_analyzed_files[project_id]["src_files"][f_relative]['set'] = f_split
+                        if self.use_tc:
+                            print(f"Running type checker for file: {filename}")
+                            project_analyzed_files[project_id]["src_files"][f_relative]['tc'] = \
+                                type_check_single_file(filename, self.tc)
 
                         extracted_avl_types = project_analyzed_files[project_id]["src_files"][f_relative]['imports'] + \
                                               [c['name'] for c in

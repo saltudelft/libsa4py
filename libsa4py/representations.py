@@ -118,6 +118,7 @@ class ModuleInfo:
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
+                "tc": False,
                 "no_types_annot": self.no_types_annot,
                 "type_annot_cove": self.type_annot_cove}
 
