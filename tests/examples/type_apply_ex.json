@@ -12,7 +12,8 @@
         "l": "typing.List[typing.Tuple[int, int]]",
         "c": "defaultdict",
         "df": "pandas.DataFrame",
-        "dff": "typing.List[pandas.arrays.PandasArray]"
+        "dff": "typing.List[pandas.arrays.PandasArray]",
+        "lit": "Literal"
     },
     "mod_var_occur": {
         "x": [

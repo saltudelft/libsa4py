@@ -10,6 +10,7 @@ l = [(1, 2)]
 c = defaultdict(int)
 df = pd.DataFrame([2, 3])
 dff = pd.DataFrame([1,2])
+lit = "Hello!"
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -30,7 +31,7 @@ def Bar(x=['apple', 'orange']):
     return v
 """
 
-test_file_exp = """from typing import Tuple, Dict, List
+test_file_exp = """from typing import Tuple, Dict, List, Literal
 from collections import defaultdict
 import pandas
 import pathlib
@@ -41,6 +42,7 @@ l: typing.List[typing.Tuple[int, int]] = [(1, 2)]
 c: defaultdict = defaultdict(int)
 df: pandas.DataFrame = pd.DataFrame([2, 3])
 dff: typing.List[pandas.arrays.PandasArray] = pd.DataFrame([1,2])
+lit: Literal = "Hello!"
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -74,8 +76,8 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
     def setUpClass(cls):
         mk_dir_not_exist('./tmp_ta')
         write_file('./tmp_ta/type_apply.py', test_file)
-        # from libsa4py.cst_extractor import Extractor
-        # save_json('./tmp_ta/type_apply.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
+        from libsa4py.cst_extractor import Extractor
+        save_json('./tmp_ta/type_apply.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
 
     def test_type_apply_pipeline(self):
         ta = TypeAnnotatingProjects('./tmp_ta', None)
