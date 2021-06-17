@@ -2,8 +2,8 @@
   "tests/examples": {
     "src_files": {
       "type_apply.py": {
-    "untyped_seq": "from typing import Tuple , Dict , List , Literal [EOL] from collections import defaultdict [EOL] import pandas [EOL] import pathlib [EOL] import typing [EOL] from pathlib import Path [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] c = defaultdict ( int ) [EOL] df = pd . DataFrame ( [ [number] , [number] ] ) [EOL] dff = pd . DataFrame ( [ [number] , [number] ] ) [EOL] lit = [string] [EOL] class Foo : [EOL] foo_v = [string] [EOL] class Delta : [EOL] foo_d = [string] [EOL] foo_p = Path ( [string] ) [EOL] def __init__ ( ) : [EOL] def foo_inner ( c , d ) : [EOL] pass [EOL] def foo_fn ( self , y ) : [EOL] def foo_inner ( a , b , c , d ) : [EOL] pass [EOL] d = { [string] : True } [EOL] return d [EOL] @ event . getter def get_e ( self ) : [EOL] return Foo . foo_v [EOL] @ event . setter def get_e ( self , y ) : [EOL] Foo . foo_v = y [EOL] return Foo . foo_v [EOL] foo_v = [string] [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL] l = lambda e : e + [number] [EOL] return v [EOL]",
-    "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 $collections.defaultdict$ 0 0 0 0 0 0 $pandas.DataFrame$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[pandas.arrays.PandasArray]$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Literal$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $pathlib.Path$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.str]$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 0 0",
+    "untyped_seq": "from typing import Tuple , Dict , List , Literal [EOL] from collections import defaultdict [EOL] import pandas [EOL] import pathlib [EOL] import builtins [EOL] import collections [EOL] import typing [EOL] from pathlib import Path [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] c = defaultdict ( int ) [EOL] df = pd . DataFrame ( [ [number] , [number] ] ) [EOL] dff = pd . DataFrame ( [ [number] , [number] ] ) [EOL] lit = [string] [EOL] class Foo : [EOL] foo_v = [string] [EOL] class Delta : [EOL] foo_d = [string] [EOL] foo_p = Path ( [string] ) [EOL] def __init__ ( ) : [EOL] def foo_inner ( c , d ) : [EOL] pass [EOL] def foo_fn ( self , y ) : [EOL] def foo_inner ( a , b , c , d ) : [EOL] pass [EOL] d = { [string] : True } [EOL] return d [EOL] @ event . getter def get_e ( self ) : [EOL] return Foo . foo_v [EOL] @ event . setter def get_e ( self , y ) : [EOL] Foo . foo_v = y [EOL] return Foo . foo_v [EOL] foo_v = [string] [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL] l = lambda e : e + [number] [EOL] return v [EOL]",
+    "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 $collections.defaultdict$ 0 0 0 0 0 0 $pandas.DataFrame$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[pandas.arrays.PandasArray]$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Literal$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $pathlib.Path$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.str]$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 0 0",
     "imports": [
         "Tuple",
         "Dict",
@@ -12,6 +12,8 @@
         "defaultdict",
         "pandas",
         "pathlib",
+        "builtins",
+        "collections",
         "typing",
         "Path"
     ],
@@ -49,6 +51,7 @@
     "classes": [
         {
             "name": "Delta",
+            "q_name": "Foo.Delta",
             "variables": {
                 "foo_d": ""
             },
@@ -59,6 +62,7 @@
         },
         {
             "name": "Foo",
+            "q_name": "Foo",
             "variables": {
                 "foo_v": "",
                 "foo_p": "pathlib.Path"
@@ -87,11 +91,11 @@
                     "q_name": "Foo.__init__.<locals>.foo_inner",
                     "fn_lc": [
                         [
-                            19,
+                            21,
                             8
                         ],
                         [
-                            20,
+                            22,
                             16
                         ]
                     ],
@@ -122,11 +126,11 @@
                     "q_name": "Foo.__init__",
                     "fn_lc": [
                         [
-                            18,
+                            20,
                             4
                         ],
                         [
-                            20,
+                            22,
                             16
                         ]
                     ],
@@ -148,11 +152,11 @@
                     "q_name": "Foo.foo_fn.<locals>.foo_inner",
                     "fn_lc": [
                         [
-                            22,
+                            24,
                             8
                         ],
                         [
-                            23,
+                            25,
                             16
                         ]
                     ],
@@ -189,11 +193,11 @@
                     "q_name": "Foo.foo_fn",
                     "fn_lc": [
                         [
-                            21,
+                            23,
                             4
                         ],
                         [
-                            25,
+                            27,
                             16
                         ]
                     ],
@@ -241,11 +245,11 @@
                     "q_name": "Foo.get_e",
                     "fn_lc": [
                         [
-                            27,
+                            29,
                             4
                         ],
                         [
-                            28,
+                            30,
                             24
                         ]
                     ],
@@ -275,17 +279,17 @@
                     "q_name": "Foo.get_e",
                     "fn_lc": [
                         [
-                            30,
+                            32,
                             4
                         ],
                         [
-                            32,
+                            34,
                             24
                         ]
                     ],
                     "params": {
                         "self": "",
-                        "y": "str"
+                        "y": "builtins.str"
                     },
                     "ret_exprs": [
                         "return Foo.foo_v"
@@ -336,11 +340,11 @@
             "q_name": "Bar",
             "fn_lc": [
                 [
-                    34,
+                    36,
                     0
                 ],
                 [
-                    37,
+                    39,
                     12
                 ]
             ],
@@ -399,11 +403,11 @@
     "set": null,
     "tc": false,
     "no_types_annot": {
-        "U": 13,
-        "D": 12,
+        "U": 12,
+        "D": 13,
         "I": 0
     },
-    "type_annot_cove": 0.48
+    "type_annot_cove": 0.52
 }
     }
   }

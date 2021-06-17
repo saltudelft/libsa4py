@@ -69,7 +69,7 @@ class Foo:
     def get_e(self):
         return Foo.foo_v
     @event.setter
-    def get_e(self, y: str):
+    def get_e(self, y: builtins.str):
         Foo.foo_v = y
         return Foo.foo_v
     foo_v = "No"
