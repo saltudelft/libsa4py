@@ -877,14 +877,16 @@ class TypeApplier(cst.CSTTransformer):
         else:
             self.nlp_p = lambda x: x
 
-    def __get_fn(self, fn_name: str) -> dict:
+    def __get_fn(self, f_node: cst.FunctionDef) -> dict:
         if len(self.cls_visited) != 0:
             fns = self.cls_visited[-1][0]['funcs']
         else:
             fns = self.f_processed_dict['funcs']
 
         for fn in fns:
-            if fn['q_name'] == self.__get_qualified_name(fn_name):
+            if fn['q_name'] == self.__get_qualified_name(f_node.name) and \
+                    list(fn['params'].keys()) == self.__get_fn_params(f_node.params):
+                print("FN-PARAMS", fn['params'].keys(), self.__get_fn_params(f_node.params))
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -905,6 +907,9 @@ class TypeApplier(cst.CSTTransformer):
         if var_name in self.fn_visited[-1][0]['variables']:
             if self.fn_visited[-1][0]['variables'][var_name] != "":
                 return self.fn_visited[-1][0]['variables'][var_name]
+
+    def __get_fn_params(self, fn_params: cst.Parameters):
+        return [p.name.value for p in match.findall(fn_params, match.Param(name=match.Name(value=match.DoNotCare())))]
 
     def __get_cls_vars(self, var_name: str) -> dict:
         if var_name in self.cls_visited[-1][0]['variables']:
@@ -965,7 +970,7 @@ class TypeApplier(cst.CSTTransformer):
         return updated_node
 
     def visit_FunctionDef(self, node: cst.FunctionDef):
-        self.fn_visited.append((self.__get_fn(node.name),
+        self.fn_visited.append((self.__get_fn(node),
                                 self.__get_var_names_counter(node, cst.metadata.FunctionScope)))
 
     def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):

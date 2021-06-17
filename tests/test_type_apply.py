@@ -24,6 +24,13 @@ class Foo:
             pass
         d: dict = {"foo": True}
         return d
+    @event.getter
+    def get_e(self):
+        return Foo.foo_v
+    @event.setter
+    def get_e(self, y):
+        Foo.foo_v = y
+        return Foo.foo_v
     foo_v = "No"
 def Bar(x=['apple', 'orange']):
     v = x
@@ -31,18 +38,19 @@ def Bar(x=['apple', 'orange']):
     return v
 """
 
-test_file_exp = """from typing import Tuple, Dict, List, Literal
+test_file_exp = """import builtins
+from typing import Tuple, Dict, List, Literal
 from collections import defaultdict
 import pandas
 import pathlib
 import typing
 from pathlib import Path
-x: int = 12
-l: typing.List[typing.Tuple[int, int]] = [(1, 2)]
-c: defaultdict = defaultdict(int)
+x: builtins.int = 12
+l: typing.List[typing.Tuple[builtins.int, builtins.int]] = [(1, 2)]
+c: collections.defaultdict = defaultdict(int)
 df: pandas.DataFrame = pd.DataFrame([2, 3])
 dff: typing.List[pandas.arrays.PandasArray] = pd.DataFrame([1,2])
-lit: Literal = "Hello!"
+lit: typing.Literal = "Hello!"
 class Foo:
     foo_v: str = 'Hello, Foo!'
     class Delta:
@@ -51,14 +59,21 @@ class Foo:
     def __init__():
         def foo_inner(c, d):
             pass
-    def foo_fn(self, y)-> typing.Dict[str, bool]:
+    def foo_fn(self, y)-> typing.Dict[builtins.str, builtins.bool]:
         def foo_inner(a, b, c, d):
             pass
-        d: typing.Dict[str, bool] = {"foo": True}
+        d: typing.Dict[builtins.str, builtins.bool] = {"foo": True}
         return d
+    @event.getter
+    def get_e(self):
+        return Foo.foo_v
+    @event.setter
+    def get_e(self, y: str):
+        Foo.foo_v = y
+        return Foo.foo_v
     foo_v = "No"
-def Bar(x: typing.List[str]=['apple', 'orange'])-> typing.List[str]:
-    v: List[str] = x
+def Bar(x: typing.List[builtins.str]=['apple', 'orange'])-> typing.List[builtins.str]:
+    v: typing.List[builtins.str] = x
     l = lambda e: e+1
     return v
 """
@@ -76,8 +91,8 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
     def setUpClass(cls):
         mk_dir_not_exist('./tmp_ta')
         write_file('./tmp_ta/type_apply.py', test_file)
-        from libsa4py.cst_extractor import Extractor
-        save_json('./tmp_ta/type_apply.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
+        # from libsa4py.cst_extractor import Extractor
+        # save_json('./tmp_ta/type_apply_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
 
     def test_type_apply_pipeline(self):
         ta = TypeAnnotatingProjects('./tmp_ta', None)
@@ -86,8 +101,9 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         exp_split = test_file_exp.splitlines()
         out_split = read_file('./tmp_ta/type_apply.py').splitlines()
 
-        exp = """{}""".format("\n".join(exp_split[5:]))
-        out = """{}""".format("\n".join(out_split[5:]))
+        print("A", exp_split[0])
+        exp = """{}""".format("\n".join(exp_split[7:]))
+        out = """{}""".format("\n".join(out_split[7:]))
 
         self.assertEqual(exp, out)
         # The imported types from typing
