@@ -70,16 +70,18 @@ class ClassInfo:
 
     def __init__(self):
         self.name: str = ''
+        self.q_name: str = ''
         self.variables: Dict[str, str] = {}
         self.variables_use_occur: Dict[str, list] = {}
         self.funcs: List[FunctionInfo] = []
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "variables": self.variables, "cls_var_occur": self.variables_use_occur,
-                "funcs": [f.to_dict() for f in self.funcs]}
+        return {"name": self.name, "q_name": self.q_name, "variables": self.variables,
+                "cls_var_occur": self.variables_use_occur, "funcs": [f.to_dict() for f in self.funcs]}
 
     def from_dict(self, cls_repr_dict: dict):
         self.name = cls_repr_dict['name']
+        self.q_name = cls_repr_dict['q_name']
         self.variables = cls_repr_dict['variables']
         self.variables_use_occur = cls_repr_dict['cls_var_occur']
         self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
@@ -88,6 +90,7 @@ class ClassInfo:
 
     def __eq__(self, other_class_info_obj: 'ClassInfo'):
         return other_class_info_obj.name == self.name and \
+               other_class_info_obj.q_name == self.q_name and \
                other_class_info_obj.variables == self.variables and \
                other_class_info_obj.variables_use_occur == self.variables_use_occur and \
                other_class_info_obj.funcs == self.funcs

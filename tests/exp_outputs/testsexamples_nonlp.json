@@ -47,6 +47,7 @@
                 "classes": [
                     {
                         "name": "Foo",
+                        "q_name": "Foo",
                         "variables": {},
                         "cls_var_occur": {},
                         "funcs": [
@@ -214,12 +215,14 @@
                 "classes": [
                     {
                         "name": "Delta",
+                        "q_name": "Foo.__init__.<locals>.Delta",
                         "variables": {},
                         "cls_var_occur": {},
                         "funcs": []
                     },
                     {
                         "name": "Foo",
+                        "q_name": "Foo",
                         "variables": {
                             "foo_seq": "collections.abc.Sequence"
                         },
@@ -437,6 +440,7 @@
                 "classes": [
                     {
                         "name": "Bar",
+                        "q_name": "Bar",
                         "variables": {
                             "me": "builtins.float",
                             "fox": ""
@@ -658,6 +662,7 @@
                 "classes": [
                     {
                         "name": "TestVarArgOccur",
+                        "q_name": "TestVarArgOccur",
                         "variables": {
                             "greeting": "builtins.str",
                             "num": "",
@@ -1706,6 +1711,7 @@
                 "classes": [
                     {
                         "name": "Bar",
+                        "q_name": "Bar",
                         "variables": {
                             "class_var": "builtins.str"
                         },
@@ -1875,6 +1881,7 @@
                 "classes": [
                     {
                         "name": "Test",
+                        "q_name": "Test",
                         "variables": {
                             "x": "",
                             "u": "",
@@ -2235,6 +2242,7 @@
                 "classes": [
                     {
                         "name": "Foo",
+                        "q_name": "Foo",
                         "variables": {
                             "foo_num": "",
                             "foo_name": "",
@@ -2482,6 +2490,7 @@
                 "classes": [
                     {
                         "name": "Delta",
+                        "q_name": "Delta",
                         "variables": {},
                         "cls_var_occur": {},
                         "funcs": [
@@ -3405,6 +3414,7 @@
                 "classes": [
                     {
                         "name": "MyClass",
+                        "q_name": "MyClass",
                         "variables": {
                             "cls_var": "builtins.int"
                         },
@@ -3543,6 +3553,7 @@
                     },
                     {
                         "name": "Bar",
+                        "q_name": "Bar",
                         "variables": {},
                         "cls_var_occur": {},
                         "funcs": [

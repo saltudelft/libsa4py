@@ -14,6 +14,7 @@
     "classes": [
         {
             "name": "MyClass",
+            "q_name": "MyClass",
             "variables": {
                 "cls_var": "builtins.int"
             },
@@ -152,6 +153,7 @@
         },
         {
             "name": "Bar",
+            "q_name": "Bar",
             "variables": {},
             "cls_var_occur": {},
             "funcs": [
@@ -253,6 +255,7 @@
         }
     ],
     "set": null,
+    "tc": false,
     "no_types_annot": {
         "U": 4,
         "D": 7,
