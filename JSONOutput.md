@@ -51,6 +51,7 @@ The following JSON object represents a processed class:
 ```json
 {
   "name": "",
+  "q_name": "",
   "variables": {"var_name": "type"},
   "cls_var_occur": {"var_name": []},
   "funcs": []
@@ -59,6 +60,7 @@ The following JSON object represents a processed class:
 
 Description of the fields:
 - `name`: The name of the processed class.
+- `q_name`: The qualified name of the processed class.
 - `variables`: Contains class variables' names and their type.
 - `cls_var_occur`: Contains class variables' usage inside the class.
 - `funcs`: Contains the JSON object of processed functions in a class, which are described below.

@@ -61,6 +61,7 @@ class Visitor(cst.CSTVisitor):
 
         cls = self.cls_stack.pop()
         cls.variables_use_occur = self.__find_args_vars_use(list(cls.variables.keys()), self.cls_may_vars_use)
+        cls.q_name = self.__get_qualified_name(node.name)
         self.cls_may_vars_use = []
         self.cls_list.append(cls)
 
