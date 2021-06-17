@@ -38,11 +38,12 @@ def Bar(x=['apple', 'orange']):
     return v
 """
 
-test_file_exp = """import builtins
-from typing import Tuple, Dict, List, Literal
+test_file_exp = """from typing import Tuple, Dict, List, Literal
 from collections import defaultdict
 import pandas
 import pathlib
+import builtins
+import collections
 import typing
 from pathlib import Path
 x: builtins.int = 12
@@ -95,19 +96,18 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         # save_json('./tmp_ta/type_apply_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
 
     def test_type_apply_pipeline(self):
-        ta = TypeAnnotatingProjects('./tmp_ta', None)
+        ta = TypeAnnotatingProjects('./tmp_ta', None, apply_nlp=False)
         ta.process_project('./examples/type_apply_ex.json')
 
         exp_split = test_file_exp.splitlines()
         out_split = read_file('./tmp_ta/type_apply.py').splitlines()
 
-        print("A", exp_split[0])
         exp = """{}""".format("\n".join(exp_split[7:]))
         out = """{}""".format("\n".join(out_split[7:]))
 
         self.assertEqual(exp, out)
         # The imported types from typing
-        self.assertEqual(Counter(exp_split[0]), Counter(out_split[0]))
+        self.assertEqual(Counter(" ".join(exp_split[0:7])), Counter(" ".join(out_split[0:7])))
 
     @classmethod
     def tearDownClass(cls):

@@ -886,7 +886,6 @@ class TypeApplier(cst.CSTTransformer):
         for fn in fns:
             if fn['q_name'] == self.__get_qualified_name(f_node.name) and \
                     list(fn['params'].keys()) == self.__get_fn_params(f_node.params):
-                print("FN-PARAMS", fn['params'].keys(), self.__get_fn_params(f_node.params))
                 return fn
 
     def __get_fn_param_type(self, param_name: str):

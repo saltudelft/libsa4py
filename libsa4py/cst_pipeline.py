@@ -250,9 +250,10 @@ class TypeAnnotatingProjects:
     It applies the inferred type annotations to the input dataset
     """
 
-    def __init__(self, projects_path: str, output_path: str):
+    def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
         self.projects_path = projects_path
         self.output_path = output_path
+        self.apply_nlp = apply_nlp
 
     def process_project(self, proj_json_path: str):
         proj_json = load_json(proj_json_path)
@@ -263,7 +264,7 @@ class TypeAnnotatingProjects:
                     try:
                         f_parsed = cst.parse_module(f_read)
                         try:
-                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(TypeApplier(f_d))
+                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(TypeApplier(f_d, self.apply_nlp))
                             write_file(join(self.projects_path, f), f_parsed.code)
                         except KeyError as ke:
                             print(f"A variable not found | project {proj_json_path} | file {f}", ke)
