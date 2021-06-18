@@ -901,8 +901,6 @@ class TypeApplier(cst.CSTTransformer):
         for c in self.f_processed_dict['classes']:
             if c['q_name'] == self.__get_qualified_name(cls.name):
                 return c
-            else:
-                print(None)
 
     def __get_fn_vars(self, var_name: str) -> dict:
         if var_name in self.fn_visited[-1][0]['variables']:
