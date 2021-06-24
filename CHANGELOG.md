@@ -6,6 +6,9 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Adding the `--tc` CLI arg for the `process` command to type-check source files in Python projects using mypy.
 - Supporting qualified names for classes by adding the `q_name` field to the JSON output.
 
+### Fixed
+- When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.
+
 ## [0.2.0] - 2021-06-02
 ### Added
 - Integrated [pyre](https://pyre-check.org/) into the pipeline for inferring the types of variables in source code files of given projects

@@ -17,7 +17,7 @@ class Foo:
         foo_d = 'Hello, Delta!'
     foo_p = Path('/home/foo/bar')
     def __init__():
-        def foo_inner(c, d):
+        def foo_inner(c, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y):
         def foo_inner(a, b, c, d):
@@ -58,7 +58,7 @@ class Foo:
         foo_d = 'Hello, Delta!'
     foo_p: pathlib.Path = Path('/home/foo/bar')
     def __init__():
-        def foo_inner(c, d):
+        def foo_inner(c: str, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y)-> typing.Dict[builtins.str, builtins.bool]:
         def foo_inner(a, b, c, d):

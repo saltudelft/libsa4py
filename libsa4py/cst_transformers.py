@@ -908,7 +908,10 @@ class TypeApplier(cst.CSTTransformer):
                 return self.fn_visited[-1][0]['variables'][var_name]
 
     def __get_fn_params(self, fn_params: cst.Parameters):
-        return [p.name.value for p in match.findall(fn_params, match.Param(name=match.Name(value=match.DoNotCare())))]
+        p_names: List[str] = []
+        for p in fn_params.params:
+            p_names.append(p.name.value)
+        return p_names
 
     def __get_cls_vars(self, var_name: str) -> dict:
         if var_name in self.cls_visited[-1][0]['variables']:
