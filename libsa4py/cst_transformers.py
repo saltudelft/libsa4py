@@ -909,9 +909,7 @@ class TypeApplier(cst.CSTTransformer):
 
     def __get_fn_params(self, fn_params: cst.Parameters):
         p_names: List[str] = []
-        for p in list(fn_params.params) + list(fn_params.kwonly_params) + \
-                 list(fn_params.star_kwarg if fn_params.star_kwarg is not None else []) \
-                 + list(fn_params.posonly_params):
+        for p in list(fn_params.params) + list(fn_params.kwonly_params) + list(fn_params.posonly_params):
             p_names.append(self.nlp_p(p.name.value))
         return p_names
 
