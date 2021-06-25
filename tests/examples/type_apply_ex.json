@@ -349,7 +349,8 @@
                 ]
             ],
             "params": {
-                "x": "typing.List[builtins.str]"
+                "x": "typing.List[builtins.str]",
+                "c": ""
             },
             "ret_exprs": [
                 "return v"

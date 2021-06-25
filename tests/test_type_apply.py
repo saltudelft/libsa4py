@@ -32,7 +32,7 @@ class Foo:
         Foo.foo_v = y
         return Foo.foo_v
     foo_v = "No"
-def Bar(x=['apple', 'orange']):
+def Bar(x=['apple', 'orange'], *, c):
     v = x
     l = lambda e: e+1
     return v
@@ -73,7 +73,7 @@ class Foo:
         Foo.foo_v = y
         return Foo.foo_v
     foo_v = "No"
-def Bar(x: typing.List[builtins.str]=['apple', 'orange'])-> typing.List[builtins.str]:
+def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[builtins.str]:
     v: typing.List[builtins.str] = x
     l = lambda e: e+1
     return v
