@@ -5,6 +5,10 @@ DEV_TYPE_ANNOT = 'D'
 INF_TYPE_ANNOT = 'I'
 UNK_TYPE_ANNOT = 'U'
 
+# Maximum time for type checking in sec.
+MAX_TC_TIME = 120
+
+# Python types
 PY_TYPING_MOD = {'AbstractSet', 'Any', 'AnyStr', 'AsyncContextManager', 'AsyncGenerator', 'AsyncIterable',
                  'AsyncIterator', 'Awaitable', 'BinaryIO', 'ByteString', 'CT_co', 'Callable', 'ChainMap', 'ClassVar',
                  'Collection', 'Container', 'ContextManager', 'Coroutine', 'Counter', 'DefaultDict', 'Deque', 'Dict',
@@ -35,6 +39,3 @@ PY_TYPING_MOD = {'ABCMeta', 'AbstractSet', 'Any', 'AnyStr', 'AsyncContextManager
 PY_COLLECTION_MOD = {'ChainMap', 'Counter', 'OrderedDict', 'UserDict', 'UserList', 'UserString', '_Link',
                      '_OrderedDictItemsView', '_OrderedDictKeysView', '_OrderedDictValuesView', 'defaultdict',
                      'deque', 'namedtuple'} - PY_TYPING_MOD
-
-
-

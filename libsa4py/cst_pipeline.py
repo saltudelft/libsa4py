@@ -18,6 +18,7 @@ from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_e
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
 from libsa4py.type_check import MypyManager, type_check_single_file
+from libsa4py import MAX_TC_TIME
 
 import libcst as cst
 import logging
@@ -54,7 +55,7 @@ class Pipeline:
             self.is_file_duplicate = lambda x: False
 
         if self.use_tc:
-            self.tc = MypyManager('mypy', 20)
+            self.tc = MypyManager('mypy', MAX_TC_TIME)
 
         self.split_dataset_files = {f:s for s, f in csv.reader(open(split_files_path, 'r'))} if split_files_path is not None else {}
 
