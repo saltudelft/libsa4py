@@ -885,7 +885,7 @@ class TypeApplier(cst.CSTTransformer):
 
         for fn in fns:
             if fn['q_name'] == self.__get_qualified_name(f_node.name) and \
-                    list(fn['params'].keys()) == self.__get_fn_params(f_node.params):
+                    set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -909,7 +909,10 @@ class TypeApplier(cst.CSTTransformer):
 
     def __get_fn_params(self, fn_params: cst.Parameters):
         p_names: List[str] = []
-        for p in list(fn_params.params) + list(fn_params.kwonly_params) + list(fn_params.posonly_params):
+        kwarg = [fn_params.star_kwarg] if fn_params.star_kwarg is not None else []
+        stararg = [fn_params.star_arg] if match.matches(fn_params.star_arg, match.Param(
+            name=match.Name(value=match.DoNotCare()))) else []
+        for p in list(fn_params.params) + list(fn_params.kwonly_params) + list(fn_params.posonly_params) + stararg + kwarg:
             p_names.append(self.nlp_p(p.name.value))
         return p_names
 

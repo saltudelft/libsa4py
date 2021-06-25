@@ -20,7 +20,7 @@ class Foo:
         def foo_inner(c, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y):
-        def foo_inner(a, b, c, d):
+        def foo_inner(a, b, c, d, *args, **kwargs):
             pass
         d: dict = {"foo": True}
         return d
@@ -61,7 +61,7 @@ class Foo:
         def foo_inner(c: str, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y)-> typing.Dict[builtins.str, builtins.bool]:
-        def foo_inner(a, b, c, d):
+        def foo_inner(a, b, c, d, *args, **kwargs):
             pass
         d: typing.Dict[builtins.str, builtins.bool] = {"foo": True}
         return d

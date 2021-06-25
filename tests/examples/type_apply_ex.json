@@ -164,7 +164,9 @@
                         "a": "",
                         "b": "",
                         "c": "",
-                        "d": ""
+                        "d": "",
+                        "args": "",
+                        "kwargs": ""
                     },
                     "ret_exprs": [],
                     "params_occur": {
