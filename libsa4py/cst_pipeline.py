@@ -269,6 +269,10 @@ class TypeAnnotatingProjects:
                             write_file(join(self.projects_path, f), f_parsed.code)
                         except KeyError as ke:
                             print(f"A variable not found | project {proj_json_path} | file {f}", ke)
+                            traceback.print_exc()
+                        except TypeError as te:
+                            print(f"Project {proj_json_path} | file {f}", te)
+                            traceback.print_exc()
                     except cst._exceptions.ParserSyntaxError as pse:
                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
 
