@@ -962,9 +962,17 @@ class TypeApplier(cst.CSTTransformer):
     def __get_var_names_counter(self, node, scope):
         vars_name = match.extractall(node, match.OneOf(match.AssignTarget(target=match.SaveMatchedNode(
             match.Name(value=match.DoNotCare()), "name")), match.AnnAssign(target=match.SaveMatchedNode(
-            match.Name(value=match.DoNotCare()), "name"))))
+            match.Name(value=match.DoNotCare()), "name"))
+        ))
+        attr_name = match.extractall(node, match.OneOf(match.AssignTarget(
+                target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr")),
+            match.AnnAssign(target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr"))))
         return Counter([n['name'].value for n in vars_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
-                                                                                           n['name']), scope)])
+                                                                                           n['name']), scope)] +
+                       [n['attr'].attr.value for n in attr_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
+                                                                                           n['attr']), scope)])
 
     def visit_ClassDef(self, node: cst.ClassDef):
         self.cls_visited.append((self.__get_cls(node),
@@ -987,6 +995,8 @@ class TypeApplier(cst.CSTTransformer):
             if fn_ret_type is not None:
                 self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
                 return updated_node.with_changes(returns=fn_ret_type)
+        else:
+            return updated_node.with_changes(returns=None)
 
         return updated_node
 
@@ -999,9 +1009,16 @@ class TypeApplier(cst.CSTTransformer):
 
     def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
                                   updated_node: cst.SimpleStatementLine):
+
+        # Untyped variables
         if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.DoNotCare())])])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Name(value=match.DoNotCare()))])])):
-            t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.Attribute(value=match.Name(value=match.DoNotCare()), attr=match.Name(value=match.DoNotCare())))])])):
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.attr.value)
 
             if t is not None:
                 t_annot_node_resolved = self.resolve_type_alias(t)
@@ -1015,9 +1032,14 @@ class TypeApplier(cst.CSTTransformer):
                         equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
-        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
-            t = self.__get_var_type_an_assign(original_node.body[0].target.value)
-            if t is not None:
+        # Typed variables
+        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare())])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.value)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Attribute(value=match.Name(value=match.DoNotCare()),
+                                                                                              attr=match.Name(value=match.DoNotCare())))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.attr.value)
+            if t:
                 t_annot_node_resolved = self.resolve_type_alias(t)
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
@@ -1027,6 +1049,11 @@ class TypeApplier(cst.CSTTransformer):
                         value=original_node.body[0].value,
                         annotation=t_annot_node,
                         equal=original_node.body[0].equal)])
+            else:
+                return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                            whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                            whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                  value=original_node.body[0].value)])
 
         return original_node
 
@@ -1035,6 +1062,8 @@ class TypeApplier(cst.CSTTransformer):
             fn_param_type = self.__get_fn_param_type(original_node.name.value)
             if fn_param_type is not None:
                 return updated_node.with_changes(annotation=fn_param_type)
+            else:
+                return updated_node.with_changes(annotation=None)
 
         return original_node
 

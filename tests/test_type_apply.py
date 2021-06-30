@@ -16,7 +16,8 @@ class Foo:
     class Delta:
         foo_d = 'Hello, Delta!'
     foo_p = Path('/home/foo/bar')
-    def __init__():
+    def __init__(self):
+        self.i = 10
         def foo_inner(c, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y):
@@ -57,7 +58,8 @@ class Foo:
     class Delta:
         foo_d = 'Hello, Delta!'
     foo_p: pathlib.Path = Path('/home/foo/bar')
-    def __init__():
+    def __init__(self):
+        self.i: int = 10
         def foo_inner(c: str, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y)-> typing.Dict[builtins.str, builtins.bool]:
@@ -79,6 +81,38 @@ def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[bu
     return v
 """
 
+test_file_typed = """a: int = 12
+l: List[int] = [1,2,3]
+c = 2.71
+def foo(x: int, y: int) -> int:
+    z: int = x + y
+    return z
+class Bar:
+    bar_var1: str = "Hello, Bar!"
+    bar_var2: float = 3.14
+    def __init__(a: int, b):
+        self.a: int = a
+        self.b = b
+    def delta(n: int) -> List[float]:
+        return [2.17] * p
+"""
+
+test_file_typed_exp = """a = 12
+l = [1,2,3]
+c = 2.71
+def foo(x, y):
+    z = x + y
+    return z
+class Bar:
+    bar_var1 = "Hello, Bar!"
+    bar_var2 = 3.14
+    def __init__(a, b):
+        self.a = a
+        self.b = b
+    def delta(n):
+        return [2.17] * p
+"""
+
 
 class TestTypeAnnotatingProjects(unittest.TestCase):
     """
@@ -92,8 +126,11 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
     def setUpClass(cls):
         mk_dir_not_exist('./tmp_ta')
         write_file('./tmp_ta/type_apply.py', test_file)
+        write_file('./tmp_ta/type_apply_typed.py', test_file_typed)
+
         # from libsa4py.cst_extractor import Extractor
-        # save_json('./tmp_ta/type_apply_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
+        # # save_json('./tmp_ta/type_apply_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
+        # save_json('./tmp_ta/type_apply_typed_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply_typed.py')).to_dict())
 
     def test_type_apply_pipeline(self):
         ta = TypeAnnotatingProjects('./tmp_ta', None, apply_nlp=False)
@@ -108,6 +145,15 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         self.assertEqual(exp, out)
         # The imported types from typing
         self.assertEqual(Counter(" ".join(exp_split[0:7])), Counter(" ".join(out_split[0:7])))
+
+    def test_type_apply_remove_annot(self):
+        """
+        Tests the removal of type annotations if not present in the JSON output
+        """
+        ta = TypeAnnotatingProjects('./tmp_ta', None, apply_nlp=False)
+        ta.process_project('./examples/type_apply_typed_ex.json')
+
+        self.assertEqual(test_file_typed_exp, read_file('./tmp_ta/type_apply_typed.py'))
 
     @classmethod
     def tearDownClass(cls):

@@ -64,7 +64,7 @@
             "name": "Foo",
             "q_name": "Foo",
             "variables": {
-                "foo_v": "",
+                "foo_v": "str",
                 "foo_p": "pathlib.Path"
             },
             "cls_var_occur": {
@@ -134,11 +134,11 @@
                             16
                         ]
                     ],
-                    "params": {},
+                    "params": {"self":  ""},
                     "ret_exprs": [],
                     "params_occur": {},
                     "ret_type": "",
-                    "variables": {},
+                    "variables": {"i":  "int"},
                     "fn_var_occur": {},
                     "params_descr": {},
                     "docstring": {

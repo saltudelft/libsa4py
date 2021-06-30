@@ -2,6 +2,7 @@ from typing import List
 from tqdm import tqdm
 from joblib import Parallel
 from os.path import join, isdir
+from tempfile import NamedTemporaryFile
 from pathlib import Path
 import time
 import os
@@ -113,3 +114,24 @@ def find_repos_list(projects_path: str) -> List[dict]:
 def mk_dir_not_exist(path: str):
     if not isdir(path):
         os.mkdir(path)
+
+
+def create_tmp_file(suffix: str):
+    """
+    It creates a temporary file.
+    NOTE: the temp file should be deleted manually after creation.
+    """
+    return NamedTemporaryFile(mode="w", delete=False, suffix=suffix)
+
+
+def delete_tmp_file(tmp_f: NamedTemporaryFile):
+    try:
+        os.unlink(tmp_f.name)
+    except TypeError:
+        print("Couldn't delete ", tmp_f.name)
+
+
+def write_to_tmp_file(tmp_f: NamedTemporaryFile, text: str):
+    tmp_f.write(text)
+    #tmp_f.close()
+    return tmp_f

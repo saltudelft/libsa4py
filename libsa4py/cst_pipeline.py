@@ -4,8 +4,9 @@ import random
 import csv
 import time
 
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from os.path import join
+from tempfile import NamedTemporaryFile
 from pathlib import Path
 from datetime import timedelta
 from joblib import delayed
@@ -14,7 +15,8 @@ from libsa4py.cst_extractor import Extractor
 from libsa4py.cst_transformers import TypeApplier
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
-from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
+from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file, \
+    create_tmp_file, write_to_tmp_file, delete_tmp_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
 from libsa4py.type_check import MypyManager, type_check_single_file
@@ -280,3 +282,163 @@ class TypeAnnotatingProjects:
         proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
         ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) for p_j in proj_jsons)
+
+
+class TypeAnnotationsRemoval:
+    """
+    Removes type annotations that cannot be type-checked by mypy
+    """
+
+    def __init__(self, projects_path: str, processed_projects_path: str, output_path: str, apply_nlp: bool = True):
+        self.projects_path = projects_path
+        self.processed_projects_path = processed_projects_path
+        self.output_path = output_path
+        self.apply_nlp = apply_nlp
+
+    def process_file(self, f:str, f_d_repr: dict):
+        f_read = read_file(join(self.projects_path, f))
+        # TODO: The inital type-checking should not be done after adding no. type errors to the representation later on.
+        init_tc, init_no_tc_err = type_check_single_file(join(self.projects_path, f),
+                                                         MypyManager('mypy', MAX_TC_TIME))
+
+        if init_tc == False and init_no_tc_err is None:
+            return
+        else:
+            self.__remove_unchecked_type_annot(f_read, f_d_repr, )
+
+
+    def run(self, jobs: int):
+        self.merged_projects = load_json(join(self.processed_projects_path, "merged_all_projects.json"))
+        not_tced_src_f: List[Tuple[str, dict]] = []
+        for p, p_v in list(self.merged_projects['projects'].items()):
+            for f, f_v in p_v['src_files'].items():
+                if not f_v['tc']:
+                    not_tced_src_f.append((f, f_v))
+
+    def __remove_unchecked_type_annot(self, f_read: str, f_d_repr: dict, init_no_tc_err: int):
+        tmp_f = create_tmp_file(".py")
+        out_f_code: str = ""
+        for m_v, m_v_t in f_d_repr['variables'].items():
+            if m_v_t != "":
+                print(f"Type-checking module-level variable {m_v} with annotation {m_v_t}")
+                f_d_repr['variables'][m_v] = ""
+                tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                if tc:
+                    return f_code
+                elif no_tc_err < init_no_tc_err:
+                    out_f_code = f_code
+                elif no_tc_err == init_no_tc_err:
+                    f_d_repr['variables'][m_v] = m_v_t
+
+        for i, fn in enumerate(f_d_repr['funcs']):
+            for p_n, p_t in fn['params'].items():
+                if p_t != "":
+                    print(f"Type-checking function parameter {p_n} with annotation {p_t}")
+                    f_d_repr['funcs'][i]['params'][p_n] = ""
+                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                    if tc:
+                        return f_code
+                    elif no_tc_err < init_no_tc_err:
+                        out_f_code = f_code
+                    elif no_tc_err == init_no_tc_err:
+                        f_d_repr['funcs'][i]['params'][p_n] = p_t
+
+            for fn_v, fn_v_t in fn['variables'].items():
+                if fn_v_t != "":
+                    print(f"Type-checking function variable {fn_v} with annotation {fn_v_t}")
+                    f_d_repr['funcs'][i]['variables'][fn_v] = ""
+                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                    if tc:
+                        return f_code
+                    elif no_tc_err < init_no_tc_err:
+                        out_f_code = f_code
+                    elif no_tc_err == init_no_tc_err:
+                        f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
+
+            # The return type for module-level functions
+            if f_d_repr['funcs'][i]['ret_type'] != "":
+                org_t = f_d_repr['funcs'][i]['ret_type']
+                print(f"Type-checking function {f_d_repr['funcs'][i]['name']} return with {org_t}")
+                f_d_repr['funcs'][i]['ret_type'] = ""
+                tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                if tc:
+                    return f_code
+                elif no_tc_err < init_no_tc_err:
+                    out_f_code = f_code
+                elif no_tc_err == init_no_tc_err:
+                    f_d_repr['funcs'][i]['ret_type'] = org_t
+
+        # The type of class-level vars
+        for c_i, c in enumerate(f_d_repr['classes']):
+            for c_v, c_v_t in c['variables'].items():
+                if c_v_t != "":
+                    print(f"Type checking class variable {c_v} with annotation {c_v_t}")
+                    f_d_repr['classes'][c_i]['variables'][c_v] = ""
+                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                    if tc:
+                        return f_code
+                    elif no_tc_err < init_no_tc_err:
+                        out_f_code = f_code
+                    elif no_tc_err == init_no_tc_err:
+                        f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
+
+            # The type of arguments for class-level functions
+            for fn_i, fn in enumerate(c['funcs']):
+                for p_n, p_t in fn["params"].items():
+                    if p_t != "":
+                        print(f"Type-checking function parameter {p_n} with annotation {p_t}")
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p
+                        tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                        if tc:
+                            return f_code
+                        elif no_tc_err < init_no_tc_err:
+                            out_f_code = f_code
+                        elif no_tc_err == init_no_tc_err:
+                            f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
+
+                # The type of local variables for class-level functions
+                for fn_v, fn_v_t in fn['variables'].items():
+                    if fn_v_t != "":
+                        print(f"Type-checking function variable {fn_v} with annotation {fn_v_t}")
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = p
+                        tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                        if tc:
+                            return f_code
+                        elif no_tc_err < init_no_tc_err:
+                            out_f_code = f_code
+                        elif no_tc_err == init_no_tc_err:
+                            f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
+
+                # The return type for class-level functions
+                if f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] != "":
+                    org_t = f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type']
+                    print(f"Annotating function {f_d_repr['classes'][c_i]['funcs'][fn_i]['name']} return with type {org_t}")
+                    f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = ""
+                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, tmp_f)
+                    if tc:
+                        return f_code
+                    elif no_tc_err < init_no_tc_err:
+                        out_f_code = f_code
+                    elif no_tc_err == init_no_tc_err:
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
+
+        # apply_inferred_types(src_f_read, src_f_ext, src_f_o_path)
+        delete_tmp_file(tmp_f)
+        return out_f_code
+
+    def __type_check_type_annotation(self, f_read: str, f_d_repr: dict, out_f: NamedTemporaryFile):
+        f_t_applied = cst.metadata.MetadataWrapper(cst.parse_module(f_read)).visit(TypeApplier(f_d_repr,
+                                                                                               apply_nlp=self.apply_nlp))
+        write_to_tmp_file(out_f, f_t_applied.code)
+        tc, no_tc_err = type_check_single_file(out_f.name, MypyManager('mypy', MAX_TC_TIME))
+        return tc, no_tc_err, f_t_applied.code
+
+
+
+
+
+
+
+
+
+

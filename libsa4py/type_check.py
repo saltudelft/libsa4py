@@ -7,6 +7,7 @@ MIT License
 
 from abc import ABC, abstractmethod
 from os.path import dirname, basename
+from typing import Tuple, Union
 from collections import Counter, namedtuple
 import toml
 import os
@@ -164,9 +165,9 @@ class MypyManager(TCManager):
             print(f"Error breaking down: {parsed_result.err_breakdown}.")
 
 
-def type_check_single_file(f_path: str, tc: TCManager) -> bool:
+def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None]]:
     no_t_err = tc.heavy_assess(f_path)
     if no_t_err is not None:
-        return True if no_t_err.no_type_errs == 0 else False
+        return (True, 0) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs)
     else:
-        return False
+        return False, None
