@@ -10,6 +10,7 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 from datetime import timedelta
 from joblib import delayed
+from multiprocessing import Manager
 from dpu_utils.utils.dataloading import load_jsonl_gz
 from libsa4py.cst_extractor import Extractor
 from libsa4py.cst_transformers import TypeApplier
@@ -301,7 +302,7 @@ class TypeAnnotationsRemoval:
         self.output_path = output_path
         self.apply_nlp = apply_nlp
 
-    def process_file(self, f: str, f_d_repr: dict):
+    def process_file(self, f: str, f_d_repr: dict, tc_res: dict):
         f_read = read_file(join(self.projects_path, f))
         # TODO: The initial type-checking should not be done after adding no. type errors to the representation later on.
         init_tc, init_no_tc_err = type_check_single_file(join(self.projects_path, f),
@@ -313,7 +314,10 @@ class TypeAnnotationsRemoval:
             tmp_f = create_tmp_file(".py")
             f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, init_no_tc_err,
                                                                                   tmp_f)
-            print(f"F: {f} | init_tc_errors: {init_no_tc_err} | tc_errors: {tc_errs} | ta_r: {type_annot_r}")
+            print(f"F: {f} | init_tc_errors: {init_no_tc_err} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
+             total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']}")
+            tc_res[f] = {"init_tc_errs": init_no_tc_err, "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
+                         "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D']}
             # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
             # write_file(join(self.projects_path, f), f_tc_code)
             delete_tmp_file(tmp_f)
@@ -326,8 +330,12 @@ class TypeAnnotationsRemoval:
                 if not f_v['tc']:
                     not_tced_src_f.append((f, f_v))
 
-        ParallelExecutor(n_jobs=jobs)(total=len(not_tced_src_f))(delayed(self.process_file)(f, f_d) \
+        manager = Manager()
+        tc_res = manager.dict()
+        ParallelExecutor(n_jobs=jobs)(total=len(not_tced_src_f))(delayed(self.process_file)(f, f_d, tc_res) \
                                                                  for f, f_d in not_tced_src_f)
+
+        save_json(join(self.processed_projects_path, "tc_ta_results.json"), tc_res)
 
     def __remove_unchecked_type_annot(self, f_read: str, f_d_repr: dict, init_no_tc_err: int,
                                       f_out_temp: NamedTemporaryFile) -> Tuple[str, int, List[str]]:
