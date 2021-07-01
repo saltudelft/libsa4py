@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 from multiprocessing import cpu_count
 from libsa4py.utils import find_repos_list
-from libsa4py.cst_pipeline import Pipeline, TypeAnnotatingProjects
+from libsa4py.cst_pipeline import Pipeline, TypeAnnotatingProjects, TypeAnnotationsRemoval
 from libsa4py.merge import merge_projects
 
 
@@ -14,6 +14,11 @@ def process_projects(args):
 def apply_types_projects(args):
     tap = TypeAnnotatingProjects(args.p, args.o)
     tap.run(args.j)
+
+
+def remove_err_type_annotations(args):
+    tar = TypeAnnotationsRemoval(args.p, args.o, "")
+    tar.run(args.j)
 
 
 def main():
@@ -52,6 +57,12 @@ def main():
     apply_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     apply_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
     apply_parser.set_defaults(func=apply_types_projects)
+
+    remove_parser = sub_parsers.add_parser('remove')
+    remove_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
+    remove_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
+    remove_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing files")
+    remove_parser.set_defaults(func=remove_err_type_annotations)
 
     args = arg_parser.parse_args()
     args.func(args)
