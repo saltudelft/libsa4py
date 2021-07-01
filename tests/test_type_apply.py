@@ -84,6 +84,7 @@ def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[bu
 test_file_typed = """a: int = 12
 l: List[int] = [1,2,3]
 c = 2.71
+h: dict
 def foo(x: int, y: int) -> int:
     z: int = x + y
     return z
@@ -100,6 +101,7 @@ class Bar:
 test_file_typed_exp = """a = 12
 l = [1,2,3]
 c = 2.71
+h: dict
 def foo(x, y):
     z = x + y
     return z

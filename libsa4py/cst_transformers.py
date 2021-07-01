@@ -1034,7 +1034,8 @@ class TypeApplier(cst.CSTTransformer):
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
         # Typed variables
-        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare())])):
+        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare(),
+                                                                                          value=match.MatchIfTrue(lambda v: v is not None))])):
             if match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
                 t = self.__get_var_type_an_assign(original_node.body[0].target.value)
             elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Attribute(value=match.Name(value=match.DoNotCare()),
@@ -1051,17 +1052,10 @@ class TypeApplier(cst.CSTTransformer):
                         annotation=t_annot_node,
                         equal=original_node.body[0].equal)])
             else:
-                try:
-                    return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
-                                                                                                whitespace_before_equal=original_node.body[0].equal.whitespace_before,
-                                                                                                whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
-                                                                    value=original_node.body[0].value)])
-                except AttributeError:
-                    print("AT", original_node.body[0])
-                    return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
-                                                                                                whitespace_before_equal=original_node.body[0].equal.whitespace_before,
-                                                                                                whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
-                                                                    value=original_node.body[0].value)])
+                return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                            whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                            whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                value=original_node.body[0].value)])
                     
 
         return original_node
