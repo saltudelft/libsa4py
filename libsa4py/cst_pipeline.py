@@ -311,16 +311,18 @@ class TypeAnnotationsRemoval:
         if init_tc == False and init_no_tc_err is None:
             return
         else:
-            tmp_f = create_tmp_file(".py")
-            f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, init_no_tc_err,
-                                                                                  tmp_f)
-            print(f"F: {f} | init_tc_errors: {init_no_tc_err} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
-             total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']}")
-            tc_res[f] = {"init_tc_errs": init_no_tc_err, "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
-                         "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D']}
-            # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
-            # write_file(join(self.projects_path, f), f_tc_code)
-            delete_tmp_file(tmp_f)
+            # Only files with type annotations
+            if f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D'] > 0:
+                tmp_f = create_tmp_file(".py")
+                f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, init_no_tc_err,
+                                                                                      tmp_f)
+                print(f"F: {f} | init_tc_errors: {init_no_tc_err} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
+                 total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']}")
+                tc_res[f] = {"init_tc_errs": init_no_tc_err, "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
+                             "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D']}
+                # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
+                # write_file(join(self.projects_path, f), f_tc_code)
+                delete_tmp_file(tmp_f)
 
     def run(self, jobs: int):
         merged_projects = load_json(join(self.processed_projects_path, "merged_512_projects.json"))
@@ -335,7 +337,7 @@ class TypeAnnotationsRemoval:
         ParallelExecutor(n_jobs=jobs)(total=len(not_tced_src_f))(delayed(self.process_file)(f, f_d, tc_res) \
                                                                  for f, f_d in not_tced_src_f)
 
-        save_json(join(self.processed_projects_path, "tc_ta_results.json"), tc_res)
+        save_json(join(self.processed_projects_path, "tc_ta_results.json"), tc_res.copy())
 
     def __remove_unchecked_type_annot(self, f_read: str, f_d_repr: dict, init_no_tc_err: int,
                                       f_out_temp: NamedTemporaryFile) -> Tuple[str, int, List[str]]:
