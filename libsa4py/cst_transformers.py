@@ -1011,6 +1011,7 @@ class TypeApplier(cst.CSTTransformer):
                                   updated_node: cst.SimpleStatementLine):
 
         # Untyped variables
+        t = None
         if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.DoNotCare())])])):
             if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
@@ -1050,10 +1051,18 @@ class TypeApplier(cst.CSTTransformer):
                         annotation=t_annot_node,
                         equal=original_node.body[0].equal)])
             else:
-                return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
-                                                                                            whitespace_before_equal=original_node.body[0].equal.whitespace_before,
-                                                                                            whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
-                                                                  value=original_node.body[0].value)])
+                try:
+                    return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                                whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                                whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                    value=original_node.body[0].value)])
+                except AttributeError:
+                    print("AT", original_node.body[0])
+                    return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                                whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                                whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                    value=original_node.body[0].value)])
+                    
 
         return original_node
 

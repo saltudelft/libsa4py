@@ -318,7 +318,7 @@ class TypeAnnotationsRemoval:
             delete_tmp_file(tmp_f)
 
     def run(self, jobs: int):
-        merged_projects = load_json(join(self.processed_projects_path, "merged_all_projects.json"))
+        merged_projects = load_json(join(self.processed_projects_path, "merged_512_projects.json"))
         not_tced_src_f: List[Tuple[str, dict]] = []
         for p, p_v in list(merged_projects['projects'].items()):
             for f, f_v in p_v['src_files'].items():
@@ -406,7 +406,7 @@ class TypeAnnotationsRemoval:
                 for p_n, p_t in fn["params"].items():
                     if p_t != "":
                         print(f"Type-checking function parameter {p_n} with annotation {p_t}")
-                        f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = ""
                         tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
                         if tc:
                             return f_code, no_tc_err
@@ -420,7 +420,7 @@ class TypeAnnotationsRemoval:
                 for fn_v, fn_v_t in fn['variables'].items():
                     if fn_v_t != "":
                         print(f"Type-checking function variable {fn_v} with annotation {fn_v_t}")
-                        f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = p
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = ""
                         tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
                         if tc:
                             return f_code, no_tc_err
