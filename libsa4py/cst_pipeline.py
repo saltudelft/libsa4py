@@ -303,32 +303,41 @@ class TypeAnnotationsRemoval:
         self.apply_nlp = apply_nlp
 
     def process_file(self, f: str, f_d_repr: dict, tc_res: dict):
-        f_read = read_file(join(self.projects_path, f))
         # TODO: The initial type-checking should not be done after adding no. type errors to the representation later on.
-        init_tc, init_no_tc_err = type_check_single_file(join(self.projects_path, f),
-                                                         MypyManager('mypy', MAX_TC_TIME))
+        # init_tc, init_no_tc_err = type_check_single_file(join(self.projects_path, f),
+        #                                                  MypyManager('mypy', MAX_TC_TIME))
 
-        if init_tc == False and init_no_tc_err is None:
-            return
-        else:
-            tmp_f = create_tmp_file(".py")
-            f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, init_no_tc_err,
-                                                                                  tmp_f)
-            print(f"F: {f} | init_tc_errors: {init_no_tc_err} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']}")
-            tc_res[f] = {"init_tc_errs": init_no_tc_err, "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
-                         "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D']}
-            # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
-            write_file(join(self.projects_path, f), f_tc_code)
-            delete_tmp_file(tmp_f)
+        # if init_tc == False and init_no_tc_err is None:
+        #     return
+        # else:
+        # Only files with type annotations
+        if f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D'] > 0:
+            try:
+                f_read = read_file(join(self.projects_path, f))
+                tmp_f = create_tmp_file(".py")
+                f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, f_d_repr['tc'][1],
+                                                                                        tmp_f)
+                print(f"F: {f} | init_tc_errors: {f_d_repr['tc'][1]} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
+                    total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']}")
+                tc_res[f] = {"init_tc_errs": f_d_repr['tc'][1], "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
+                                "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D']}
+                # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
+                write_file(join(self.projects_path, f), f_tc_code)
+            except Exception as e:
+                print(f"f: {f} | e: {e}")
+                traceback.print_exc()
+            finally:
+                delete_tmp_file(tmp_f)
 
     def run(self, jobs: int):
         merged_projects = load_json(join(self.processed_projects_path, "merged_all_projects.json"))
         not_tced_src_f: List[Tuple[str, dict]] = []
         for p, p_v in list(merged_projects['projects'].items()):
             for f, f_v in p_v['src_files'].items():
-                if not f_v['tc']:
+                if not f_v['tc'][0] and f_v['tc'] != [False, None]:
                     not_tced_src_f.append((f, f_v))
 
+        print("L:", len(not_tced_src_f))
         #not_tced_src_f = not_tced_src_f[:250]
         manager = Manager()
         tc_res = manager.dict()
