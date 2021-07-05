@@ -26,13 +26,14 @@ class FunctionInfo:
         self.docstring: Dict[str, str] = {}
         self.variables: Dict[str, str] = {}  # Variable names
         self.variables_occur: Dict[str, list] = {}
+        self.variables_ln: Dict[str, Tuple[Tuple[int, int], Tuple[int, int]]]= {}
         self.node = None
 
     def to_dict(self):
         return {"name": self.name, "q_name": self.q_name, "fn_lc": self.ln_col, "params": self.parameters,
                 "ret_exprs": self.return_exprs, "params_occur": self.parameters_occur, "ret_type": self.return_type,
-                "variables": self.variables, "fn_var_occur": self.variables_occur, "params_descr": self.params_descr,
-                "docstring": self.docstring}
+                "variables": self.variables, "fn_var_occur": self.variables_occur, "fn_var_ln": self.variables_ln,
+                "params_descr": self.params_descr, "docstring": self.docstring}
 
     def from_dict(self, fn_dict_repr: dict):
         self.name = fn_dict_repr['name']
@@ -45,6 +46,7 @@ class FunctionInfo:
         self.return_type = fn_dict_repr['ret_type']
         self.variables = fn_dict_repr['variables']
         self.variables_occur = fn_dict_repr['fn_var_occur']
+        self.variables_ln = {v: (tuple(l[0]), tuple(l[1])) for v, l in fn_dict_repr['fn_var_ln'].items()}
         self.docstring = fn_dict_repr['docstring']
 
         return self
@@ -60,6 +62,7 @@ class FunctionInfo:
                other_func_info_obj.return_type == self.return_type and \
                other_func_info_obj.variables == self.variables and \
                other_func_info_obj.variables_occur == self.variables_occur and \
+               other_func_info_obj.variables_ln == self.variables_ln and \
                other_func_info_obj.docstring == self.docstring
 
 

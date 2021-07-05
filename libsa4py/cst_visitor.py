@@ -234,7 +234,7 @@ class Visitor(cst.CSTVisitor):
             # Only extract if in function
             if len(self.stack) > 0:
                 # Extract names of the target.
-                self.__process_extracted_assign_names(extracted_names)
+                self.__process_extracted_assign_names(extracted_names, node.target)
 
             elif len(self.cls_stack) > 0:
                 # Add class variables
@@ -276,7 +276,7 @@ class Visitor(cst.CSTVisitor):
             extracted_assign['type'] = self.__convert_annotation(extracted_assign['type'])
             if len(self.stack) > 0:
                 # Both name & type must be present if we have an Annotated Assign
-                self.__add_variable_to_function(extracted_assign["name"], extracted_assign["type"])
+                self.__add_variable_to_function(extracted_assign["name"], extracted_assign["type"], node.target)
                 self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
                                              self.stack[-1].name, extracted_assign["name"])] = \
                     (extracted_assign["type"], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)
@@ -557,7 +557,7 @@ class Visitor(cst.CSTVisitor):
             i += 1
 
         return names
-    def __add_variable_to_function(self, name, annotation):
+    def __add_variable_to_function(self, name, annotation, name_node: cst.Name):
         """
         Adds a variable definition/assignment to the current function,
         provided the visitor is in a function currently.
@@ -572,6 +572,7 @@ class Visitor(cst.CSTVisitor):
 
             # Add name & annotation to function local variable data
             func.variables[name] = annotation
+            func.variables_ln[name] = self.__get_line_column_no(name_node)
             # func.variables_types.append(annotation)
 
             # Add entry to dictionary as (name -> annotation), provided
@@ -579,7 +580,7 @@ class Visitor(cst.CSTVisitor):
             # if (name not in func.variables):
             #     func.variables[name] = annotation
 
-    def __process_extracted_assign_names(self, extracted_names):
+    def __process_extracted_assign_names(self, extracted_names, name_node: cst.Name):
         """
         Auxiliary function to process the output of a matcher extraction
         for extracting assign targets.
@@ -598,7 +599,7 @@ class Visitor(cst.CSTVisitor):
             extracted_name = extracted_names["name"]
 
             # Add the variable to function
-            self.__add_variable_to_function(extracted_name, extracted_names['type'][0])
+            self.__add_variable_to_function(extracted_name, extracted_names['type'][0], name_node)
 
             self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
                                          self.stack[-1].name, extracted_name)] = extracted_names['type']
@@ -608,11 +609,12 @@ class Visitor(cst.CSTVisitor):
             for name in extracted_names["names"]:
                 name_type = self.__get_type_from_metadata(name)
                 if match.matches(name, match.Name(value=match.DoNotCare())):
+                    self.__add_variable_to_function(name.value, name_type, name)
                     name = name.value
                 elif match.matches(name, match.Attribute(attr=match.Name(value=match.DoNotCare()))):
+                    self.__add_variable_to_function(name.attr.value, name_type, name.attr)
                     name = name.attr.value
 
-                self.__add_variable_to_function(name, name_type)
                 self.module_all_annotations[(self.cls_stack[-1].name if len(self.cls_stack) > 0 else None,
                                              self.stack[-1].name, name)] = \
                     (name_type, INF_TYPE_ANNOT if name_type else UNK_TYPE_ANNOT)

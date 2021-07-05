@@ -100,6 +100,18 @@
                             ]
                         ]
                     },
+                    "fn_var_ln": {
+                        "y": [
+                            [
+                                19,
+                                8
+                            ],
+                            [
+                                19,
+                                14
+                            ]
+                        ]
+                    },
                     "params_descr": {
                         "self": "",
                         "y": ""
@@ -163,6 +175,18 @@
                             ]
                         ]
                     },
+                    "fn_var_ln": {
+                        "n": [
+                            [
+                                22,
+                                8
+                            ],
+                            [
+                                22,
+                                9
+                            ]
+                        ]
+                    },
                     "params_descr": {
                         "self": "",
                         "c": ""
@@ -205,6 +229,7 @@
                     "ret_type": "",
                     "variables": {},
                     "fn_var_occur": {},
+                    "fn_var_ln": {},
                     "params_descr": {
                         "self": ""
                     },
@@ -243,6 +268,7 @@
             "ret_type": "builtins.int",
             "variables": {},
             "fn_var_occur": {},
+            "fn_var_ln": {},
             "params_descr": {
                 "x": ""
             },
@@ -271,6 +297,7 @@
             "ret_type": "None",
             "variables": {},
             "fn_var_occur": {},
+            "fn_var_ln": {},
             "params_descr": {},
             "docstring": {
                 "func": "Foo docstring",

@@ -130,6 +130,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected['ret_type'] = 'builtins.int'
         fn_expected['variables'] = {'sum': 'builtins.int'}
         fn_expected['fn_var_occur'] = {'sum': [['sum', 'builtins', 'int'], ['sum', 'x']]}
+        fn_expected['fn_var_ln'] = {'sum': ((55, 4), (55, 7))}
         fn_expected['params_descr'] = {'xs': ''}
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][9])
@@ -145,6 +146,7 @@ class TestDifferentFns(unittest.TestCase):
         fn_expected['ret_type'] = 'builtins.int'
         fn_expected['variables'] = {'sum': 'builtins.int'}
         fn_expected['fn_var_occur'] = {'sum': [['sum', 'builtins', 'int'], ['sum', 'x']]}
+        fn_expected['fn_var_ln'] = {'sum': ((63, 4), (63, 7))}
         fn_expected['params_descr'] = {'xs': ''}
 
         self.assertDictEqual(fn_expected, self.processed_f['funcs'][10])

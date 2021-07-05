@@ -162,6 +162,7 @@
                                 "ret_type": "",
                                 "variables": {},
                                 "fn_var_occur": {},
+                                "fn_var_ln": {},
                                 "params_descr": {
                                     "self": ""
                                 },
@@ -194,6 +195,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": "Docstring for a function",
@@ -599,6 +601,38 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            35,
+                                            8
+                                        ],
+                                        [
+                                            35,
+                                            14
+                                        ]
+                                    ],
+                                    "n": [
+                                        [
+                                            36,
+                                            8
+                                        ],
+                                        [
+                                            36,
+                                            9
+                                        ]
+                                    ],
+                                    "d": [
+                                        [
+                                            37,
+                                            8
+                                        ],
+                                        [
+                                            37,
+                                            9
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "x": "",
@@ -635,6 +669,7 @@
                                 "ret_type": "numpy.array",
                                 "variables": {},
                                 "fn_var_occur": {},
+                                "fn_var_ln": {},
                                 "params_descr": {
                                     "self": ""
                                 },
@@ -674,6 +709,18 @@
                                             "sq",
                                             "builtins",
                                             "str"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "sq": [
+                                        [
+                                            43,
+                                            8
+                                        ],
+                                        [
+                                            43,
+                                            10
                                         ]
                                     ]
                                 },
@@ -871,6 +918,28 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "c": [
+                                        [
+                                            16,
+                                            8
+                                        ],
+                                        [
+                                            16,
+                                            14
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            17,
+                                            8
+                                        ],
+                                        [
+                                            17,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": ""
                                 },
@@ -927,6 +996,18 @@
                                     "print",
                                     "y",
                                     "CONSTANT"
+                                ]
+                            ]
+                        },
+                        "fn_var_ln": {
+                            "y": [
+                                [
+                                    9,
+                                    4
+                                ],
+                                [
+                                    9,
+                                    5
                                 ]
                             ]
                         },
@@ -1190,6 +1271,28 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            19,
+                                            8
+                                        ],
+                                        [
+                                            19,
+                                            14
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            20,
+                                            8
+                                        ],
+                                        [
+                                            20,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "x": "",
@@ -1406,6 +1509,38 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "z": [
+                                        [
+                                            23,
+                                            8
+                                        ],
+                                        [
+                                            23,
+                                            9
+                                        ]
+                                    ],
+                                    "add_x_y": [
+                                        [
+                                            25,
+                                            8
+                                        ],
+                                        [
+                                            25,
+                                            15
+                                        ]
+                                    ],
+                                    "list_comp": [
+                                        [
+                                            27,
+                                            8
+                                        ],
+                                        [
+                                            27,
+                                            17
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "param1": "",
@@ -1575,6 +1710,28 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "v": [
+                                        [
+                                            48,
+                                            8
+                                        ],
+                                        [
+                                            48,
+                                            9
+                                        ]
+                                    ],
+                                    "v_1": [
+                                        [
+                                            49,
+                                            8
+                                        ],
+                                        [
+                                            49,
+                                            11
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "p": ""
@@ -1642,6 +1799,18 @@
                                             "TestVarArgOccur",
                                             "cls_constant",
                                             "c"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "c": [
+                                        [
+                                            73,
+                                            8
+                                        ],
+                                        [
+                                            73,
+                                            9
                                         ]
                                     ]
                                 },
@@ -1722,6 +1891,18 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "PI": [
+                                        [
+                                            100,
+                                            12
+                                        ],
+                                        [
+                                            100,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "add_something": ""
@@ -1781,6 +1962,28 @@
                                             "x",
                                             "y",
                                             "p"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            106,
+                                            8
+                                        ],
+                                        [
+                                            106,
+                                            9
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            107,
+                                            8
+                                        ],
+                                        [
+                                            107,
+                                            9
                                         ]
                                     ]
                                 },
@@ -1859,6 +2062,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": "This is a basic docstring",
@@ -1906,6 +2110,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "param1": "The first parameter.",
                             "param2": "The second parameter."
@@ -1956,6 +2161,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "param1": "The first parameter.",
                             "param2": "The second parameter."
@@ -2006,6 +2212,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "param1": "The first parameter.",
                             "param2": "The second parameter."
@@ -2037,6 +2244,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": null,
@@ -2091,6 +2299,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": null,
@@ -2236,6 +2445,28 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            14,
+                                            8
+                                        ],
+                                        [
+                                            14,
+                                            14
+                                        ]
+                                    ],
+                                    "n": [
+                                        [
+                                            15,
+                                            8
+                                        ],
+                                        [
+                                            15,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "x": ""
@@ -2287,6 +2518,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": "",
                             "l": ""
@@ -2556,6 +2788,58 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            24,
+                                            8
+                                        ],
+                                        [
+                                            24,
+                                            14
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            25,
+                                            8
+                                        ],
+                                        [
+                                            25,
+                                            14
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            26,
+                                            13
+                                        ],
+                                        [
+                                            26,
+                                            14
+                                        ]
+                                    ],
+                                    "c": [
+                                        [
+                                            26,
+                                            21
+                                        ],
+                                        [
+                                            26,
+                                            22
+                                        ]
+                                    ],
+                                    "error": [
+                                        [
+                                            27,
+                                            8
+                                        ],
+                                        [
+                                            27,
+                                            18
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "x": ""
@@ -2614,6 +2898,38 @@
                                             "foo",
                                             "builtins",
                                             "str"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "f_no": [
+                                        [
+                                            30,
+                                            8
+                                        ],
+                                        [
+                                            30,
+                                            12
+                                        ]
+                                    ],
+                                    "l": [
+                                        [
+                                            31,
+                                            8
+                                        ],
+                                        [
+                                            31,
+                                            9
+                                        ]
+                                    ],
+                                    "foo": [
+                                        [
+                                            32,
+                                            8
+                                        ],
+                                        [
+                                            32,
+                                            11
                                         ]
                                     ]
                                 },
@@ -2746,6 +3062,118 @@
                                             "f",
                                             "g",
                                             "h"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            35,
+                                            8
+                                        ],
+                                        [
+                                            35,
+                                            9
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            35,
+                                            11
+                                        ],
+                                        [
+                                            35,
+                                            12
+                                        ]
+                                    ],
+                                    "z": [
+                                        [
+                                            35,
+                                            14
+                                        ],
+                                        [
+                                            35,
+                                            15
+                                        ]
+                                    ],
+                                    "a": [
+                                        [
+                                            36,
+                                            8
+                                        ],
+                                        [
+                                            36,
+                                            9
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            36,
+                                            12
+                                        ],
+                                        [
+                                            36,
+                                            13
+                                        ]
+                                    ],
+                                    "c": [
+                                        [
+                                            36,
+                                            15
+                                        ],
+                                        [
+                                            36,
+                                            16
+                                        ]
+                                    ],
+                                    "d": [
+                                        [
+                                            37,
+                                            8
+                                        ],
+                                        [
+                                            37,
+                                            9
+                                        ]
+                                    ],
+                                    "e": [
+                                        [
+                                            37,
+                                            13
+                                        ],
+                                        [
+                                            37,
+                                            14
+                                        ]
+                                    ],
+                                    "f": [
+                                        [
+                                            37,
+                                            16
+                                        ],
+                                        [
+                                            37,
+                                            17
+                                        ]
+                                    ],
+                                    "g": [
+                                        [
+                                            37,
+                                            21
+                                        ],
+                                        [
+                                            37,
+                                            22
+                                        ]
+                                    ],
+                                    "h": [
+                                        [
+                                            37,
+                                            24
+                                        ],
+                                        [
+                                            37,
+                                            25
                                         ]
                                     ]
                                 },
@@ -2991,6 +3419,48 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            16,
+                                            8
+                                        ],
+                                        [
+                                            16,
+                                            14
+                                        ]
+                                    ],
+                                    "y": [
+                                        [
+                                            17,
+                                            8
+                                        ],
+                                        [
+                                            17,
+                                            14
+                                        ]
+                                    ],
+                                    "l": [
+                                        [
+                                            18,
+                                            13
+                                        ],
+                                        [
+                                            18,
+                                            14
+                                        ]
+                                    ],
+                                    "k": [
+                                        [
+                                            18,
+                                            21
+                                        ],
+                                        [
+                                            18,
+                                            22
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "t": ""
@@ -3052,6 +3522,48 @@
                                             "res",
                                             "PI",
                                             "f"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            21,
+                                            8
+                                        ],
+                                        [
+                                            21,
+                                            9
+                                        ]
+                                    ],
+                                    "f": [
+                                        [
+                                            22,
+                                            8
+                                        ],
+                                        [
+                                            22,
+                                            9
+                                        ]
+                                    ],
+                                    "g": [
+                                        [
+                                            22,
+                                            11
+                                        ],
+                                        [
+                                            22,
+                                            12
+                                        ]
+                                    ],
+                                    "res": [
+                                        [
+                                            23,
+                                            8
+                                        ],
+                                        [
+                                            23,
+                                            11
                                         ]
                                     ]
                                 },
@@ -3260,6 +3772,18 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "x": [
+                                        [
+                                            23,
+                                            8
+                                        ],
+                                        [
+                                            23,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": ""
                                 },
@@ -3447,6 +3971,18 @@
                                 ]
                             ]
                         },
+                        "fn_var_ln": {
+                            "n": [
+                                [
+                                    27,
+                                    4
+                                ],
+                                [
+                                    27,
+                                    5
+                                ]
+                            ]
+                        },
                         "params_descr": {
                             "x": "",
                             "y": "",
@@ -3523,6 +4059,18 @@
                                 ]
                             ]
                         },
+                        "fn_var_ln": {
+                            "v": [
+                                [
+                                    47,
+                                    4
+                                ],
+                                [
+                                    47,
+                                    5
+                                ]
+                            ]
+                        },
                         "params_descr": {
                             "x": ""
                         },
@@ -3593,6 +4141,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": "",
                             "y": ""
@@ -3624,6 +4173,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": null,
@@ -3652,6 +4202,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": null,
@@ -3687,6 +4238,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": ""
                         },
@@ -3724,6 +4276,7 @@
                         "ret_type": "None",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": ""
                         },
@@ -3764,6 +4317,7 @@
                         "ret_type": "typing.Optional[builtins.int]",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "y": ""
                         },
@@ -3810,6 +4364,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": "",
                             "y": ""
@@ -3845,6 +4400,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": ""
                         },
@@ -3875,6 +4431,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": null,
@@ -3918,6 +4475,18 @@
                                 [
                                     "sum",
                                     "x"
+                                ]
+                            ]
+                        },
+                        "fn_var_ln": {
+                            "sum": [
+                                [
+                                    55,
+                                    4
+                                ],
+                                [
+                                    55,
+                                    7
                                 ]
                             ]
                         },
@@ -3969,6 +4538,18 @@
                                 ]
                             ]
                         },
+                        "fn_var_ln": {
+                            "sum": [
+                                [
+                                    63,
+                                    4
+                                ],
+                                [
+                                    63,
+                                    7
+                                ]
+                            ]
+                        },
                         "params_descr": {
                             "xs": ""
                         },
@@ -4007,6 +4588,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "a": "",
                             "b": "",
@@ -4043,6 +4625,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "y": ""
                         },
@@ -4075,6 +4658,7 @@
                         "ret_type": "builtins.str",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "name": ""
                         },
@@ -4112,6 +4696,7 @@
                         "ret_type": "",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": ""
                         },
@@ -4236,6 +4821,18 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "y": [
+                                        [
+                                            19,
+                                            8
+                                        ],
+                                        [
+                                            19,
+                                            14
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "y": ""
@@ -4299,6 +4896,18 @@
                                         ]
                                     ]
                                 },
+                                "fn_var_ln": {
+                                    "n": [
+                                        [
+                                            22,
+                                            8
+                                        ],
+                                        [
+                                            22,
+                                            9
+                                        ]
+                                    ]
+                                },
                                 "params_descr": {
                                     "self": "",
                                     "c": ""
@@ -4341,6 +4950,7 @@
                                 "ret_type": "",
                                 "variables": {},
                                 "fn_var_occur": {},
+                                "fn_var_ln": {},
                                 "params_descr": {
                                     "self": ""
                                 },
@@ -4379,6 +4989,7 @@
                         "ret_type": "builtins.int",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {
                             "x": ""
                         },
@@ -4407,6 +5018,7 @@
                         "ret_type": "None",
                         "variables": {},
                         "fn_var_occur": {},
+                        "fn_var_ln": {},
                         "params_descr": {},
                         "docstring": {
                             "func": "Foo docstring",
