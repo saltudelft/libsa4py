@@ -40,6 +40,18 @@
                     ]
                 ]
             },
+            "cls_var_ln": {
+                "cls_var": [
+                    [
+                        16,
+                        4
+                    ],
+                    [
+                        16,
+                        11
+                    ]
+                ]
+            },
             "funcs": [
                 {
                     "name": "__init__",
@@ -168,6 +180,7 @@
             "q_name": "Bar",
             "variables": {},
             "cls_var_occur": {},
+            "cls_var_ln": {},
             "funcs": [
                 {
                     "name": "__init__",

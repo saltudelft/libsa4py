@@ -240,11 +240,14 @@ class Visitor(cst.CSTVisitor):
                 # Add class variables
                 if 'name' in extracted_names:
                     self.cls_stack[-1].variables[extracted_names['name']] = extracted_names['type'][0]
+                    self.cls_stack[-1].variables_ln[extracted_names['name']] = self.__get_line_column_no(node.target)
                     self.module_all_annotations[(self.cls_stack[-1].name, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     ext_names_type = self.__get_type_for_names(extracted_names['names'])
                     self.cls_stack[-1].variables = {**self.cls_stack[-1].variables,
                                                     **{n.value: t for n, t, i in ext_names_type}}
+                    self.cls_stack[-1].variables_ln = {**self.cls_stack[-1].variables_ln,
+                                                       **{n.value: self.__get_line_column_no(n) for n, t, i in ext_names_type}}
                     self.module_all_annotations = {**self.module_all_annotations,
                                                    **{(self.cls_stack[-1].name, None, n.value): \
                                                           (t, i) for n, t, i in ext_names_type}}
@@ -280,6 +283,7 @@ class Visitor(cst.CSTVisitor):
             elif len(self.cls_stack) > 0:
                 # TODO: Support types in tuple format, e.g. x:int, y:int = 12, 12
                 self.cls_stack[-1].variables[extracted_assign['name']] = extracted_assign['type']
+                self.cls_stack[-1].variables_ln[extracted_assign['name']] = self.__get_line_column_no(node.target)
                 self.module_all_annotations[(self.cls_stack[-1].name, None,
                                              extracted_assign['name'])] = \
                     (extracted_assign['type'], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)

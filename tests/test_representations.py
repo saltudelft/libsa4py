@@ -25,6 +25,7 @@ class TestModuleRepresentations(unittest.TestCase):
     def test_mod_repr_cls_dict(self):
         cls_repr_mod_exp = [{'name': 'MyClass', 'q_name': 'MyClass', 'variables': {'cls_var': 'builtins.int'},
                              'cls_var_occur': {'cls_var': [['MyClass', 'cls_var', 'c', 'n']]},
+                             'cls_var_ln': {'cls_var': ((16, 4), (16, 11))},
                              'funcs': [{'name': '__init__', 'q_name': 'MyClass.__init__', 'fn_lc': ((18, 4), (19, 18)),
                                         'params': {'self': '', 'y': 'builtins.float'}, 'ret_exprs': [],
                                         'params_occur': {'self': [['self', 'y', 'y']], 'y': [['self', 'y', 'y']]},
@@ -41,7 +42,7 @@ class TestModuleRepresentations(unittest.TestCase):
                                         'fn_var_occur': {'n': [['n', 'c'], ['MyClass', 'cls_var', 'c', 'n']]},
                                         'params_descr': {'self': '', 'c': ''},
                                         'docstring': {'func': None, 'ret': None, 'long_descr': None}}]},
-                            {'name': 'Bar', 'q_name': 'Bar', 'variables': {}, 'cls_var_occur': {},
+                            {'name': 'Bar', 'q_name': 'Bar', 'variables': {}, 'cls_var_occur': {}, 'cls_var_ln': {},
                              'funcs': [{'name': '__init__', 'q_name': 'Bar.__init__', 'fn_lc': ((27, 4), (28, 12)),
                                         'params': {'self': ''}, 'ret_exprs': [],
                                         'params_occur': {'self': []}, 'ret_type': '', 'variables': {},
@@ -107,7 +108,7 @@ class TestClassRepresentation(unittest.TestCase):
         self.maxDiff = None
 
     def test_cls_repr_dict_keys(self):
-        cls_repr_dict_keys = ['name', 'q_name', 'variables', 'cls_var_occur', 'funcs']
+        cls_repr_dict_keys = ['name', 'q_name', 'variables', 'cls_var_occur', 'cls_var_ln', 'funcs']
         self.assertListEqual(cls_repr_dict_keys, list((processed_f.to_dict()['classes'][0].keys())))
 
     def test_cls_repr_name_dict(self):

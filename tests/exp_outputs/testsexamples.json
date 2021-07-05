@@ -137,6 +137,7 @@
                         "q_name": "Foo",
                         "variables": {},
                         "cls_var_occur": {},
+                        "cls_var_ln": {},
                         "funcs": [
                             {
                                 "name": "bar",
@@ -492,6 +493,7 @@
                         "q_name": "Foo.__init__.<locals>.Delta",
                         "variables": {},
                         "cls_var_occur": {},
+                        "cls_var_ln": {},
                         "funcs": []
                     },
                     {
@@ -502,6 +504,18 @@
                         },
                         "cls_var_occur": {
                             "foo_seq": []
+                        },
+                        "cls_var_ln": {
+                            "foo_seq": [
+                                [
+                                    31,
+                                    4
+                                ],
+                                [
+                                    31,
+                                    11
+                                ]
+                            ]
                         },
                         "funcs": [
                             {
@@ -734,6 +748,28 @@
                                 ""
                             ],
                             "fox": []
+                        },
+                        "cls_var_ln": {
+                            "me": [
+                                [
+                                    13,
+                                    4
+                                ],
+                                [
+                                    13,
+                                    6
+                                ]
+                            ],
+                            "fox": [
+                                [
+                                    14,
+                                    4
+                                ],
+                                [
+                                    14,
+                                    7
+                                ]
+                            ]
                         },
                         "funcs": [
                             {
@@ -971,6 +1007,38 @@
                                 "test var arg occur",
                                 "cl constant",
                                 "c"
+                            ]
+                        },
+                        "cls_var_ln": {
+                            "greeting": [
+                                [
+                                    14,
+                                    4
+                                ],
+                                [
+                                    14,
+                                    12
+                                ]
+                            ],
+                            "num": [
+                                [
+                                    15,
+                                    4
+                                ],
+                                [
+                                    15,
+                                    7
+                                ]
+                            ],
+                            "cls_constant": [
+                                [
+                                    16,
+                                    4
+                                ],
+                                [
+                                    16,
+                                    16
+                                ]
                             ]
                         },
                         "funcs": [
@@ -1830,6 +1898,18 @@
                         "cls_var_occur": {
                             "class_var": []
                         },
+                        "cls_var_ln": {
+                            "class_var": [
+                                [
+                                    12,
+                                    4
+                                ],
+                                [
+                                    12,
+                                    13
+                                ]
+                            ]
+                        },
                         "funcs": [
                             {
                                 "name": "init",
@@ -2048,6 +2128,58 @@
                             "f": [],
                             "out_y": [],
                             "scientific_num": []
+                        },
+                        "cls_var_ln": {
+                            "x": [
+                                [
+                                    18,
+                                    4
+                                ],
+                                [
+                                    18,
+                                    5
+                                ]
+                            ],
+                            "u": [
+                                [
+                                    19,
+                                    4
+                                ],
+                                [
+                                    19,
+                                    5
+                                ]
+                            ],
+                            "f": [
+                                [
+                                    19,
+                                    7
+                                ],
+                                [
+                                    19,
+                                    8
+                                ]
+                            ],
+                            "out_y": [
+                                [
+                                    20,
+                                    4
+                                ],
+                                [
+                                    20,
+                                    9
+                                ]
+                            ],
+                            "scientific_num": [
+                                [
+                                    21,
+                                    4
+                                ],
+                                [
+                                    21,
+                                    18
+                                ]
+                            ]
                         },
                         "funcs": [
                             {
@@ -2413,6 +2545,48 @@
                             "foo_x": [],
                             "foo_y": []
                         },
+                        "cls_var_ln": {
+                            "foo_num": [
+                                [
+                                    11,
+                                    4
+                                ],
+                                [
+                                    11,
+                                    11
+                                ]
+                            ],
+                            "foo_name": [
+                                [
+                                    12,
+                                    4
+                                ],
+                                [
+                                    12,
+                                    12
+                                ]
+                            ],
+                            "foo_x": [
+                                [
+                                    13,
+                                    4
+                                ],
+                                [
+                                    13,
+                                    9
+                                ]
+                            ],
+                            "foo_y": [
+                                [
+                                    13,
+                                    11
+                                ],
+                                [
+                                    13,
+                                    16
+                                ]
+                            ]
+                        },
                         "funcs": [
                             {
                                 "name": "init",
@@ -2686,6 +2860,7 @@
                         "q_name": "Delta",
                         "variables": {},
                         "cls_var_occur": {},
+                        "cls_var_ln": {},
                         "funcs": [
                             {
                                 "name": "init",
@@ -3540,6 +3715,18 @@
                                 "n"
                             ]
                         },
+                        "cls_var_ln": {
+                            "cls_var": [
+                                [
+                                    16,
+                                    4
+                                ],
+                                [
+                                    16,
+                                    11
+                                ]
+                            ]
+                        },
                         "funcs": [
                             {
                                 "name": "init",
@@ -3654,6 +3841,7 @@
                         "q_name": "Bar",
                         "variables": {},
                         "cls_var_occur": {},
+                        "cls_var_ln": {},
                         "funcs": [
                             {
                                 "name": "init",
