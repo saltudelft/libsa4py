@@ -18,8 +18,8 @@ class TestModuleRepresentations(unittest.TestCase):
         self.maxDiff = None
 
     def test_mod_repr_dict_keys(self):
-        mod_repr_dict_key_exp = ['untyped_seq', 'typed_seq', 'imports', 'variables', 'mod_var_occur', 'classes', 'funcs',
-                                 'set', 'tc', 'no_types_annot', 'type_annot_cove']
+        mod_repr_dict_key_exp = ['untyped_seq', 'typed_seq', 'imports', 'variables', 'mod_var_occur', 'mod_var_ln',
+                                 'classes', 'funcs', 'set', 'tc', 'no_types_annot', 'type_annot_cove']
         self.assertListEqual(mod_repr_dict_key_exp, list(processed_f.to_dict().keys()))
 
     def test_mod_repr_cls_dict(self):

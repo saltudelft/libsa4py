@@ -101,12 +101,13 @@ class ModuleInfo:
     This class holds data that is extracted from a source code file.
     """
 
-    def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]],
+    def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]], var_ln,
                  classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str,
                  no_types_annot: Dict[str, int], type_annot_cove: float):
         self.import_names = import_names
         self.variables = variables
         self.var_occur = var_occur
+        self.var_ln = var_ln
         self.classes = classes
         self.funcs = funcs
         self.untyped_seq = untyped_seq
@@ -117,7 +118,10 @@ class ModuleInfo:
     def to_dict(self) -> dict:
         return {"untyped_seq": self.untyped_seq,
                 "typed_seq": self.typed_seq,
-                "imports": self.import_names, "variables": self.variables, "mod_var_occur": self.var_occur,
+                "imports": self.import_names,
+                "variables": self.variables,
+                "mod_var_occur": self.var_occur,
+                "mod_var_ln": self.var_ln,
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
@@ -128,6 +132,7 @@ class ModuleInfo:
     @classmethod
     def from_dict(cls, mod_dict_repr: dict):
         return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
+                   {v: (tuple(l[0]), tuple(l[1])) for v, l in mod_dict_repr['mod_var_ln'].items()},
                    [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
                    [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
                    mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['no_types_annot'],
@@ -137,6 +142,7 @@ class ModuleInfo:
         return other_module_info_obj.import_names == self.import_names and \
                other_module_info_obj.variables == self.variables and \
                other_module_info_obj.var_occur == self.var_occur and \
+               other_module_info_obj.var_ln == self.var_ln and \
                other_module_info_obj.classes == self.classes and \
                other_module_info_obj.funcs == self.funcs and \
                other_module_info_obj.untyped_seq == self.untyped_seq and \

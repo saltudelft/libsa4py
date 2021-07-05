@@ -33,6 +33,7 @@ class Visitor(cst.CSTVisitor):
 
         self.module_variables: Dict[str, str] = {}
         self.module_variables_use: Dict[str, List[list]] = {}
+        self.module_vars_ln: Dict[str, Tuple[Tuple[int, int], Tuple[int, int]]] = {}
         self.module_all_annotations: Dict[Tuple, Tuple[str, str]] = {}
         #self.module_pyre_inferred_types: List[str] = []
         self.module_type_annot_cove: float = 0.0
@@ -252,13 +253,16 @@ class Visitor(cst.CSTVisitor):
                 if 'name' in extracted_names:
                     self.module_variables[extracted_names['name']] = extracted_names['type'][0]
                     self.module_variables_use[extracted_names['name']] = []
+                    self.module_vars_ln[extracted_names['name']] = self.__get_line_column_no(node.target)
                     self.module_all_annotations[(None, None, extracted_names['name'])] = extracted_names['type']
                 else:
                     ext_names_type = self.__get_type_for_names(extracted_names['names'])
                     self.module_variables = {**self.module_variables,
                                              **{n.value: t for n, t, i in ext_names_type}}
                     self.module_variables_use = {**self.module_variables_use,
-                                             **{n.value: [] for n, t, i in ext_names_type}}
+                                                 **{n.value: [] for n, t, i in ext_names_type}}
+                    self.module_vars_ln = {**self.module_vars_ln,
+                                           **{n.value: self.__get_line_column_no(n) for n, t, i in ext_names_type}}
                     self.module_all_annotations = {**self.module_all_annotations,
                                                    **{(None, None, n.value): (t, i) for n, t, i in ext_names_type}}
 
@@ -282,6 +286,7 @@ class Visitor(cst.CSTVisitor):
             else:
                 self.module_variables[extracted_assign['name']] = extracted_assign['type']
                 self.module_variables_use[extracted_assign['name']] = []
+                self.module_vars_ln[extracted_assign['name']] = self.__get_line_column_no(node.target)
                 self.module_all_annotations[(None, None, extracted_assign['name'])] = \
                     (extracted_assign['type'], DEV_TYPE_ANNOT if extracted_assign["type"] else UNK_TYPE_ANNOT)
 

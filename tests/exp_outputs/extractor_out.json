@@ -11,6 +11,18 @@
     "mod_var_occur": {
         "CONSTANT": []
     },
+    "mod_var_ln": {
+        "CONSTANT": [
+            [
+                9,
+                0
+            ],
+            [
+                9,
+                8
+            ]
+        ]
+    },
     "classes": [
         {
             "name": "MyClass",
@@ -255,7 +267,10 @@
         }
     ],
     "set": null,
-    "tc": false,
+    "tc": [
+        false,
+        null
+    ],
     "no_types_annot": {
         "U": 4,
         "D": 7,
