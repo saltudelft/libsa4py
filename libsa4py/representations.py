@@ -26,13 +26,14 @@ class FunctionInfo:
         self.docstring: Dict[str, str] = {}
         self.variables: Dict[str, str] = {}  # Variable names
         self.variables_occur: Dict[str, list] = {}
+        self.variables_ln: Dict[str, Tuple[Tuple[int, int], Tuple[int, int]]]= {}
         self.node = None
 
     def to_dict(self):
         return {"name": self.name, "q_name": self.q_name, "fn_lc": self.ln_col, "params": self.parameters,
                 "ret_exprs": self.return_exprs, "params_occur": self.parameters_occur, "ret_type": self.return_type,
-                "variables": self.variables, "fn_var_occur": self.variables_occur, "params_descr": self.params_descr,
-                "docstring": self.docstring}
+                "variables": self.variables, "fn_var_occur": self.variables_occur, "fn_var_ln": self.variables_ln,
+                "params_descr": self.params_descr, "docstring": self.docstring}
 
     def from_dict(self, fn_dict_repr: dict):
         self.name = fn_dict_repr['name']
@@ -45,6 +46,7 @@ class FunctionInfo:
         self.return_type = fn_dict_repr['ret_type']
         self.variables = fn_dict_repr['variables']
         self.variables_occur = fn_dict_repr['fn_var_occur']
+        self.variables_ln = {v: (tuple(l[0]), tuple(l[1])) for v, l in fn_dict_repr['fn_var_ln'].items()}
         self.docstring = fn_dict_repr['docstring']
 
         return self
@@ -60,6 +62,7 @@ class FunctionInfo:
                other_func_info_obj.return_type == self.return_type and \
                other_func_info_obj.variables == self.variables and \
                other_func_info_obj.variables_occur == self.variables_occur and \
+               other_func_info_obj.variables_ln == self.variables_ln and \
                other_func_info_obj.docstring == self.docstring
 
 
@@ -73,17 +76,20 @@ class ClassInfo:
         self.q_name: str = ''
         self.variables: Dict[str, str] = {}
         self.variables_use_occur: Dict[str, list] = {}
+        self.variables_ln: Dict[str, Tuple[Tuple[int, int], Tuple[int, int]]] = {}
         self.funcs: List[FunctionInfo] = []
 
     def to_dict(self) -> dict:
         return {"name": self.name, "q_name": self.q_name, "variables": self.variables,
-                "cls_var_occur": self.variables_use_occur, "funcs": [f.to_dict() for f in self.funcs]}
+                "cls_var_occur": self.variables_use_occur, "cls_var_ln": self.variables_ln,
+                "funcs": [f.to_dict() for f in self.funcs]}
 
     def from_dict(self, cls_repr_dict: dict):
         self.name = cls_repr_dict['name']
         self.q_name = cls_repr_dict['q_name']
         self.variables = cls_repr_dict['variables']
         self.variables_use_occur = cls_repr_dict['cls_var_occur']
+        self.variables_ln = {v: (tuple(l[0]), tuple(l[1])) for v, l in cls_repr_dict['cls_var_ln'].items()}
         self.funcs = [FunctionInfo(f['name']).from_dict(f) for f in cls_repr_dict['funcs']]
 
         return self
@@ -93,6 +99,7 @@ class ClassInfo:
                other_class_info_obj.q_name == self.q_name and \
                other_class_info_obj.variables == self.variables and \
                other_class_info_obj.variables_use_occur == self.variables_use_occur and \
+               other_class_info_obj.variables_ln == self.variables_ln and \
                other_class_info_obj.funcs == self.funcs
 
 
@@ -101,12 +108,13 @@ class ModuleInfo:
     This class holds data that is extracted from a source code file.
     """
 
-    def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]],
+    def __init__(self, import_names: list, variables: Dict[str, str], var_occur: Dict[str, List[list]], var_ln,
                  classes: List[ClassInfo], funcs: List[FunctionInfo], untyped_seq: str, typed_seq: str,
                  no_types_annot: Dict[str, int], type_annot_cove: float):
         self.import_names = import_names
         self.variables = variables
         self.var_occur = var_occur
+        self.var_ln = var_ln
         self.classes = classes
         self.funcs = funcs
         self.untyped_seq = untyped_seq
@@ -117,7 +125,10 @@ class ModuleInfo:
     def to_dict(self) -> dict:
         return {"untyped_seq": self.untyped_seq,
                 "typed_seq": self.typed_seq,
-                "imports": self.import_names, "variables": self.variables, "mod_var_occur": self.var_occur,
+                "imports": self.import_names,
+                "variables": self.variables,
+                "mod_var_occur": self.var_occur,
+                "mod_var_ln": self.var_ln,
                 "classes": [c.to_dict() for c in self.classes],
                 "funcs": [f.to_dict() for f in self.funcs],
                 "set": None,
@@ -128,6 +139,7 @@ class ModuleInfo:
     @classmethod
     def from_dict(cls, mod_dict_repr: dict):
         return cls(mod_dict_repr['imports'], mod_dict_repr['variables'], mod_dict_repr['mod_var_occur'],
+                   {v: (tuple(l[0]), tuple(l[1])) for v, l in mod_dict_repr['mod_var_ln'].items()},
                    [ClassInfo().from_dict(c) for c in mod_dict_repr['classes']],
                    [FunctionInfo(f['name']).from_dict(f) for f in mod_dict_repr['funcs']],
                    mod_dict_repr['untyped_seq'], mod_dict_repr['typed_seq'], mod_dict_repr['no_types_annot'],
@@ -137,6 +149,7 @@ class ModuleInfo:
         return other_module_info_obj.import_names == self.import_names and \
                other_module_info_obj.variables == self.variables and \
                other_module_info_obj.var_occur == self.var_occur and \
+               other_module_info_obj.var_ln == self.var_ln and \
                other_module_info_obj.classes == self.classes and \
                other_module_info_obj.funcs == self.funcs and \
                other_module_info_obj.untyped_seq == self.untyped_seq and \

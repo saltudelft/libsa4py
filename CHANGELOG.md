@@ -5,6 +5,11 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 ### Added
 - Adding the `--tc` CLI arg for the `process` command to type-check source files in Python projects using mypy.
 - Supporting qualified names for classes by adding the `q_name` field to the JSON output.
+- Adding line and column no. info for the start and end of:
+  - Functions definitions
+  - Module-level variables
+  - Class variables
+  - Functions' local variables
 
 ### Fixed
 - When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.

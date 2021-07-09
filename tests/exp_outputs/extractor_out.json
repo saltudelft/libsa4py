@@ -11,6 +11,18 @@
     "mod_var_occur": {
         "CONSTANT": []
     },
+    "mod_var_ln": {
+        "CONSTANT": [
+            [
+                9,
+                0
+            ],
+            [
+                9,
+                8
+            ]
+        ]
+    },
     "classes": [
         {
             "name": "MyClass",
@@ -25,6 +37,18 @@
                         "cls_var",
                         "c",
                         "n"
+                    ]
+                ]
+            },
+            "cls_var_ln": {
+                "cls_var": [
+                    [
+                        16,
+                        4
+                    ],
+                    [
+                        16,
+                        11
                     ]
                 ]
             },
@@ -73,6 +97,18 @@
                                 "self",
                                 "y",
                                 "y"
+                            ]
+                        ]
+                    },
+                    "fn_var_ln": {
+                        "y": [
+                            [
+                                19,
+                                8
+                            ],
+                            [
+                                19,
+                                14
                             ]
                         ]
                     },
@@ -139,6 +175,18 @@
                             ]
                         ]
                     },
+                    "fn_var_ln": {
+                        "n": [
+                            [
+                                22,
+                                8
+                            ],
+                            [
+                                22,
+                                9
+                            ]
+                        ]
+                    },
                     "params_descr": {
                         "self": "",
                         "c": ""
@@ -156,6 +204,7 @@
             "q_name": "Bar",
             "variables": {},
             "cls_var_occur": {},
+            "cls_var_ln": {},
             "funcs": [
                 {
                     "name": "__init__",
@@ -180,6 +229,7 @@
                     "ret_type": "",
                     "variables": {},
                     "fn_var_occur": {},
+                    "fn_var_ln": {},
                     "params_descr": {
                         "self": ""
                     },
@@ -218,6 +268,7 @@
             "ret_type": "builtins.int",
             "variables": {},
             "fn_var_occur": {},
+            "fn_var_ln": {},
             "params_descr": {
                 "x": ""
             },
@@ -246,6 +297,7 @@
             "ret_type": "None",
             "variables": {},
             "fn_var_occur": {},
+            "fn_var_ln": {},
             "params_descr": {},
             "docstring": {
                 "func": "Foo docstring",
@@ -255,7 +307,10 @@
         }
     ],
     "set": null,
-    "tc": false,
+    "tc": [
+        false,
+        null
+    ],
     "no_types_annot": {
         "U": 4,
         "D": 7,
