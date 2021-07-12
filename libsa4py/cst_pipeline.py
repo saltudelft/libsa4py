@@ -352,16 +352,16 @@ class TypeAnnotationsRemoval:
 
         type_annots_removed: List[str] = []
 
-        def remove_ta(init_no_tc_err: int, out_f_code: str, org_gt, org_gt_d):
+        def type_check_ta(curr_no_tc_err: int, curr_f_code: str, org_gt, org_gt_d):
             tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
             if no_tc_err is not None:
                 if tc:
                     type_annots_removed.append(org_gt)
-                elif no_tc_err < init_no_tc_err:
-                    out_f_code = f_code
-                    init_no_tc_err = no_tc_err
+                elif no_tc_err < curr_no_tc_err:
+                    curr_f_code = f_code
+                    curr_no_tc_err = no_tc_err
                     type_annots_removed.append(org_gt)
-                elif no_tc_err == init_no_tc_err:
+                elif no_tc_err == curr_no_tc_err:
                     org_gt_d = org_gt
 
             return tc, no_tc_err, f_code
@@ -381,8 +381,8 @@ class TypeAnnotationsRemoval:
                 #     type_annots_removed.append(m_v_t)
                 # elif no_tc_err == init_no_tc_err:
                 #     f_d_repr['variables'][m_v] = m_v_t
-                tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, m_v_t,
-                                                  f_d_repr['variables'][m_v])
+                tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, m_v_t,
+                                                      f_d_repr['variables'][m_v])
                 if tc:
                     return f_code, no_tc_err, type_annots_removed
 
@@ -401,10 +401,10 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(p_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['funcs'][i]['params'][p_n] = p_t
-                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, p_t,
-                                                      f_d_repr['funcs'][i]['params'][p_n])
-                if tc:
-                    return f_code, no_tc_err, type_annots_removed
+                    tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, p_t,
+                                                          f_d_repr['funcs'][i]['params'][p_n])
+                    if tc:
+                        return f_code, no_tc_err, type_annots_removed
 
             for fn_v, fn_v_t in fn['variables'].items():
                 if fn_v_t != "":
@@ -420,8 +420,8 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(fn_v_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
-                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, fn_v_t,
-                                                      f_d_repr['funcs'][i]['variables'][fn_v])
+                    tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, fn_v_t,
+                                                          f_d_repr['funcs'][i]['variables'][fn_v])
                     if tc:
                         return f_code, no_tc_err, type_annots_removed
 
@@ -440,8 +440,8 @@ class TypeAnnotationsRemoval:
                 #     type_annots_removed.append(org_t)
                 # elif no_tc_err == init_no_tc_err:
                 #     f_d_repr['funcs'][i]['ret_type'] = org_t
-                tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, org_t,
-                                                  f_d_repr['funcs'][i]['ret_type'])
+                tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, org_t,
+                                                      f_d_repr['funcs'][i]['ret_type'])
                 if tc:
                     return f_code, no_tc_err, type_annots_removed
 
@@ -461,8 +461,8 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(c_v_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
-                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, c_v_t,
-                                                      f_d_repr['classes'][c_i]['variables'][c_v])
+                    tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, c_v_t,
+                                                          f_d_repr['classes'][c_i]['variables'][c_v])
                     if tc:
                         return f_code, no_tc_err, type_annots_removed
 
@@ -482,8 +482,8 @@ class TypeAnnotationsRemoval:
                         #     type_annots_removed.append(p_t)
                         # elif no_tc_err == init_no_tc_err:
                         #     f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
-                        tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, p_t,
-                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n])
+                        tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, p_t,
+                                                              f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n])
                         if tc:
                             return f_code, no_tc_err, type_annots_removed
 
@@ -502,8 +502,8 @@ class TypeAnnotationsRemoval:
                         #     type_annots_removed.append(fn_v_t)
                         # elif no_tc_err == init_no_tc_err:
                         #     f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
-                        tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, fn_v_t,
-                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v])
+                        tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, fn_v_t,
+                                                              f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v])
                         if tc:
                             return f_code, no_tc_err, type_annots_removed
 
@@ -523,8 +523,8 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(org_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
-                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, org_t,
-                                                      f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'])
+                    tc, no_tc_err, f_code = type_check_ta(init_no_tc_err, out_f_code, org_t,
+                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'])
                     if tc:
                         return f_code, no_tc_err, type_annots_removed
 
