@@ -313,8 +313,8 @@ class TypeAnnotationsRemoval:
         # Only files with type annotations
         if f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D'] > 0:
             try:
-                f_read = read_file(join(self.projects_path, f))
                 tmp_f = create_tmp_file(".py")
+                f_read = read_file(join(self.projects_path, f))
                 f_tc_code, tc_errs, type_annot_r = self.__remove_unchecked_type_annot(f_read, f_d_repr, f_d_repr['tc'][1],
                                                                                         tmp_f)
                 print(f"F: {f} | init_tc_errors: {f_d_repr['tc'][1]} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
@@ -337,81 +337,113 @@ class TypeAnnotationsRemoval:
                 if not f_v['tc'][0] and f_v['tc'] != [False, None]:
                     not_tced_src_f.append((f, f_v))
 
-        print("L:", len(not_tced_src_f))
-        #not_tced_src_f = not_tced_src_f[:250]
+        del merged_projects
+        # not_tced_src_f = not_tced_src_f[:250]
+        # print("L:", len(not_tced_src_f))
         manager = Manager()
         tc_res = manager.dict()
         ParallelExecutor(n_jobs=jobs)(total=len(not_tced_src_f))(delayed(self.process_file)(f, f_d, tc_res) \
                                                                  for f, f_d in not_tced_src_f)
 
-        save_json(join(self.processed_projects_path, "tc_ta_results.json"), tc_res.copy())
+        save_json(join(self.processed_projects_path, "tc_ta_results_new.json"), tc_res.copy())
 
     def __remove_unchecked_type_annot(self, f_read: str, f_d_repr: dict, init_no_tc_err: int,
                                       f_out_temp: NamedTemporaryFile) -> Tuple[str, int, List[str]]:
 
-        out_f_code: str = ""
         type_annots_removed: List[str] = []
+
+        def remove_ta(init_no_tc_err: int, out_f_code: str, org_gt, org_gt_d):
+            tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+            if no_tc_err is not None:
+                if tc:
+                    type_annots_removed.append(org_gt)
+                elif no_tc_err < init_no_tc_err:
+                    out_f_code = f_code
+                    init_no_tc_err = no_tc_err
+                    type_annots_removed.append(org_gt)
+                elif no_tc_err == init_no_tc_err:
+                    org_gt_d = org_gt
+
+            return tc, no_tc_err, f_code
+
+        out_f_code: str = ""
         for m_v, m_v_t in f_d_repr['variables'].items():
             if m_v_t != "":
                 print(f"Type-checking module-level variable {m_v} with annotation {m_v_t}")
                 f_d_repr['variables'][m_v] = ""
-                tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                # if tc:
+                #     type_annots_removed.append(m_v_t)
+                #     return f_code, no_tc_err, type_annots_removed
+                # elif no_tc_err < init_no_tc_err:
+                #     out_f_code = f_code
+                #     init_no_tc_err = no_tc_err
+                #     type_annots_removed.append(m_v_t)
+                # elif no_tc_err == init_no_tc_err:
+                #     f_d_repr['variables'][m_v] = m_v_t
+                tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, m_v_t,
+                                                  f_d_repr['variables'][m_v])
                 if tc:
-                    type_annots_removed.append(m_v_t)
                     return f_code, no_tc_err, type_annots_removed
-                elif no_tc_err < init_no_tc_err:
-                    out_f_code = f_code
-                    init_no_tc_err = no_tc_err
-                    type_annots_removed.append(m_v_t)
-                elif no_tc_err == init_no_tc_err:
-                    f_d_repr['variables'][m_v] = m_v_t
 
         for i, fn in enumerate(f_d_repr['funcs']):
             for p_n, p_t in fn['params'].items():
                 if p_t != "":
                     print(f"Type-checking function parameter {p_n} with annotation {p_t}")
                     f_d_repr['funcs'][i]['params'][p_n] = ""
-                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
-                    if tc:
-                        type_annots_removed.append(p_t)
-                        return f_code, no_tc_err, type_annots_removed
-                    elif no_tc_err < init_no_tc_err:
-                        out_f_code = f_code
-                        init_no_tc_err = no_tc_err
-                        type_annots_removed.append(p_t)
-                    elif no_tc_err == init_no_tc_err:
-                        f_d_repr['funcs'][i]['params'][p_n] = p_t
+                    # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # if tc:
+                    #     type_annots_removed.append(p_t)
+                    #     return f_code, no_tc_err, type_annots_removed
+                    # elif no_tc_err < init_no_tc_err:
+                    #     out_f_code = f_code
+                    #     init_no_tc_err = no_tc_err
+                    #     type_annots_removed.append(p_t)
+                    # elif no_tc_err == init_no_tc_err:
+                    #     f_d_repr['funcs'][i]['params'][p_n] = p_t
+                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, p_t,
+                                                      f_d_repr['funcs'][i]['params'][p_n])
+                if tc:
+                    return f_code, no_tc_err, type_annots_removed
 
             for fn_v, fn_v_t in fn['variables'].items():
                 if fn_v_t != "":
                     print(f"Type-checking function variable {fn_v} with annotation {fn_v_t}")
                     f_d_repr['funcs'][i]['variables'][fn_v] = ""
-                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # if tc:
+                    #     type_annots_removed.append(fn_v_t)
+                    #     return f_code, no_tc_err, type_annots_removed
+                    # elif no_tc_err < init_no_tc_err:
+                    #     out_f_code = f_code
+                    #     init_no_tc_err = no_tc_err
+                    #     type_annots_removed.append(fn_v_t)
+                    # elif no_tc_err == init_no_tc_err:
+                    #     f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
+                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, fn_v_t,
+                                                      f_d_repr['funcs'][i]['variables'][fn_v])
                     if tc:
-                        type_annots_removed.append(fn_v_t)
                         return f_code, no_tc_err, type_annots_removed
-                    elif no_tc_err < init_no_tc_err:
-                        out_f_code = f_code
-                        init_no_tc_err = no_tc_err
-                        type_annots_removed.append(fn_v_t)
-                    elif no_tc_err == init_no_tc_err:
-                        f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
 
             # The return type for module-level functions
             if f_d_repr['funcs'][i]['ret_type'] != "":
                 org_t = f_d_repr['funcs'][i]['ret_type']
                 print(f"Type-checking function {f_d_repr['funcs'][i]['name']} return with {org_t}")
                 f_d_repr['funcs'][i]['ret_type'] = ""
-                tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                # if tc:
+                #     type_annots_removed.append(org_t)
+                #     return f_code, no_tc_err, type_annots_removed
+                # elif no_tc_err < init_no_tc_err:
+                #     out_f_code = f_code
+                #     init_no_tc_err = no_tc_err
+                #     type_annots_removed.append(org_t)
+                # elif no_tc_err == init_no_tc_err:
+                #     f_d_repr['funcs'][i]['ret_type'] = org_t
+                tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, org_t,
+                                                  f_d_repr['funcs'][i]['ret_type'])
                 if tc:
-                    type_annots_removed.append(org_t)
                     return f_code, no_tc_err, type_annots_removed
-                elif no_tc_err < init_no_tc_err:
-                    out_f_code = f_code
-                    init_no_tc_err = no_tc_err
-                    type_annots_removed.append(org_t)
-                elif no_tc_err == init_no_tc_err:
-                    f_d_repr['funcs'][i]['ret_type'] = org_t
 
         # The type of class-level vars
         for c_i, c in enumerate(f_d_repr['classes']):
@@ -419,16 +451,20 @@ class TypeAnnotationsRemoval:
                 if c_v_t != "":
                     print(f"Type checking class variable {c_v} with annotation {c_v_t}")
                     f_d_repr['classes'][c_i]['variables'][c_v] = ""
-                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # if tc:
+                    #     type_annots_removed.append(c_v_t)
+                    #     return f_code, no_tc_err, type_annots_removed
+                    # elif no_tc_err < init_no_tc_err:
+                    #     out_f_code = f_code
+                    #     init_no_tc_err = no_tc_err
+                    #     type_annots_removed.append(c_v_t)
+                    # elif no_tc_err == init_no_tc_err:
+                    #     f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
+                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, c_v_t,
+                                                      f_d_repr['classes'][c_i]['variables'][c_v])
                     if tc:
-                        type_annots_removed.append(c_v_t)
                         return f_code, no_tc_err, type_annots_removed
-                    elif no_tc_err < init_no_tc_err:
-                        out_f_code = f_code
-                        init_no_tc_err = no_tc_err
-                        type_annots_removed.append(c_v_t)
-                    elif no_tc_err == init_no_tc_err:
-                        f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
 
             # The type of arguments for class-level functions
             for fn_i, fn in enumerate(c['funcs']):
@@ -436,32 +472,40 @@ class TypeAnnotationsRemoval:
                     if p_t != "":
                         print(f"Type-checking function parameter {p_n} with annotation {p_t}")
                         f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = ""
-                        tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                        # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                        # if tc:
+                        #     type_annots_removed.append(p_t)
+                        #     return f_code, no_tc_err, type_annots_removed
+                        # elif no_tc_err < init_no_tc_err:
+                        #     out_f_code = f_code
+                        #     init_no_tc_err = no_tc_err
+                        #     type_annots_removed.append(p_t)
+                        # elif no_tc_err == init_no_tc_err:
+                        #     f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
+                        tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, p_t,
+                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n])
                         if tc:
-                            type_annots_removed.append(p_t)
                             return f_code, no_tc_err, type_annots_removed
-                        elif no_tc_err < init_no_tc_err:
-                            out_f_code = f_code
-                            init_no_tc_err = no_tc_err
-                            type_annots_removed.append(p_t)
-                        elif no_tc_err == init_no_tc_err:
-                            f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
 
                 # The type of local variables for class-level functions
                 for fn_v, fn_v_t in fn['variables'].items():
                     if fn_v_t != "":
                         print(f"Type-checking function variable {fn_v} with annotation {fn_v_t}")
                         f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = ""
-                        tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                        # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                        # if tc:
+                        #     type_annots_removed.append(fn_v_t)
+                        #     return f_code, no_tc_err, type_annots_removed
+                        # elif no_tc_err < init_no_tc_err:
+                        #     out_f_code = f_code
+                        #     init_no_tc_err = no_tc_err
+                        #     type_annots_removed.append(fn_v_t)
+                        # elif no_tc_err == init_no_tc_err:
+                        #     f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
+                        tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, fn_v_t,
+                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v])
                         if tc:
-                            type_annots_removed.append(fn_v_t)
                             return f_code, no_tc_err, type_annots_removed
-                        elif no_tc_err < init_no_tc_err:
-                            out_f_code = f_code
-                            init_no_tc_err = no_tc_err
-                            type_annots_removed.append(fn_v_t)
-                        elif no_tc_err == init_no_tc_err:
-                            f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
 
                 # The return type for class-level functions
                 if f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] != "":
@@ -469,16 +513,20 @@ class TypeAnnotationsRemoval:
                     print(
                         f"Annotating function {f_d_repr['classes'][c_i]['funcs'][fn_i]['name']} return with type {org_t}")
                     f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = ""
-                    tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # tc, no_tc_err, f_code = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+                    # if tc:
+                    #     type_annots_removed.append(org_t)
+                    #     return f_code, no_tc_err, type_annots_removed
+                    # elif no_tc_err < init_no_tc_err:
+                    #     out_f_code = f_code
+                    #     init_no_tc_err = no_tc_err
+                    #     type_annots_removed.append(org_t)
+                    # elif no_tc_err == init_no_tc_err:
+                    #     f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
+                    tc, no_tc_err, f_code = remove_ta(init_no_tc_err, out_f_code, org_t,
+                                                      f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'])
                     if tc:
-                        type_annots_removed.append(org_t)
                         return f_code, no_tc_err, type_annots_removed
-                    elif no_tc_err < init_no_tc_err:
-                        out_f_code = f_code
-                        init_no_tc_err = no_tc_err
-                        type_annots_removed.append(org_t)
-                    elif no_tc_err == init_no_tc_err:
-                        f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
 
         return out_f_code, init_no_tc_err, type_annots_removed
 
