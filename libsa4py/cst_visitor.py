@@ -209,8 +209,15 @@ class Visitor(cst.CSTVisitor):
             import_name = self.__clean_string_whitespace(import_name)
             self.imports.append(import_name)
 
+        if "alias" in import_info:
+            import_name = self.__clean_string_whitespace(import_info["alias"])
+            self.imports.append(import_name)
+
         # No need to traverse children, as we already performed the matching.
         return False
+
+    def visit_ImportFrom(self, node: cst.ImportFrom):
+        self.imports.extend([n.value for n in match.findall(node.module, match.Name(value=match.DoNotCare()))])
 
     def visit_Assign(self, node: cst.Assign):
         """
