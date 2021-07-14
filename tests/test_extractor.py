@@ -17,6 +17,8 @@ class TestExtractor(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.extractor_out = Extractor().extract(read_file('./examples/representations.py'))
+        cls.extractor_out_wo_seq2seq = Extractor().extract(read_file('./examples/representations.py'),
+                                                           include_seq2seq=False)
 
     def test_extractor_output(self):
         #save_json('./exp_outputs/extractor_out.json', self.extractor_out.to_dict())
@@ -25,6 +27,14 @@ class TestExtractor(unittest.TestCase):
         expected_out = ModuleInfo.from_dict(expected_out)
 
         self.assertEqual(expected_out, self.extractor_out)
+
+    def test_extractor_wo_seq2seq(self):
+        #save_json('./exp_outputs/extractor_out_wo_seq2seq.json', self.extractor_out_wo_seq2seq.to_dict())
+        expected_out_wo_seq2seq = load_json('./exp_outputs/extractor_out_wo_seq2seq.json')
+
+        expected_out = ModuleInfo.from_dict(expected_out_wo_seq2seq)
+
+        self.assertEqual(expected_out, self.extractor_out_wo_seq2seq)
 
 
 class TestExtractorPyre(unittest.TestCase):
