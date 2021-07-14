@@ -1,0 +1,321 @@
+{
+    "untyped_seq": "",
+    "typed_seq": "",
+    "imports": [
+        "os",
+        "path",
+        "math"
+    ],
+    "variables": {
+        "CONSTANT": ""
+    },
+    "mod_var_occur": {
+        "CONSTANT": []
+    },
+    "mod_var_ln": {
+        "CONSTANT": [
+            [
+                9,
+                0
+            ],
+            [
+                9,
+                8
+            ]
+        ]
+    },
+    "classes": [
+        {
+            "name": "MyClass",
+            "q_name": "MyClass",
+            "variables": {
+                "cls_var": "builtins.int"
+            },
+            "cls_var_occur": {
+                "cls_var": [
+                    [
+                        "MyClass",
+                        "cls_var",
+                        "c",
+                        "n"
+                    ]
+                ]
+            },
+            "cls_var_ln": {
+                "cls_var": [
+                    [
+                        16,
+                        4
+                    ],
+                    [
+                        16,
+                        11
+                    ]
+                ]
+            },
+            "funcs": [
+                {
+                    "name": "__init__",
+                    "q_name": "MyClass.__init__",
+                    "fn_lc": [
+                        [
+                            18,
+                            4
+                        ],
+                        [
+                            19,
+                            18
+                        ]
+                    ],
+                    "params": {
+                        "self": "",
+                        "y": "builtins.float"
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "self": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ],
+                        "y": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ]
+                    },
+                    "ret_type": "None",
+                    "variables": {
+                        "y": ""
+                    },
+                    "fn_var_occur": {
+                        "y": [
+                            [
+                                "self",
+                                "y",
+                                "y"
+                            ]
+                        ]
+                    },
+                    "fn_var_ln": {
+                        "y": [
+                            [
+                                19,
+                                8
+                            ],
+                            [
+                                19,
+                                14
+                            ]
+                        ]
+                    },
+                    "params_descr": {
+                        "self": "",
+                        "y": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                },
+                {
+                    "name": "cls_fn",
+                    "q_name": "MyClass.cls_fn",
+                    "fn_lc": [
+                        [
+                            21,
+                            4
+                        ],
+                        [
+                            23,
+                            44
+                        ]
+                    ],
+                    "params": {
+                        "self": "",
+                        "c": "builtins.int"
+                    },
+                    "ret_exprs": [
+                        "return MyClass.cls_var + c / (2 + n)"
+                    ],
+                    "params_occur": {
+                        "self": [],
+                        "c": [
+                            [
+                                "n",
+                                "c"
+                            ],
+                            [
+                                "MyClass",
+                                "cls_var",
+                                "c",
+                                "n"
+                            ]
+                        ]
+                    },
+                    "ret_type": "builtins.float",
+                    "variables": {
+                        "n": ""
+                    },
+                    "fn_var_occur": {
+                        "n": [
+                            [
+                                "n",
+                                "c"
+                            ],
+                            [
+                                "MyClass",
+                                "cls_var",
+                                "c",
+                                "n"
+                            ]
+                        ]
+                    },
+                    "fn_var_ln": {
+                        "n": [
+                            [
+                                22,
+                                8
+                            ],
+                            [
+                                22,
+                                9
+                            ]
+                        ]
+                    },
+                    "params_descr": {
+                        "self": "",
+                        "c": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Bar",
+            "q_name": "Bar",
+            "variables": {},
+            "cls_var_occur": {},
+            "cls_var_ln": {},
+            "funcs": [
+                {
+                    "name": "__init__",
+                    "q_name": "Bar.__init__",
+                    "fn_lc": [
+                        [
+                            27,
+                            4
+                        ],
+                        [
+                            28,
+                            12
+                        ]
+                    ],
+                    "params": {
+                        "self": ""
+                    },
+                    "ret_exprs": [],
+                    "params_occur": {
+                        "self": []
+                    },
+                    "ret_type": "",
+                    "variables": {},
+                    "fn_var_occur": {},
+                    "fn_var_ln": {},
+                    "params_descr": {
+                        "self": ""
+                    },
+                    "docstring": {
+                        "func": null,
+                        "ret": null,
+                        "long_descr": null
+                    }
+                }
+            ]
+        }
+    ],
+    "funcs": [
+        {
+            "name": "my_fn",
+            "q_name": "my_fn",
+            "fn_lc": [
+                [
+                    31,
+                    0
+                ],
+                [
+                    32,
+                    17
+                ]
+            ],
+            "params": {
+                "x": "builtins.int"
+            },
+            "ret_exprs": [
+                "return x + 10"
+            ],
+            "params_occur": {
+                "x": []
+            },
+            "ret_type": "builtins.int",
+            "variables": {},
+            "fn_var_occur": {},
+            "fn_var_ln": {},
+            "params_descr": {
+                "x": ""
+            },
+            "docstring": {
+                "func": null,
+                "ret": null,
+                "long_descr": null
+            }
+        },
+        {
+            "name": "foo",
+            "q_name": "foo",
+            "fn_lc": [
+                [
+                    35,
+                    0
+                ],
+                [
+                    39,
+                    16
+                ]
+            ],
+            "params": {},
+            "ret_exprs": [],
+            "params_occur": {},
+            "ret_type": "None",
+            "variables": {},
+            "fn_var_occur": {},
+            "fn_var_ln": {},
+            "params_descr": {},
+            "docstring": {
+                "func": "Foo docstring",
+                "ret": null,
+                "long_descr": null
+            }
+        }
+    ],
+    "set": null,
+    "tc": [
+        false,
+        null
+    ],
+    "no_types_annot": {
+        "U": 4,
+        "D": 7,
+        "I": 0
+    },
+    "type_annot_cove": 0.64
+}
