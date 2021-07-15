@@ -217,7 +217,8 @@ class Visitor(cst.CSTVisitor):
         return False
 
     def visit_ImportFrom(self, node: cst.ImportFrom):
-        self.imports.extend([n.value for n in match.findall(node.module, match.Name(value=match.DoNotCare()))])
+        if node.module is not None:
+            self.imports.extend([n.value for n in match.findall(node.module, match.Name(value=match.DoNotCare()))])
 
     def visit_Assign(self, node: cst.Assign):
         """

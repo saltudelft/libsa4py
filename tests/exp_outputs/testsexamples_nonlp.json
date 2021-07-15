@@ -2279,8 +2279,8 @@
                 "type_annot_cove": 0.0
             },
             "libsa4py/tests/examples/imports.py": {
-                "untyped_seq": "[docstring] [EOL] [EOL] import math [EOL] import typing as t [EOL] from os . path import join , split [EOL] from string import * [EOL] [EOL] [EOL] def inner_imports ( ) : [EOL] import collections [EOL] collections . Counter ( ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "untyped_seq": "[docstring] [EOL] [EOL] import math [EOL] import typing as t [EOL] from os . path import join , split [EOL] from string import * [EOL] from . import assignments [EOL] [EOL] [EOL] def inner_imports ( ) : [EOL] import collections [EOL] collections . Counter ( ) [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "math",
                     "typing",
@@ -2290,6 +2290,7 @@
                     "join",
                     "split",
                     "string",
+                    "assignments",
                     "collections"
                 ],
                 "variables": {},
@@ -2302,11 +2303,11 @@
                         "q_name": "inner_imports",
                         "fn_lc": [
                             [
-                                11,
+                                12,
                                 0
                             ],
                             [
-                                13,
+                                14,
                                 25
                             ]
                         ],

@@ -38,3 +38,8 @@ class TestImports(unittest.TestCase):
     def test_module_from_import(self):
         imp_module = ['os', 'path']
         self.assertEqual(all(i for i in imp_module if i in self.processed_f['imports']), True)
+
+    # A case like from . import x
+    def test_from_imp_empty_mod(self):
+        imp_module = 'assignments'
+        self.assertEqual(imp_module in self.processed_f['imports'], True)
