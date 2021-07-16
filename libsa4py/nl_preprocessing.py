@@ -5,6 +5,10 @@ from typing import Optional, Tuple, List, Pattern, Match
 import docstring_parser
 import re
 import nltk
+import spacy
+
+# SPACY_CORP = spacy.load('en_core_web_sm')
+# SPACY_STOP_WORDS = SPACY_CORP.Defaults.stop_words
 
 # nltk.download('averaged_perceptron_tagger')
 # nltk.download('stopwords')
@@ -16,6 +20,21 @@ all_cap_regex = re.compile('([a-z0-9])([A-Z])')
 
 
 class NLPreprocessor:
+    def __init__(self, lemmatize: bool = True):
+
+        self.pipeline_id = [
+            SentenceProcessor.replace_digits_with_space,
+            SentenceProcessor.remove_punctuation_and_linebreaks,
+            SentenceProcessor.tokenize,
+        ]
+        self.pipeline_sent = self.pipeline_id[:]
+
+        if lemmatize:
+            self.pipeline_sent.append(SentenceProcessor.lemmatize)
+            self.pipeline_id.append(SentenceProcessor.lemmatize)
+
+        self.pipeline_sent.append(SentenceProcessor.remove_stop_words)
+
     def process_sentence(self, sentence: str) -> Optional[str]:
         """
         Process a natural language sentence
@@ -24,15 +43,15 @@ class NLPreprocessor:
         if sentence is None:
             return None
 
-        pipeline = [
-            SentenceProcessor.replace_digits_with_space,
-            SentenceProcessor.remove_punctuation_and_linebreaks,
-            SentenceProcessor.tokenize,
-            SentenceProcessor.lemmatize,
-            SentenceProcessor.remove_stop_words
-        ]
+        # pipeline = [
+        #     SentenceProcessor.replace_digits_with_space,
+        #     SentenceProcessor.remove_punctuation_and_linebreaks,
+        #     SentenceProcessor.tokenize,
+        #     #SentenceProcessor.lemmatize,
+        #     SentenceProcessor.remove_stop_words
+        # ]
 
-        return reduce(lambda s, action: action(s), pipeline, sentence)
+        return reduce(lambda s, action: action(s), self.pipeline_sent, sentence)
 
     def process_identifier(self, sentence: str) -> str:
         """
@@ -40,14 +59,14 @@ class NLPreprocessor:
 
         Similar to process_sentence, but does not remove stop words.
         """
-        pipeline = [
-            SentenceProcessor.replace_digits_with_space,
-            SentenceProcessor.remove_punctuation_and_linebreaks,
-            SentenceProcessor.tokenize,
-            SentenceProcessor.lemmatize
-        ]
+        # pipeline = [
+        #     SentenceProcessor.replace_digits_with_space,
+        #     SentenceProcessor.remove_punctuation_and_linebreaks,
+        #     SentenceProcessor.tokenize
+        #     #SentenceProcessor.lemmatize
+        # ]
 
-        return reduce(lambda s, action: action(s), pipeline, sentence)
+        return reduce(lambda s, action: action(s), self.pipeline_id, sentence)
 
 
 class SentenceProcessor:
@@ -158,6 +177,40 @@ class SentenceProcessor:
         words = [all_cap_regex.sub(r'\1 \2', first_cap_regex.sub(r'\1 \2', word)) for word in sentence.split(" ")]
 
         return ' '.join(words)
+
+
+# class SpacyProcessor:
+#
+#     def __init__(self, sentence):
+#         self.sentence = self._preprocess(sentence)
+#         self.sentence = SPACY_CORP(self.sentence)
+#
+#     # def tokenize(self, sentence: str) -> str:
+#     #     return " ".join([t for t in self.sentence])
+#
+#     def process(self, rem_stop_w: bool):
+#         #self.sentence = self._tokenizer(self.sentence)
+#         self.sentence = self._lemmatize(self.sentence)
+#
+#         if rem_stop_w:
+#             return " ".join(self._remove_stop_words(self.sentence))
+#         else:
+#             return " ".join([t for t in self.sentence])
+#
+#     def _tokenizer(self, sentence):
+#         return SPACY_CORP.tokenizer(sentence)
+#
+#     def _lemmatize(self, sentence):
+#         return [t.lemma_ for t in sentence]
+#
+#     def _remove_stop_words(self, sentence):
+#         return [t for t in sentence if t not in SPACY_STOP_WORDS]
+#
+#     def _preprocess(self, sentence: str) -> str:
+#         sentence = SentenceProcessor.replace_digits_with_space(sentence.lower())
+#         sentence = SentenceProcessor.remove_punctuation_and_linebreaks(sentence)
+#         return SentenceProcessor.tokenize(sentence)
+#         #return SentenceProcessor.convert_camelcase(sentence).strip()
 
 
 def extract_docstring_descriptions(docstring: str) -> Tuple[dict, dict]:
