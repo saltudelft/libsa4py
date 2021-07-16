@@ -5,8 +5,9 @@ from typing import Optional, Tuple, List, Pattern, Match
 import docstring_parser
 import re
 import nltk
-import spacy
+#import spacy
 
+NLTK_STOP_WORDS = nltk.corpus.stopwords.words('english')
 # SPACY_CORP = spacy.load('en_core_web_sm')
 # SPACY_STOP_WORDS = SPACY_CORP.Defaults.stop_words
 
@@ -151,7 +152,7 @@ class SentenceProcessor:
         """
         Remove stop words from a sentence
         """
-        return ' '.join([word for word in sentence.split(' ') if word not in nltk.corpus.stopwords.words('english')])
+        return ' '.join([word for word in sentence.split(' ') if word not in NLTK_STOP_WORDS])
 
     @staticmethod
     def get_wordnet_pos(treebank_tag: str) -> str:
