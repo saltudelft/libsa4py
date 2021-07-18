@@ -21,20 +21,6 @@ all_cap_regex = re.compile('([a-z0-9])([A-Z])')
 
 
 class NLPreprocessor:
-    def __init__(self, lemmatize: bool = True):
-
-        self.pipeline_id = [
-            SentenceProcessor.replace_digits_with_space,
-            SentenceProcessor.remove_punctuation_and_linebreaks,
-            SentenceProcessor.tokenize,
-        ]
-        self.pipeline_sent = self.pipeline_id[:]
-
-        if lemmatize:
-            self.pipeline_sent.append(SentenceProcessor.lemmatize)
-            self.pipeline_id.append(SentenceProcessor.lemmatize)
-
-        self.pipeline_sent.append(SentenceProcessor.remove_stop_words)
 
     @functools.lru_cache(maxsize=2048)
     def process_sentence(self, sentence: str) -> Optional[str]:
@@ -45,15 +31,15 @@ class NLPreprocessor:
         if sentence is None:
             return None
 
-        # pipeline = [
-        #     SentenceProcessor.replace_digits_with_space,
-        #     SentenceProcessor.remove_punctuation_and_linebreaks,
-        #     SentenceProcessor.tokenize,
-        #     #SentenceProcessor.lemmatize,
-        #     SentenceProcessor.remove_stop_words
-        # ]
+        pipeline = [
+            SentenceProcessor.replace_digits_with_space,
+            SentenceProcessor.remove_punctuation_and_linebreaks,
+            SentenceProcessor.tokenize,
+            SentenceProcessor.lemmatize,
+            SentenceProcessor.remove_stop_words
+        ]
 
-        return reduce(lambda s, action: action(s), self.pipeline_sent, sentence)
+        return reduce(lambda s, action: action(s), pipeline, sentence)
 
     @functools.lru_cache(maxsize=2048)
     def process_identifier(self, sentence: str) -> str:
@@ -62,14 +48,14 @@ class NLPreprocessor:
 
         Similar to process_sentence, but does not remove stop words.
         """
-        # pipeline = [
-        #     SentenceProcessor.replace_digits_with_space,
-        #     SentenceProcessor.remove_punctuation_and_linebreaks,
-        #     SentenceProcessor.tokenize
-        #     #SentenceProcessor.lemmatize
-        # ]
+        pipeline = [
+            SentenceProcessor.replace_digits_with_space,
+            SentenceProcessor.remove_punctuation_and_linebreaks,
+            SentenceProcessor.tokenize,
+            SentenceProcessor.lemmatize
+        ]
 
-        return reduce(lambda s, action: action(s), self.pipeline_id, sentence)
+        return reduce(lambda s, action: action(s), pipeline, sentence)
 
 
 class SentenceProcessor:
