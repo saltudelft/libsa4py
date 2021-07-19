@@ -4,7 +4,12 @@ from typing import Optional, Tuple, List, Pattern, Match
 
 import docstring_parser
 import re
+import functools
 import nltk
+
+NLTK_STOP_WORDS = nltk.corpus.stopwords.words('english')
+LEMMATIZER = nltk.WordNetLemmatizer()
+LEMMATIZER.lemmatize("warm up")  # Loads lemmatizer corpus
 
 # nltk.download('averaged_perceptron_tagger')
 # nltk.download('stopwords')
@@ -16,6 +21,8 @@ all_cap_regex = re.compile('([a-z0-9])([A-Z])')
 
 
 class NLPreprocessor:
+
+    @functools.lru_cache(maxsize=2048)
     def process_sentence(self, sentence: str) -> Optional[str]:
         """
         Process a natural language sentence
@@ -34,6 +41,7 @@ class NLPreprocessor:
 
         return reduce(lambda s, action: action(s), pipeline, sentence)
 
+    @functools.lru_cache(maxsize=2048)
     def process_identifier(self, sentence: str) -> str:
         """
         Process a sentence mainly consisting of identifiers
@@ -116,12 +124,11 @@ class SentenceProcessor:
         lemmatized = []
         for token, tag in nltk.pos_tag(words):
             word_pos = SentenceProcessor.get_wordnet_pos(tag)
-            lemmatizer = nltk.WordNetLemmatizer()
             try:
                 if word_pos != '':
-                    lemmatized.append(lemmatizer.lemmatize(token, pos=word_pos))
+                    lemmatized.append(LEMMATIZER.lemmatize(token, pos=word_pos))
                 else:
-                    lemmatized.append(lemmatizer.lemmatize(token))
+                    lemmatized.append(LEMMATIZER.lemmatize(token))
             except UnicodeDecodeError:
                 print(f'Lemmatization failed for {token}, tag: {tag}, word pos: {word_pos}')
 
@@ -132,7 +139,7 @@ class SentenceProcessor:
         """
         Remove stop words from a sentence
         """
-        return ' '.join([word for word in sentence.split(' ') if word not in nltk.corpus.stopwords.words('english')])
+        return ' '.join([word for word in sentence.split(' ') if word not in NLTK_STOP_WORDS])
 
     @staticmethod
     def get_wordnet_pos(treebank_tag: str) -> str:
