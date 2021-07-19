@@ -887,7 +887,7 @@ class TypeApplier(cst.CSTTransformer):
         for fn in fns:
             # if fn['q_name'] in self.__get_qualified_name(f_node.name) and \
             #         set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
-            if fn['fn_lc'] == self.__get_line_column_no(f_node):
+            if (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == self.__get_line_column_no(f_node):
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -1133,9 +1133,9 @@ class TypeApplier(cst.CSTTransformer):
         q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
         return q_name[0].name if len(q_name) != 0 else None
 
-    def __get_line_column_no(self, node) -> List[List[int]]:
+    def __get_line_column_no(self, node) -> Tuple[int, int]:
         lc = self.get_metadata(cst.metadata.PositionProvider, node)
-        return [[lc.start.line, lc.start.column], [lc.end.line, lc.end.column]]
+        return lc.start.line, lc.end.line
 
     def resolve_type_alias(self, t: str):
         type_aliases = {'^{}$|^Dict$|(?<=.*)Dict\[\](?<=.*)|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$': 'dict',

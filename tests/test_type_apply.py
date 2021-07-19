@@ -59,8 +59,8 @@ class Foo:
         foo_d = 'Hello, Delta!'
     foo_p: pathlib.Path = Path('/home/foo/bar')
     def __init__(self):
-        self.i: int = 10
-        def foo_inner(c: str, d=lambda a,b: a == b):
+        self.i: builtins.int = 10
+        def foo_inner(c: builtins.str, d=lambda a,b: a == b):
             pass
     def foo_fn(self, y)-> typing.Dict[builtins.str, builtins.bool]:
         def foo_inner(a, b, c, d, *args, **kwargs):
@@ -131,8 +131,10 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         write_file('./tmp_ta/type_apply_typed.py', test_file_typed)
 
         # from libsa4py.cst_extractor import Extractor
-        # # save_json('./tmp_ta/type_apply_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply.py')).to_dict())
-        # save_json('./tmp_ta/type_apply_typed_ex.json', Extractor.extract(read_file('./tmp_ta/type_apply_typed.py')).to_dict())
+        # save_json('./tmp_ta/type_apply_ex.json', {"tests/examples": {"src_files": {"type_apply.py":
+        #           Extractor.extract(read_file('./tmp_ta/type_apply.py'), include_seq2seq=False).to_dict()}}})
+        # save_json('./tmp_ta/type_apply_typed_ex.json', {"tests/examples": {"src_files": {"type_apply_typed.py":
+        #           Extractor.extract(read_file('./tmp_ta/type_apply_typed.py'), include_seq2seq=False).to_dict()}}})
 
     def test_type_apply_pipeline(self):
         ta = TypeAnnotatingProjects('./tmp_ta', None, apply_nlp=False)
