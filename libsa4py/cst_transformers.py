@@ -859,7 +859,8 @@ class TypeApplier(cst.CSTTransformer):
     Specifically, it applies the type of arguments, return types, and variables' type.
     """
 
-    METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider, cst.metadata.QualifiedNameProvider)
+    METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider, cst.metadata.QualifiedNameProvider,
+                             cst.metadata.PositionProvider)
 
     def __init__(self, f_processeed_dict: dict, apply_nlp: bool=True):
         self.f_processed_dict = f_processeed_dict
@@ -884,8 +885,9 @@ class TypeApplier(cst.CSTTransformer):
             fns = self.f_processed_dict['funcs']
 
         for fn in fns:
-            if fn['q_name'] == self.__get_qualified_name(f_node.name) and \
-                    set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
+            # if fn['q_name'] in self.__get_qualified_name(f_node.name) and \
+            #         set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
+            if fn['fn_lc'] == self.__get_line_column_no(f_node):
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -899,7 +901,8 @@ class TypeApplier(cst.CSTTransformer):
 
     def __get_cls(self, cls: cst.ClassDef) -> dict:
         for c in self.f_processed_dict['classes']:
-            if c['q_name'] == self.__get_qualified_name(cls.name):
+            q = self.__get_qualified_name(cls.name)
+            if c['q_name'] in self.__get_qualified_name(cls.name):
                 return c
 
     def __get_fn_vars(self, var_name: str) -> dict:
@@ -1129,6 +1132,10 @@ class TypeApplier(cst.CSTTransformer):
     def __get_qualified_name(self, node) -> Optional[str]:
         q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
         return q_name[0].name if len(q_name) != 0 else None
+
+    def __get_line_column_no(self, node) -> List[List[int]]:
+        lc = self.get_metadata(cst.metadata.PositionProvider, node)
+        return [[lc.start.line, lc.start.column], [lc.end.line, lc.end.column]]
 
     def resolve_type_alias(self, t: str):
         type_aliases = {'^{}$|^Dict$|(?<=.*)Dict\[\](?<=.*)|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$': 'dict',
