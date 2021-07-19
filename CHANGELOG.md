@@ -10,6 +10,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
   - Module-level variables
   - Class variables
   - Functions' local variables
+- Improved the performance of the NLP preprocessing quite significantly (~10x). 
 
 ### Fixed
 - When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.
