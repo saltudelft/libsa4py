@@ -901,7 +901,10 @@ class TypeApplier(cst.CSTTransformer):
 
     def __get_cls(self, cls: cst.ClassDef) -> dict:
         for c in self.f_processed_dict['classes']:
-            if c['q_name'] in self.__get_qualified_name(cls.name):
+            q = self.__get_qualified_name(cls.name)
+            if c['q_name'] == q:
+                return c
+            elif c['q_name'].split(".")[-1] == q.split(".")[-1]:
                 return c
 
     def __get_fn_vars(self, var_name: str) -> dict:
