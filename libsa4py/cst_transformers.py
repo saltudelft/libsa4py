@@ -885,9 +885,10 @@ class TypeApplier(cst.CSTTransformer):
             fns = self.f_processed_dict['funcs']
 
         for fn in fns:
-            # if fn['q_name'] in self.__get_qualified_name(f_node.name) and \
-            #         set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
-            if (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == self.__get_line_column_no(f_node):
+            if fn['q_name'] in self.__get_qualified_name(f_node.name) and \
+                    set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
+                return fn
+            elif (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == self.__get_line_column_no(f_node):
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
