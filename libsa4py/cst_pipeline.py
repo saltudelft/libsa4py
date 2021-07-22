@@ -270,8 +270,9 @@ class TypeAnnotatingProjects:
         total_added_types = 0
         for p in proj_json.keys():
             for i, (f, f_d) in enumerate(proj_json[p]['src_files'].items()):
-                f_read = read_file(join(self.projects_path, f))
-                if len(f_read) != 0:
+                print(f"Adding types to file {f} from project {proj_json_path}")
+                if f_d['no_types_annot']['I'] + f_d['no_types_annot']['D'] > 0:
+                    f_read = read_file(join(self.projects_path, f))
                     try:
                         f_parsed = cst.parse_module(f_read)
                         try:
@@ -279,6 +280,7 @@ class TypeAnnotatingProjects:
                             f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(ta)
                             write_file(join(self.projects_path, f), f_parsed.code)
                             total_added_types += ta.no_applied_types
+                            print(f"Applied {ta.no_applied_types} types to file {f} from project {proj_json_path}")
                         except KeyError as ke:
                             print(f"A variable not found | project {proj_json_path} | file {f}", ke)
                             traceback.print_exc()
@@ -293,7 +295,11 @@ class TypeAnnotatingProjects:
     def run(self, jobs: int):
         proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
-        ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) for p_j in proj_jsons)
+        start_t = time.time()
+        proj_type_added = ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) \
+                                                                               for p_j in proj_jsons)
+        print(f"Finished applying types in {str(timedelta(seconds=time.time() - start_t))}")
+        print(f"{sum(proj_type_added)} types applied to the whole dataset")
 
 
 class TypeAnnotationsRemoval:
