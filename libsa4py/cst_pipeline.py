@@ -267,6 +267,7 @@ class TypeAnnotatingProjects:
 
     def process_project(self, proj_json_path: str):
         proj_json = load_json(proj_json_path)
+        total_added_types = 0
         for p in proj_json.keys():
             for i, (f, f_d) in enumerate(proj_json[p]['src_files'].items()):
                 f_read = read_file(join(self.projects_path, f))
@@ -274,8 +275,10 @@ class TypeAnnotatingProjects:
                     try:
                         f_parsed = cst.parse_module(f_read)
                         try:
-                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(TypeApplier(f_d, self.apply_nlp))
+                            ta = TypeApplier(f_d, self.apply_nlp)
+                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(ta)
                             write_file(join(self.projects_path, f), f_parsed.code)
+                            total_added_types += ta.no_applied_types
                         except KeyError as ke:
                             print(f"A variable not found | project {proj_json_path} | file {f}", ke)
                             traceback.print_exc()
@@ -284,6 +287,8 @@ class TypeAnnotatingProjects:
                             traceback.print_exc()
                     except cst._exceptions.ParserSyntaxError as pse:
                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
+
+        return total_added_types
 
     def run(self, jobs: int):
         proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')

@@ -872,6 +872,7 @@ class TypeApplier(cst.CSTTransformer):
         self.lambda_d = 0
 
         self.all_applied_types = set()
+        self.no_applied_types = 0
 
         if apply_nlp:
             self.nlp_p = NLPreprocessor().process_identifier
@@ -898,6 +899,7 @@ class TypeApplier(cst.CSTTransformer):
             fn_param_type = self.__name2annotation(fn_param_type_resolved)
             if fn_param_type is not None:
                 self.all_applied_types.add((fn_param_type_resolved, fn_param_type))
+                self.no_applied_types += 1
                 return fn_param_type
 
     def __get_cls(self, cls: cst.ClassDef) -> dict:
@@ -1000,6 +1002,7 @@ class TypeApplier(cst.CSTTransformer):
             fn_ret_type = self.__name2annotation(fn_ret_type_resolved)
             if fn_ret_type is not None:
                 self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
+                self.no_applied_types += 1
                 return updated_node.with_changes(returns=fn_ret_type)
         else:
             return updated_node.with_changes(returns=None)
@@ -1032,6 +1035,7 @@ class TypeApplier(cst.CSTTransformer):
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
                     self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].targets[0].target,
                         value=original_node.body[0].value,
@@ -1052,6 +1056,7 @@ class TypeApplier(cst.CSTTransformer):
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
                     self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].target,
                         value=original_node.body[0].value,

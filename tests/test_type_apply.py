@@ -138,7 +138,7 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
 
     def test_type_apply_pipeline(self):
         ta = TypeAnnotatingProjects('./tmp_ta', None, apply_nlp=False)
-        ta.process_project('./examples/type_apply_ex.json')
+        total_no_added_types = ta.process_project('./examples/type_apply_ex.json')
 
         exp_split = test_file_exp.splitlines()
         out_split = read_file('./tmp_ta/type_apply.py').splitlines()
@@ -147,6 +147,8 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         out = """{}""".format("\n".join(out_split[7:]))
 
         self.assertEqual(exp, out)
+        self.assertEqual(total_no_added_types, 16)
+
         # The imported types from typing
         self.assertEqual(Counter(" ".join(exp_split[0:7])), Counter(" ".join(out_split[0:7])))
 
