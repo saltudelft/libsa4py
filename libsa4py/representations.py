@@ -74,19 +74,22 @@ class ClassInfo:
     def __init__(self):
         self.name: str = ''
         self.q_name: str = ''
+        # Line, Column no. for the start and end of the class
+        self.ln_col: Tuple[Tuple[int, int], Tuple[int, int]] = None
         self.variables: Dict[str, str] = {}
         self.variables_use_occur: Dict[str, list] = {}
         self.variables_ln: Dict[str, Tuple[Tuple[int, int], Tuple[int, int]]] = {}
         self.funcs: List[FunctionInfo] = []
 
     def to_dict(self) -> dict:
-        return {"name": self.name, "q_name": self.q_name, "variables": self.variables,
+        return {"name": self.name, "q_name": self.q_name, "cls_lc": self.ln_col, "variables": self.variables,
                 "cls_var_occur": self.variables_use_occur, "cls_var_ln": self.variables_ln,
                 "funcs": [f.to_dict() for f in self.funcs]}
 
     def from_dict(self, cls_repr_dict: dict):
         self.name = cls_repr_dict['name']
         self.q_name = cls_repr_dict['q_name']
+        self.ln_col = (tuple(cls_repr_dict['cls_lc'][0]), tuple(cls_repr_dict['cls_lc'][1]))
         self.variables = cls_repr_dict['variables']
         self.variables_use_occur = cls_repr_dict['cls_var_occur']
         self.variables_ln = {v: (tuple(l[0]), tuple(l[1])) for v, l in cls_repr_dict['cls_var_ln'].items()}
@@ -97,6 +100,7 @@ class ClassInfo:
     def __eq__(self, other_class_info_obj: 'ClassInfo'):
         return other_class_info_obj.name == self.name and \
                other_class_info_obj.q_name == self.q_name and \
+               other_class_info_obj.ln_col == self.ln_col and \
                other_class_info_obj.variables == self.variables and \
                other_class_info_obj.variables_use_occur == self.variables_use_occur and \
                other_class_info_obj.variables_ln == self.variables_ln and \
