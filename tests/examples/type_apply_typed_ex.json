@@ -214,7 +214,7 @@
     "tc": false,
     "no_types_annot": {
         "U": 0,
-        "D": 0,
+        "D": 1,
         "I": 0
     },
     "type_annot_cove": 0.0

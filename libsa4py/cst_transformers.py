@@ -853,6 +853,7 @@ class ParametricTypeDepthReducer(cst.CSTTransformer):
             return updated_node
 
 
+# TODO: Write two separate CSTTransformers for applying and removing type annotations
 class TypeApplier(cst.CSTTransformer):
     """
     It applies (inferred) type annotations to a source code file.
