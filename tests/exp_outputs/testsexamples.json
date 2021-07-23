@@ -135,6 +135,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                19,
+                                0
+                            ],
+                            [
+                                29,
+                                12
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -505,6 +515,16 @@
                     {
                         "name": "Delta",
                         "q_name": "Foo.__init__.<locals>.Delta",
+                        "cls_lc": [
+                            [
+                                33,
+                                8
+                            ],
+                            [
+                                34,
+                                16
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -513,6 +533,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                30,
+                                0
+                            ],
+                            [
+                                46,
+                                22
+                            ]
+                        ],
                         "variables": {
                             "foo seq": "collections.abc.Sequence"
                         },
@@ -793,6 +823,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                17,
+                                34
+                            ]
+                        ],
                         "variables": {
                             "me": "builtins.float",
                             "fox": ""
@@ -1063,6 +1103,16 @@
                     {
                         "name": "TestVarArgOccur",
                         "q_name": "TestVarArgOccur",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                108,
+                                63
+                            ]
+                        ],
                         "variables": {
                             "greet": "builtins.str",
                             "num": "",
@@ -2119,6 +2169,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                11,
+                                0
+                            ],
+                            [
+                                15,
+                                28
+                            ]
+                        ],
                         "variables": {
                             "class var": "builtins.str"
                         },
@@ -2366,6 +2426,16 @@
                     {
                         "name": "Test",
                         "q_name": "Test",
+                        "cls_lc": [
+                            [
+                                16,
+                                0
+                            ],
+                            [
+                                37,
+                                49
+                            ]
+                        ],
                         "variables": {
                             "x": "",
                             "u": "",
@@ -2980,6 +3050,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                10,
+                                0
+                            ],
+                            [
+                                23,
+                                20
+                            ]
+                        ],
                         "variables": {
                             "foo num": "",
                             "foo name": "",
@@ -3391,6 +3471,16 @@
                     {
                         "name": "Delta",
                         "q_name": "Delta",
+                        "cls_lc": [
+                            [
+                                21,
+                                0
+                            ],
+                            [
+                                23,
+                                24
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -4312,6 +4402,16 @@
                     {
                         "name": "MyClass",
                         "q_name": "MyClass",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                23,
+                                44
+                            ]
+                        ],
                         "variables": {
                             "cl var": "builtins.int"
                         },
@@ -4471,6 +4571,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                26,
+                                0
+                            ],
+                            [
+                                28,
+                                12
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},

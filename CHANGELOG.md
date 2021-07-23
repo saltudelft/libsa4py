@@ -7,10 +7,11 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 - Supporting qualified names for classes by adding the `q_name` field to the JSON output.
 - Adding line and column no. info for the start and end of:
   - Functions definitions
+  - Class definitions
   - Module-level variables
   - Class variables
   - Functions' local variables
-- Improved the performance of the NLP preprocessing quite significantly (~10x). 
+- Improved the performance of the NLP preprocessing quite significantly (~10x).
 
 ### Fixed
 - When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.
