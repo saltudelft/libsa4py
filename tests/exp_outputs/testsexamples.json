@@ -135,6 +135,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                19,
+                                0
+                            ],
+                            [
+                                29,
+                                12
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -505,6 +515,16 @@
                     {
                         "name": "Delta",
                         "q_name": "Foo.__init__.<locals>.Delta",
+                        "cls_lc": [
+                            [
+                                33,
+                                8
+                            ],
+                            [
+                                34,
+                                16
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -513,6 +533,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                30,
+                                0
+                            ],
+                            [
+                                46,
+                                22
+                            ]
+                        ],
                         "variables": {
                             "foo seq": "collections.abc.Sequence"
                         },
@@ -793,6 +823,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                17,
+                                34
+                            ]
+                        ],
                         "variables": {
                             "me": "builtins.float",
                             "fox": ""
@@ -1063,6 +1103,16 @@
                     {
                         "name": "TestVarArgOccur",
                         "q_name": "TestVarArgOccur",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                108,
+                                63
+                            ]
+                        ],
                         "variables": {
                             "greet": "builtins.str",
                             "num": "",
@@ -1808,6 +1858,256 @@
                 },
                 "type_annot_cove": 1.0
             },
+            "libsa4py/tests/examples/type_annot_count.py": {
+                "untyped_seq": "[docstring] [EOL] [comment] [EOL] m = [number] [EOL] [EOL] class Bar : [EOL] bar_var1 = [number] [comment] [EOL] bar_var2 = ... [comment] [EOL] def __init__ ( self , i ) : [comment] [EOL] self . i = i [comment] [EOL] [comment] [EOL] def bar_fn ( self , x , y ) : [comment] [EOL] return x + y [EOL] [comment] [EOL] def foo ( n , i = False ) : [EOL] if i : [EOL] z = [string] + n [comment]",
+                "typed_seq": "0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [],
+                "variables": {
+                    "m": "builtins.int"
+                },
+                "mod_var_occur": {
+                    "m": []
+                },
+                "mod_var_ln": {
+                    "m": [
+                        [
+                            5,
+                            0
+                        ],
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                },
+                "classes": [
+                    {
+                        "name": "Bar",
+                        "q_name": "Bar",
+                        "variables": {
+                            "bar var": "builtins.int"
+                        },
+                        "cls_var_occur": {
+                            "bar_var1": [],
+                            "bar_var2": []
+                        },
+                        "cls_var_ln": {
+                            "bar_var1": [
+                                [
+                                    8,
+                                    4
+                                ],
+                                [
+                                    8,
+                                    12
+                                ]
+                            ],
+                            "bar_var2": [
+                                [
+                                    9,
+                                    4
+                                ],
+                                [
+                                    9,
+                                    12
+                                ]
+                            ]
+                        },
+                        "funcs": [
+                            {
+                                "name": "init",
+                                "q_name": "Bar.__init__",
+                                "fn_lc": [
+                                    [
+                                        10,
+                                        4
+                                    ],
+                                    [
+                                        11,
+                                        32
+                                    ]
+                                ],
+                                "params": {
+                                    "self": "",
+                                    "i": "builtins.int"
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": [
+                                        "self",
+                                        "",
+                                        "builtins",
+                                        "int",
+                                        ""
+                                    ],
+                                    "i": [
+                                        "self",
+                                        "",
+                                        "builtins",
+                                        "int",
+                                        ""
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "i": "builtins.int"
+                                },
+                                "fn_var_occur": {
+                                    "i": [
+                                        "self",
+                                        "",
+                                        "builtins",
+                                        "int",
+                                        ""
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "i": [
+                                        [
+                                            11,
+                                            8
+                                        ],
+                                        [
+                                            11,
+                                            14
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "i": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "bar fn",
+                                "q_name": "Bar.bar_fn",
+                                "fn_lc": [
+                                    [
+                                        13,
+                                        4
+                                    ],
+                                    [
+                                        14,
+                                        20
+                                    ]
+                                ],
+                                "params": {
+                                    "self": "",
+                                    "x": "builtins.float",
+                                    "y": "builtins.float"
+                                },
+                                "ret_exprs": [
+                                    "x y"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "x": [
+                                        "x",
+                                        ""
+                                    ],
+                                    "y": [
+                                        "x",
+                                        ""
+                                    ]
+                                },
+                                "ret_type": "builtins.float",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "fn_var_ln": {},
+                                "params_descr": {
+                                    "self": "",
+                                    "x": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "funcs": [
+                    {
+                        "name": "foo",
+                        "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                16,
+                                0
+                            ],
+                            [
+                                18,
+                                37
+                            ]
+                        ],
+                        "params": {
+                            "n": "builtins.str",
+                            "i": "builtins.bool"
+                        },
+                        "ret_exprs": [],
+                        "params_occur": {
+                            "n": [
+                                "z",
+                                "builtins",
+                                "str",
+                                "n"
+                            ],
+                            "i": []
+                        },
+                        "ret_type": "",
+                        "variables": {
+                            "z": "builtins.str"
+                        },
+                        "fn_var_occur": {
+                            "z": [
+                                "z",
+                                "builtins",
+                                "str",
+                                "n"
+                            ]
+                        },
+                        "fn_var_ln": {
+                            "z": [
+                                [
+                                    18,
+                                    8
+                                ],
+                                [
+                                    18,
+                                    9
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "n": "",
+                            "i": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
+                ],
+                "set": null,
+                "tc": [
+                    false,
+                    null
+                ],
+                "no_types_annot": {
+                    "U": 2,
+                    "D": 10,
+                    "I": 0
+                },
+                "type_annot_cove": 0.83
+            },
             "libsa4py/tests/examples/docstrings.py": {
                 "untyped_seq": "def basic_docstring ( ) : [EOL] [docstring] [EOL] pass [EOL] [EOL] [EOL] [comment] [EOL] def google_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def rest_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def numpy_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [EOL] [EOL] [comment] [EOL] def no_docstring ( ) : [EOL] return None [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
@@ -2119,6 +2419,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                11,
+                                0
+                            ],
+                            [
+                                15,
+                                28
+                            ]
+                        ],
                         "variables": {
                             "class var": "builtins.str"
                         },
@@ -2366,6 +2676,16 @@
                     {
                         "name": "Test",
                         "q_name": "Test",
+                        "cls_lc": [
+                            [
+                                16,
+                                0
+                            ],
+                            [
+                                37,
+                                49
+                            ]
+                        ],
                         "variables": {
                             "x": "",
                             "u": "",
@@ -2980,6 +3300,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                10,
+                                0
+                            ],
+                            [
+                                23,
+                                20
+                            ]
+                        ],
                         "variables": {
                             "foo num": "",
                             "foo name": "",
@@ -3391,6 +3721,16 @@
                     {
                         "name": "Delta",
                         "q_name": "Delta",
+                        "cls_lc": [
+                            [
+                                21,
+                                0
+                            ],
+                            [
+                                23,
+                                24
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -4312,6 +4652,16 @@
                     {
                         "name": "MyClass",
                         "q_name": "MyClass",
+                        "cls_lc": [
+                            [
+                                12,
+                                0
+                            ],
+                            [
+                                23,
+                                44
+                            ]
+                        ],
                         "variables": {
                             "cl var": "builtins.int"
                         },
@@ -4471,6 +4821,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                26,
+                                0
+                            ],
+                            [
+                                28,
+                                12
+                            ]
+                        ],
                         "variables": {},
                         "cls_var_occur": {},
                         "cls_var_ln": {},
@@ -4651,6 +5011,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.37
+        "type_annot_cove": 0.4
     }
 }

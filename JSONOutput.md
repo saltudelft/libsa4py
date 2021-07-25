@@ -54,6 +54,7 @@ The following JSON object represents a processed class:
 {
   "name": "",
   "q_name": "",
+  "cls_lc": [[5,0], [10, 7]],
   "variables": {"var_name": "type"},
   "cls_var_occur": {"var_name": []},
   "cls_var_ln": {"var_name": [[1,0], [2, 2]]},
@@ -64,6 +65,7 @@ The following JSON object represents a processed class:
 Description of the fields:
 - `name`: The name of the processed class.
 - `q_name`: The qualified name of the processed class.
+- `cls_lc`: Contains line and column no. info for the start and end of the class.
 - `variables`: Contains class variables' names and their type.
 - `cls_var_occur`: Contains class variables' usage inside the class.
 - `cls_var_ln`: Contains line and column no. info for the start and end of class variables.
