@@ -1,224 +1,325 @@
 {
-  "tests/examples": {
-    "src_files": {
-      "type_apply_typed.py": {
-    "untyped_seq": "a = [number] [EOL] l = [ [number] , [number] , [number] ] [EOL] c = [number] [EOL] [EOL] def foo ( x , y ) : [EOL] z = x + y [EOL] return z [EOL] [EOL] class Bar : [EOL] bar_var1 = [string] [EOL] bar_var2 = [number] [EOL] def __init__ ( a , b ) : [EOL] self . a = a [EOL] self . b = b [EOL] def delta ( n ) : [EOL] return [ [number] ] * p [EOL]",
-    "typed_seq": "$builtins.int$ 0 0 0 $List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 $builtins.float$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 $List[float]$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0",
-    "imports": [],
-    "variables": {
-        "a": "",
-        "l": "",
-        "c": "",
-        "h": ""
-    },
-    "mod_var_occur": {
-        "a": [
-            [
-                "self",
-                "a",
-                "builtins",
-                "int",
-                "a"
-            ]
-        ],
-        "l": [],
-        "c": []
-    },
-    "classes": [
-        {
-            "name": "Bar",
-            "q_name": "Bar",
-            "variables": {
-                "bar_var1": "",
-                "bar_var2": ""
-            },
-            "cls_var_occur": {
-                "bar_var1": [],
-                "bar_var2": []
-            },
-            "funcs": [
-                {
-                    "name": "__init__",
-                    "q_name": "Bar.__init__",
-                    "fn_lc": [
-                        [
-                            11,
-                            4
-                        ],
-                        [
-                            13,
-                            18
-                        ]
-                    ],
-                    "params": {
-                        "a": "",
-                        "b": ""
-                    },
-                    "ret_exprs": [],
-                    "params_occur": {
-                        "a": [
-                            [
-                                "self",
-                                "a",
-                                "builtins",
-                                "int",
-                                "a"
-                            ]
-                        ],
-                        "b": [
-                            [
-                                "self",
-                                "b",
-                                "b"
-                            ]
-                        ]
-                    },
-                    "ret_type": "",
-                    "variables": {
-                        "a": "",
-                        "b": ""
-                    },
-                    "fn_var_occur": {
-                        "a": [
-                            [
-                                "self",
-                                "a",
-                                "builtins",
-                                "int",
-                                "a"
-                            ]
-                        ],
-                        "b": [
-                            [
-                                "self",
-                                "b",
-                                "b"
-                            ]
-                        ]
-                    },
-                    "params_descr": {
-                        "a": "",
-                        "b": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
+    "tests/examples": {
+        "src_files": {
+            "type_apply_typed.py": {
+                "untyped_seq": "",
+                "typed_seq": "",
+                "imports": [],
+                "variables": {
+                    "a": "",
+                    "l": "",
+                    "c": "",
+                    "h": "builtins.dict"
                 },
-                {
-                    "name": "delta",
-                    "q_name": "Bar.delta",
-                    "fn_lc": [
+                "mod_var_occur": {
+                    "a": [
                         [
-                            14,
-                            4
-                        ],
-                        [
-                            15,
-                            25
+                            "self",
+                            "a",
+                            "a"
                         ]
                     ],
-                    "params": {
-                        "n": ""
-                    },
-                    "ret_exprs": [
-                        "return [2.17] * p"
+                    "l": [],
+                    "c": [],
+                    "h": []
+                },
+                "mod_var_ln": {
+                    "a": [
+                        [
+                            1,
+                            0
+                        ],
+                        [
+                            1,
+                            1
+                        ]
                     ],
-                    "params_occur": {
-                        "n": []
-                    },
-                    "ret_type": "",
-                    "variables": {},
-                    "fn_var_occur": {},
-                    "params_descr": {
-                        "n": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
+                    "l": [
+                        [
+                            2,
+                            0
+                        ],
+                        [
+                            2,
+                            1
+                        ]
+                    ],
+                    "c": [
+                        [
+                            3,
+                            0
+                        ],
+                        [
+                            3,
+                            1
+                        ]
+                    ],
+                    "h": [
+                        [
+                            4,
+                            0
+                        ],
+                        [
+                            4,
+                            1
+                        ]
+                    ]
+                },
+                "classes": [
+                    {
+                        "name": "Bar",
+                        "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                8,
+                                0
+                            ],
+                            [
+                                15,
+                                25
+                            ]
+                        ],
+                        "variables": {
+                            "bar_var1": "",
+                            "bar_var2": ""
+                        },
+                        "cls_var_occur": {
+                            "bar_var1": [],
+                            "bar_var2": []
+                        },
+                        "cls_var_ln": {
+                            "bar_var1": [
+                                [
+                                    9,
+                                    4
+                                ],
+                                [
+                                    9,
+                                    12
+                                ]
+                            ],
+                            "bar_var2": [
+                                [
+                                    10,
+                                    4
+                                ],
+                                [
+                                    10,
+                                    12
+                                ]
+                            ]
+                        },
+                        "funcs": [
+                            {
+                                "name": "__init__",
+                                "q_name": "Bar.__init__",
+                                "fn_lc": [
+                                    [
+                                        11,
+                                        4
+                                    ],
+                                    [
+                                        13,
+                                        18
+                                    ]
+                                ],
+                                "params": {
+                                    "a": "",
+                                    "b": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "a": [
+                                        [
+                                            "self",
+                                            "a",
+                                            "a"
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            "self",
+                                            "b",
+                                            "b"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "a": "",
+                                    "b": ""
+                                },
+                                "fn_var_occur": {
+                                    "a": [
+                                        [
+                                            "self",
+                                            "a",
+                                            "a"
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            "self",
+                                            "b",
+                                            "b"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "a": [
+                                        [
+                                            12,
+                                            8
+                                        ],
+                                        [
+                                            12,
+                                            14
+                                        ]
+                                    ],
+                                    "b": [
+                                        [
+                                            13,
+                                            8
+                                        ],
+                                        [
+                                            13,
+                                            14
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "a": "",
+                                    "b": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "delta",
+                                "q_name": "Bar.delta",
+                                "fn_lc": [
+                                    [
+                                        14,
+                                        4
+                                    ],
+                                    [
+                                        15,
+                                        25
+                                    ]
+                                ],
+                                "params": {
+                                    "n": ""
+                                },
+                                "ret_exprs": [
+                                    "return [2.17] * p"
+                                ],
+                                "params_occur": {
+                                    "n": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "fn_var_ln": {},
+                                "params_descr": {
+                                    "n": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
+                        ]
                     }
-                }
-            ]
-        }
-    ],
-    "funcs": [
-        {
-            "name": "foo",
-            "q_name": "foo",
-            "fn_lc": [
-                [
-                    5,
-                    0
                 ],
-                [
-                    7,
-                    12
-                ]
-            ],
-            "params": {
-                "x": "",
-                "y": ""
-            },
-            "ret_exprs": [
-                "return z"
-            ],
-            "params_occur": {
-                "x": [
-                    [
-                        "z",
-                        "builtins",
-                        "int",
-                        "x",
-                        "y"
-                    ]
+                "funcs": [
+                    {
+                        "name": "foo",
+                        "q_name": "foo",
+                        "fn_lc": [
+                            [
+                                5,
+                                0
+                            ],
+                            [
+                                7,
+                                12
+                            ]
+                        ],
+                        "params": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "ret_exprs": [
+                            "return z"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "z",
+                                    "x",
+                                    "y"
+                                ]
+                            ],
+                            "y": [
+                                [
+                                    "z",
+                                    "x",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "ret_type": "",
+                        "variables": {
+                            "z": ""
+                        },
+                        "fn_var_occur": {
+                            "z": [
+                                [
+                                    "z",
+                                    "x",
+                                    "y"
+                                ]
+                            ]
+                        },
+                        "fn_var_ln": {
+                            "z": [
+                                [
+                                    6,
+                                    4
+                                ],
+                                [
+                                    6,
+                                    5
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "x": "",
+                            "y": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
                 ],
-                "y": [
-                    [
-                        "z",
-                        "builtins",
-                        "int",
-                        "x",
-                        "y"
-                    ]
-                ]
-            },
-            "ret_type": "",
-            "variables": {
-                "z": ""
-            },
-            "fn_var_occur": {
-                "z": [
-                    [
-                        "z",
-                        "builtins",
-                        "int",
-                        "x",
-                        "y"
-                    ]
-                ]
-            },
-            "params_descr": {
-                "x": "",
-                "y": ""
-            },
-            "docstring": {
-                "func": null,
-                "ret": null,
-                "long_descr": null
+                "set": null,
+                "tc": [
+                    false,
+                    null
+                ],
+                "no_types_annot": {
+                    "U": 14,
+                    "D": 1,
+                    "I": 0
+                },
+                "type_annot_cove": 0.07
             }
         }
-    ],
-    "set": null,
-    "tc": false,
-    "no_types_annot": {
-        "U": 0,
-        "D": 1,
-        "I": 0
-    },
-    "type_annot_cove": 0.0
-}
     }
-  }
 }

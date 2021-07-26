@@ -12,7 +12,7 @@ df = pd.DataFrame([2, 3])
 dff = pd.DataFrame([1,2])
 lit = "Hello!"
 class Foo:
-    foo_v: str = 'Hello, Foo!'
+    foo_v = 'Hello, Foo!'
     class Delta:
         foo_d = 'Hello, Delta!'
     foo_p = Path('/home/foo/bar')
@@ -54,7 +54,7 @@ df: pandas.DataFrame = pd.DataFrame([2, 3])
 dff: typing.List[pandas.arrays.PandasArray] = pd.DataFrame([1,2])
 lit: typing.Literal = "Hello!"
 class Foo:
-    foo_v: str = 'Hello, Foo!'
+    foo_v = 'Hello, Foo!'
     class Delta:
         foo_d = 'Hello, Delta!'
     foo_p: pathlib.Path = Path('/home/foo/bar')
@@ -74,7 +74,7 @@ class Foo:
     def get_e(self, y: builtins.str):
         Foo.foo_v = y
         return Foo.foo_v
-    foo_v = "No"
+    foo_v: str = "No"
 def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[builtins.str]:
     v: typing.List[builtins.str] = x
     l = lambda e: e+1
@@ -147,7 +147,7 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         out = """{}""".format("\n".join(out_split[7:]))
 
         self.assertEqual(exp, out)
-        self.assertEqual(total_no_added_types, 16)
+        self.assertEqual(total_no_added_types[0], 16)
 
         # The imported types from typing
         self.assertEqual(Counter(" ".join(exp_split[0:7])), Counter(" ".join(out_split[0:7])))
