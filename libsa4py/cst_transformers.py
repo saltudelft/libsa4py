@@ -874,6 +874,7 @@ class TypeApplier(cst.CSTTransformer):
 
         self.all_applied_types = set()
         self.no_applied_types = 0
+        self.no_failed_applied_types = 0
 
         if apply_nlp:
             self.nlp_p = NLPreprocessor().process_identifier
@@ -886,11 +887,15 @@ class TypeApplier(cst.CSTTransformer):
         else:
             fns = self.f_processed_dict['funcs']
 
+        qn = self.__get_qualified_name(f_node.name)
+        fn_params = set(self.__get_fn_params(f_node.params))
+        fn_lc = self.__get_line_column_no(f_node)
         for fn in fns:
-            if fn['q_name'] in self.__get_qualified_name(f_node.name) and \
-                    set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
+            if (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == fn_lc:
                 return fn
-            elif (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == self.__get_line_column_no(f_node):
+
+        for fn in fns:
+            if fn['q_name'] == qn and set(list(fn['params'].keys())) == fn_params:
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -902,13 +907,18 @@ class TypeApplier(cst.CSTTransformer):
                 self.all_applied_types.add((fn_param_type_resolved, fn_param_type))
                 self.no_applied_types += 1
                 return fn_param_type
+            else:
+                self.no_failed_applied_types += 1
 
     def __get_cls(self, cls: cst.ClassDef) -> dict:
+        cls_lc = self.__get_line_column_no(cls)
+        cls_qn = self.__get_qualified_name(cls.name)
         for c in self.f_processed_dict['classes']:
-            q = self.__get_qualified_name(cls.name)
-            if c['q_name'] == q:
+            if (c['cls_lc'][0][0], c['cls_lc'][1][0]) == cls_lc:
                 return c
-            elif c['q_name'].split(".")[-1] == q.split(".")[-1]:
+
+        for c in self.f_processed_dict['classes']:
+            if c['q_name'] == cls_qn:
                 return c
 
     def __get_fn_vars(self, var_name: str) -> dict:
@@ -932,24 +942,27 @@ class TypeApplier(cst.CSTTransformer):
     def __get_mod_vars(self):
         return self.f_processed_dict['variables']
 
-    def __get_var_type_assign_t(self, var_name: str):
+    def __get_var_type_assign_t(self, var_name: str, var_node):
         t: str = None
+        var_line_no = self.__get_line_column_no(var_node)
         if len(self.cls_visited) != 0:
             if len(self.fn_visited) != 0:
                 # A class method's variable
-                if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
                     t = self.__get_fn_vars(self.nlp_p(var_name))
             else:
                 # A class variable
-                if self.cls_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                if self.cls_visited[-1][0]["cls_var_ln"][var_name][0][0] == var_line_no[0]:
                     t = self.__get_cls_vars(self.nlp_p(var_name))
         elif len(self.fn_visited) != 0:
             # A module function's variable
-            if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+            #if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+            if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
                 t = self.__get_fn_vars(self.nlp_p(var_name))
         else:
             # A module's variables
-            t = self.__get_mod_vars()[self.nlp_p(var_name)]
+            if self.f_processed_dict['mod_var_ln'][var_name][0][0] == var_line_no[0]:
+                t = self.__get_mod_vars()[self.nlp_p(var_name)]
         return t
 
     def __get_var_type_an_assign(self, var_name: str):
@@ -1005,6 +1018,8 @@ class TypeApplier(cst.CSTTransformer):
                 self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
                 self.no_applied_types += 1
                 return updated_node.with_changes(returns=fn_ret_type)
+            else:
+                self.no_failed_applied_types += 1
         else:
             return updated_node.with_changes(returns=None)
 
@@ -1026,10 +1041,12 @@ class TypeApplier(cst.CSTTransformer):
                 target=match.DoNotCare())])])):
             if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Name(value=match.DoNotCare()))])])):
-                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value,
+                                                 original_node.body[0].targets[0].target)
             elif match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Attribute(value=match.Name(value=match.DoNotCare()), attr=match.Name(value=match.DoNotCare())))])])):
-                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.attr.value)
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.attr.value,
+                                                 original_node.body[0].targets[0].target)
 
             if t is not None:
                 t_annot_node_resolved = self.resolve_type_alias(t)
@@ -1044,6 +1061,8 @@ class TypeApplier(cst.CSTTransformer):
                         equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
+                else:
+                    self.no_failed_applied_types += 1
         # Typed variables
         elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare(),
                                                                                           value=match.MatchIfTrue(lambda v: v is not None))])):
@@ -1063,6 +1082,8 @@ class TypeApplier(cst.CSTTransformer):
                         value=original_node.body[0].value,
                         annotation=t_annot_node,
                         equal=original_node.body[0].equal)])
+                else:
+                    self.no_failed_applied_types += 1
             else:
                 return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
                                                                                             whitespace_before_equal=original_node.body[0].equal.whitespace_before,
