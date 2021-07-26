@@ -2123,6 +2123,16 @@
                     {
                         "name": "Bar",
                         "q_name": "Bar",
+                        "cls_lc": [
+                            [
+                                7,
+                                0
+                            ],
+                            [
+                                14,
+                                20
+                            ]
+                        ],
                         "variables": {
                             "bar_var1": "builtins.float",
                             "bar_var2": "builtins.int"
