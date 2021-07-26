@@ -12,7 +12,7 @@ def process_projects(args):
 
 
 def apply_types_projects(args):
-    tap = TypeAnnotatingProjects(args.p, args.o)
+    tap = TypeAnnotatingProjects(args.p, args.o, args.dry_run)
     tap.run(args.j)
 
 
@@ -56,6 +56,10 @@ def main():
     apply_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
     apply_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     apply_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
+    apply_parser.add_argument("--d", dest='dry_run', action='store_true',
+                                help="Dry run does not apply types to the dataset's files")
+
+    apply_parser.set_defaults(dry_run=False)
     apply_parser.set_defaults(func=apply_types_projects)
 
     remove_parser = sub_parsers.add_parser('remove')

@@ -1,3 +1,4 @@
+from libsa4py.cst_visitor import TypeAnnotationCounter
 import os
 import traceback
 import random
@@ -260,17 +261,21 @@ class TypeAnnotatingProjects:
     It applies the inferred type annotations to the input dataset
     """
 
-    def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
+    def __init__(self, projects_path: str, output_path: str, dry_run: bool = False,
+                 apply_nlp: bool = True):
         self.projects_path = projects_path
         self.output_path = output_path
+        self.dry_run = dry_run
         self.apply_nlp = apply_nlp
 
     def process_project(self, proj_json_path: str):
         proj_json = load_json(proj_json_path)
         total_added_types = 0
+        total_no_types = 0
         for p in proj_json.keys():
             for i, (f, f_d) in enumerate(proj_json[p]['src_files'].items()):
                 print(f"Adding types to file {f} from project {proj_json_path}")
+                total_no_types += f_d['no_types_annot']['I'] + f_d['no_types_annot']['D']
                 if f_d['no_types_annot']['I'] + f_d['no_types_annot']['D'] > 0:
                     f_read = read_file(join(self.projects_path, f))
                     try:
@@ -278,19 +283,23 @@ class TypeAnnotatingProjects:
                         try:
                             ta = TypeApplier(f_d, self.apply_nlp)
                             f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(ta)
-                            write_file(join(self.projects_path, f), f_parsed.code)
+                            if not self.dry_run:
+                                write_file(join(self.projects_path, f), f_parsed.code)
                             total_added_types += ta.no_applied_types
                             print(f"Applied {ta.no_applied_types} types to file {f} from project {proj_json_path}")
+                            assert f_d['no_types_annot']['I'] + f_d['no_types_annot']['D'] <= self.__get_no_applied_types(f_parsed.code) + ta.no_failed_applied_types
                         except KeyError as ke:
                             print(f"A variable not found | project {proj_json_path} | file {f}", ke)
                             traceback.print_exc()
                         except TypeError as te:
                             print(f"Project {proj_json_path} | file {f}", te)
                             traceback.print_exc()
+                        except AssertionError as te:
+                            print(f"[AssertionError] Project {proj_json_path} | file {f}", te)
                     except cst._exceptions.ParserSyntaxError as pse:
                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
 
-        return total_added_types
+        return total_added_types, total_no_types
 
     def run(self, jobs: int):
         proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
@@ -299,8 +308,13 @@ class TypeAnnotatingProjects:
         proj_type_added = ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) \
                                                                                for p_j in proj_jsons)
         print(f"Finished applying types in {str(timedelta(seconds=time.time() - start_t))}")
-        print(f"{sum(proj_type_added)} types applied to the whole dataset")
+        print(f"{sum([a for a, t in proj_type_added]):,}/{sum([t for a, t in proj_type_added]):,} types applied to the whole dataset")
 
+    def __get_no_applied_types(self, code: str) -> int:
+        f_applied_p = cst.parse_module(code)
+        tac = TypeAnnotationCounter()
+        f_applied_p.visit(tac)
+        return tac.total_no_type_annot
 
 class TypeAnnotationsRemoval:
     """
