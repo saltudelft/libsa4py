@@ -17,7 +17,7 @@ def apply_types_projects(args):
 
 
 def remove_err_type_annotations(args):
-    tar = TypeAnnotationsRemoval(args.p, args.o, "")
+    tar = TypeAnnotationsRemoval(args.p, args.o, "", args.l, args.dry_run)
     tar.run(args.j)
 
 
@@ -66,6 +66,10 @@ def main():
     remove_parser.add_argument("--p", required=True, type=str, help="Path to Python projects")
     remove_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     remove_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing files")
+    remove_parser.add_argument("--l", required=False, type=int, help="Number of projects to process")
+    remove_parser.add_argument("--d", dest='dry_run', action='store_true',
+                                help="Dry run does not remove types from the dataset's files")
+    remove_parser.set_defaults(dry_run=False)
     remove_parser.set_defaults(func=remove_err_type_annotations)
 
     args = arg_parser.parse_args()
