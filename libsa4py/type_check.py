@@ -68,10 +68,12 @@ class TCManager(ABC):
 
     def _type_check(self, fpath):
         try:
-            cwd = os.getcwd()
-            os.chdir(dirname(fpath))
+            # cwd = os.getcwd()
+            # os.chdir(dirname(fpath))
+            # Runs mypy with the file's absolute path
+            # It may improve detection of type erorrs in some cases!
             result = subprocess.run(
-                self._build_tc_cmd(basename(fpath)),
+                self._build_tc_cmd(fpath), # basename(fpath)
                 capture_output=True,
                 text=True,
                 timeout=self._timeout,
@@ -81,8 +83,8 @@ class TCManager(ABC):
             return retcode, outlines
         except subprocess.TimeoutExpired:
             raise TypeCheckingTooLong
-        finally:
-            os.chdir(cwd)
+        # finally:
+        #     os.chdir(cwd)
 
     @abstractmethod
     def _check_tc_outcome(self, returncode, outlines):
