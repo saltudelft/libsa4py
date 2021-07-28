@@ -105,6 +105,16 @@
                     {
                         "name": "Delta",
                         "q_name": "Foo.Delta",
+                        "cls_lc": [
+                            [
+                                10,
+                                4
+                            ],
+                            [
+                                11,
+                                31
+                            ]
+                        ],
                         "variables": {
                             "foo_d": ""
                         },
@@ -128,6 +138,16 @@
                     {
                         "name": "Foo",
                         "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                8,
+                                0
+                            ],
+                            [
+                                29,
+                                16
+                            ]
+                        ],
                         "variables": {
                             "foo_v": "str",
                             "foo_p": "pathlib.Path"
