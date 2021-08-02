@@ -5,6 +5,7 @@ import unittest
 import shutil
 
 test_file = """from pathlib import Path
+import pandas
 x: int = 12
 l = [(1, 2)]
 c = defaultdict(int)
@@ -41,12 +42,12 @@ def Bar(x=['apple', 'orange'], *, c):
 
 test_file_exp = """from typing import Tuple, Dict, List, Literal
 from collections import defaultdict
-import pandas
 import pathlib
 import builtins
 import collections
 import typing
 from pathlib import Path
+import pandas
 x: builtins.int = 12
 l: typing.List[typing.Tuple[builtins.int, builtins.int]] = [(1, 2)]
 c: collections.defaultdict = defaultdict(int)
@@ -74,7 +75,7 @@ class Foo:
     def get_e(self, y: builtins.str):
         Foo.foo_v = y
         return Foo.foo_v
-    foo_v: str = "No"
+    foo_v: builtins.str = "No"
 def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[builtins.str]:
     v: typing.List[builtins.str] = x
     l = lambda e: e+1

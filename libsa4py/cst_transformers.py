@@ -876,6 +876,8 @@ class TypeApplier(cst.CSTTransformer):
         self.no_applied_types = 0
         self.no_failed_applied_types = 0
 
+        self.imported_names: List[str] = []
+
         if apply_nlp:
             self.nlp_p = NLPreprocessor().process_identifier
         else:
@@ -1116,20 +1118,29 @@ class TypeApplier(cst.CSTTransformer):
     def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
         return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
 
+    def visit_ImportAlias(self, node: cst.ImportAlias):
+        self.imported_names.extend([n.value for n in match.findall(node.name, match.Name(value=match.DoNotCare()))])
+
     # TODO: Check the imported modules before adding new ones
     def __get_required_imports(self):
-        def find_required_modules(all_types):
+        def find_required_modules(all_types, imported_names):
             req_mod = set()
             for _, a_node in all_types:
                 m = match.findall(a_node.annotation, match.Attribute(value=match.DoNotCare(), attr=match.DoNotCare()))
                 if len(m) != 0:
                     for i in m:
-                        req_mod.add([n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0])
+                        mod_imp = [n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0]
+                        if mod_imp not in imported_names:
+                            req_mod.add(mod_imp)
+            # if n.value not in imported_names
+            print(req_mod)
             return req_mod
 
         req_imports = []
-        all_req_mods = find_required_modules(self.all_applied_types)
+        self.imported_names = set(self.imported_names)
+        all_req_mods = find_required_modules(self.all_applied_types, self.imported_names)
         all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t[0]), self.all_applied_types)))
+        all_type_names = all_type_names - self.imported_names
 
         typing_imports = PY_TYPING_MOD & all_type_names
         collection_imports = PY_COLLECTION_MOD & all_type_names
