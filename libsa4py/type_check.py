@@ -167,13 +167,13 @@ class MypyManager(TCManager):
             print(f"Error breaking down: {parsed_result.err_breakdown}.")
 
 
-def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None]]:
+def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None], Union[dict, None]]:
     try:
         no_t_err = tc.heavy_assess(f_path)
         if no_t_err is not None:
-            return (True, 0) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs)
+            return (True, 0, no_t_err.err_breakdown) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs, no_t_err.err_breakdown)
         else:
-            return False, None
+            return False, None, None
     except IndexError:
         print(f"f: {f_path} - No output from Mypy!")
-        return False, None
+        return False, None, None

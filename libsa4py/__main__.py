@@ -7,7 +7,8 @@ from libsa4py.merge import merge_projects
 
 def process_projects(args):
     input_repos = find_repos_list(args.p) if args.l is None else find_repos_list(args.p)[:args.l]
-    p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.use_pyre, args.use_tc, args.d, args.s)
+    p = Pipeline(args.p, args.o, not args.no_nlp, args.use_cache, args.use_pyre, args.use_tc, args.d,
+                 args.s, args.i)
     p.run(input_repos, args.j)
 
 
@@ -31,6 +32,7 @@ def main():
     process_parser.add_argument("--o", required=True, type=str, help="Path to store JSON-based processed projects")
     process_parser.add_argument("--d", "--deduplicate", required=False, type=str, help="Path to duplicate files")
     process_parser.add_argument("--s", "--split", required=False, type=str, help="Path to the dataset split files")
+    process_parser.add_argument("--i", "--ignore", required=False, type=str, help="Path to the ignored files")
     process_parser.add_argument("--j", default=cpu_count(), type=int, help="Number of workers for processing projects")
     process_parser.add_argument("--l", required=False, type=int, help="Number of projects to process")
     process_parser.add_argument("--c", "--cache", dest='use_cache', action='store_true', help="Whether to ignore processed projects")
