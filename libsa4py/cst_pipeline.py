@@ -152,7 +152,7 @@ class Pipeline:
 
         return extracted_module
 
-    def process_project(self, i, project):
+    def process_project(self, i, project, project_files: List[str]):
 
         project_id = f'{project["author"]}/{project["repo"]}'
         project_analyzed_files: dict = {project_id: {"src_files": {}, "type_annot_cove": 0.0}}
@@ -163,7 +163,6 @@ class Pipeline:
             print(f'Extracting for {project_id}...')
             extracted_avl_types = None
 
-            project_files = list_files(join(self.projects_path, project["author"], project["repo"]))
             print(f"{project_id} has {len(project_files)} files before deduplication")
             project_files = [f for f in project_files if not self.is_file_duplicate(f)]
             print(f"{project_id} has {len(project_files)} files after deduplication")
@@ -251,14 +250,16 @@ class Pipeline:
     def run(self, repos_list: List[Dict], jobs, start=0):
 
         print(f"Number of projects to be processed: {len(repos_list)}")
-        repos_list = [p for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
+        repos_list = [(p, *list_files(join(self.projects_path, p["author"], p["repo"]))) \
+                      for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
+        # Sorts projects based on total size of their files
+        repos_list.sort(key=lambda x: x[2], reverse=True)
         print(f"Number of projects to be processed after considering cache: {len(repos_list)}")
 
         start_t = time.time()
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
-            delayed(self.process_project)(i, project) for i, project in enumerate(repos_list, start=start))
-        print(
-            "Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time() - start_t))))
+            delayed(self.process_project)(i, p, p_files) for i, (p, p_files, p_size) in enumerate(repos_list, start=start))
+        print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
 
         if self.use_pyre:
             pyre_kill_all_servers()
@@ -311,7 +312,7 @@ class TypeAnnotatingProjects:
         return total_added_types, total_no_types
 
     def run(self, jobs: int):
-        proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
+        proj_jsons, _ = list_files(join(self.output_path, 'processed_projects'), '.json')
         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
         start_t = time.time()
         proj_type_added = ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) \

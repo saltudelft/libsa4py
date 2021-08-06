@@ -137,6 +137,6 @@ def merge_projects(args):
     """
     Saves merged projects into a single JSON file and a Dataframe
     """
-    merged_jsons = merge_jsons_to_dict(list_files(join(args.o, 'processed_projects'), ".json"), args.l)
+    merged_jsons = merge_jsons_to_dict(list_files(join(args.o, 'processed_projects'), ".json")[0], args.l)
     save_json(join(args.o, 'merged_%s_projects.json' % (str(args.l) if args.l is not None else 'all')), merged_jsons)
     create_dataframe_fns(args.o, merged_jsons)
