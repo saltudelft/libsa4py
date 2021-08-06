@@ -232,14 +232,15 @@ class Pipeline:
     def run(self, repos_list: List[Dict], jobs, start=0):
 
         print(f"Number of projects to be processed: {len(repos_list)}")
-        repos_list = [(p, list_files(join(self.projects_path, p["author"], p["repo"]))) \
+        repos_list = [(p, *list_files(join(self.projects_path, p["author"], p["repo"]))) \
                       for p in repos_list if not (os.path.exists(self.get_project_filename(p)) and self.use_cache)]
-        repos_list.sort(key=lambda x: len(x[1]), reverse=True)
+        # Sorts projects based on total size of their files
+        repos_list.sort(key=lambda x: x[2], reverse=True)
         print(f"Number of projects to be processed after considering cache: {len(repos_list)}")
 
         start_t = time.time()
         ParallelExecutor(n_jobs=jobs)(total=len(repos_list))(
-            delayed(self.process_project)(i, p, p_files) for i, (p, p_files) in enumerate(repos_list, start=start))
+            delayed(self.process_project)(i, p, p_files) for i, (p, p_files, p_size) in enumerate(repos_list, start=start))
         print("Finished processing %d projects in %s " % (len(repos_list), str(timedelta(seconds=time.time()-start_t))))
 
         if self.use_pyre:
@@ -278,6 +279,6 @@ class TypeAnnotatingProjects:
                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
 
     def run(self, jobs: int):
-        proj_jsons = list_files(join(self.output_path, 'processed_projects'), '.json')
+        proj_jsons, _ = list_files(join(self.output_path, 'processed_projects'), '.json')
         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
         ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(delayed(self.process_project)(p_j) for p_j in proj_jsons)

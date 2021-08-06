@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from tqdm import tqdm
 from joblib import Parallel
 from os.path import join, isdir
@@ -54,18 +54,20 @@ def ParallelExecutor(use_bar='tqdm', **joblib_args):
 #     return directory
 
 
-def list_files(directory: str, file_ext: str = ".py") -> list:
+def list_files(directory: str, file_ext: str = ".py") -> Tuple[list, int]:
     """
     List all files in the given directory (recursively)
     """
     filenames = []
+    dir_size = 0
 
     for root, dirs, files in os.walk(directory):
         for filename in files:
             if filename.endswith(file_ext):
                 filenames.append(os.path.join(root, filename))
+                dir_size += Path(os.path.join(root, filename)).stat().st_size
 
-    return filenames
+    return filenames, dir_size
 
 
 def read_file(filename: str) -> str:
