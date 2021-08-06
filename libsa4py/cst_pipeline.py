@@ -342,7 +342,7 @@ class TypeAnnotationsRemoval:
         self.apply_nlp = apply_nlp
 
     #def process_file(self, f: str, f_d_repr: dict, tc_res: dict):
-    def process_file(self, q: Queue, is_f_loader_done, tc_res: dict):
+    def process_file(self, q: Queue, is_f_loader_done, tc_res: dict, ignored_files: list):
         # TODO: The initial type-checking should not be done after adding no. type errors to the representation later on.
         # init_tc, init_no_tc_err = type_check_single_file(join(self.projects_path, f),
         #                                                  MypyManager('mypy', MAX_TC_TIME))
@@ -356,23 +356,33 @@ class TypeAnnotationsRemoval:
                 f, f_d_repr = q.get(True, 1)
                 if f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D'] > 0:
                     try:
-                        tmp_f = create_tmp_file(".py")
+                        #tmp_f = create_tmp_file(".py")
                         f_read = read_file(join(self.projects_path, f))
-                        f_tc_code, tc_errs, type_annot_r, tc_errors = self.__remove_unchecked_type_annot(f_read, f_d_repr, f_d_repr['tc'][1],
-                                                                                                tmp_f)
+                        _, tc_errs, type_annot_r, tc_errors = self.remove_unchecked_type_annot(join(self.projects_path, f),
+                                                                                                       f_read, f_d_repr, f_d_repr['tc'][1])
                         print(f"F: {f} | init_tc_errors: {f_d_repr['tc'][1]} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
                             total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']} | Queue size: {q.qsize()}")
                         tc_res[f] = {"init_tc_errs": f_d_repr['tc'][1], "curr_tc_errs": tc_errs, "ta_rem": type_annot_r,
                                      "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D'],
                                      "errors": tc_errors}
                         # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
-                        if not self.dry_run and tc_errs == 0:
-                            write_file(join(self.projects_path, f), f_tc_code)
+                        if tc_errs == 0:
+                            if self.dry_run:
+                                write_file(join(self.projects_path, f), f_read)
+                        else:
+                            write_file(join(self.projects_path, f), f_read)
+                            ignored_files.append(f)
                     except Exception as e:
-                        print(f"f: {f} | e: {e}")
+                        print(f"F: {f} | e: {e}")
                         traceback.print_exc()
-                    finally:
-                        delete_tmp_file(tmp_f)
+                    # finally:
+                    #     delete_tmp_file(tmp_f)
+                else:
+                    print(f"F: {f} | init_tc_errors: {f_d_repr['tc'][1]} | total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']} | Queue size: {q.qsize()}")
+                    tc_res[f] = {"init_tc_errs": f_d_repr['tc'][1], "curr_tc_errs": f_d_repr['tc'][1], "ta_rem": None,
+                                 "total_ta": f_d_repr["no_types_annot"]['I'] + f_d_repr["no_types_annot"]['D'],
+                                 "errors": None}
+                    ignored_files.append(f)
             except queue.Empty as e:
                 print(f"Worker {os.getpid()} finished! Queue's empty!")
                 print(f"File loader working {is_f_loader_done.value} and queue size {q.qsize()}")
@@ -381,8 +391,9 @@ class TypeAnnotationsRemoval:
         manager = Manager()
         q = manager.Queue()
         is_f_loader_done = manager.Value('i', False)
+        ignored_files_a = manager.list()
         
-        file_loader = Process(target=self.__load_projects_files, args=(q, is_f_loader_done))
+        file_loader = Process(target=self.__load_projects_files, args=(q, is_f_loader_done, ignored_files_a))
         file_loader.start()
         #file_loader.join()
 
@@ -402,14 +413,14 @@ class TypeAnnotationsRemoval:
         time.sleep(5)
         start_t = time.time()
         tc_res = manager.dict()
+        ignored_files_b = manager.list()
         file_processors = []
         for j in range(jobs):
-            p = Process(target=self.process_file, args=(q, is_f_loader_done, tc_res))
+            p = Process(target=self.process_file, args=(q, is_f_loader_done, tc_res, ignored_files_b))
             p.daemon = True
             file_processors.append(p)
             p.start()
 
-        
         for p in file_processors:
             p.join()
         file_loader.join()
@@ -417,8 +428,9 @@ class TypeAnnotationsRemoval:
         #                                                          for f, f_d in not_tced_src_f)
         print(f"Finished fixing invalid types in {str(timedelta(seconds=time.time() - start_t))}")
         save_json(join(self.processed_projects_path, "tc_ta_results_new.json"), tc_res.copy())
+        write_file(join(self.processed_projects_path, 'ignored_files.txt'), '\n'.join(list(ignored_files_a) + list(ignored_files_b)))
         
-    def __load_projects_files(self, q: Queue, is_done):
+    def __load_projects_files(self, q: Queue, is_done, ignored_files: list):
         proj_jsons = list_files(join(self.processed_projects_path, 'processed_projects'), '.json')
         proj_jsons = proj_jsons[:self.no_projects_limit] if self.no_projects_limit is not None else proj_jsons
         f_loaded = 0
@@ -426,22 +438,28 @@ class TypeAnnotationsRemoval:
             proj_json = load_json(p_j)
             for _, p_v in proj_json.items():
                 for f, f_v in p_v['src_files'].items():
-                    if not f_v['tc'][0] and f_v['tc'] != [False, None, None] and f_v['tc'][1] <= TypeAnnotationsRemoval.MAX_TYPE_ERRORS_PER_FILE:
-                        q.put((f, f_v))
-                        f_loaded += 1
+                    if not f_v['tc'][0]:
+                        if f_v['tc'] != [False, None, None]:
+                            if f_v['tc'][1] <= TypeAnnotationsRemoval.MAX_TYPE_ERRORS_PER_FILE:
+                                q.put((f, f_v))
+                                f_loaded += 1
+                            else:
+                                ignored_files.append(f)
+                        else:
+                            ignored_files.append(f)
                         #print("Adding files to Queue...")
         is_done.value = True
         print(f"Loaded {f_loaded} Python files")
             
-    def __remove_unchecked_type_annot(self, f_read: str, f_d_repr: dict, init_no_tc_err: int,
-                                      f_out_temp: NamedTemporaryFile) -> Tuple[str, int, List[str]]:
+    def remove_unchecked_type_annot(self, f_path: str, f_read: str, f_d_repr: dict,
+                                    init_no_tc_err: int) -> Tuple[str, int, List[str]]:
 
         type_annots_removed: List[str] = []
         no_try = 0
         MAX_TRY = 10
 
         def type_check_ta(curr_no_tc_err: int, curr_f_code: str, org_gt, org_gt_d):
-            tc, no_tc_err, f_code, tc_errors = self.__type_check_type_annotation(f_read, f_d_repr, f_out_temp)
+            tc, no_tc_err, f_code, tc_errors = self.__type_check_type_annotation(f_path, f_read, f_d_repr)
             nonlocal no_try
             if no_tc_err is not None:
                 if tc:
@@ -450,10 +468,11 @@ class TypeAnnotationsRemoval:
                     curr_f_code = f_code
                     curr_no_tc_err = no_tc_err
                     type_annots_removed.append(org_gt)
-                    no_try += 1
                 else:
                     org_gt_d = org_gt
                     no_try += 1
+            else:
+                no_try += 1
 
             return tc, no_tc_err, f_code, tc_errors
 
@@ -622,9 +641,15 @@ class TypeAnnotationsRemoval:
 
         return out_f_code, init_no_tc_err, type_annots_removed, tc_errors
 
-    def __type_check_type_annotation(self, f_read: str, f_d_repr: dict, out_f: NamedTemporaryFile):
+    def __type_check_type_annotation(self, f_path: str, f_read: str, f_d_repr: dict):
         f_t_applied = cst.metadata.MetadataWrapper(cst.parse_module(f_read)).visit(TypeApplier(f_d_repr,
                                                                                                apply_nlp=self.apply_nlp))
-        write_to_tmp_file(out_f, f_t_applied.code)
-        tc, no_tc_err, tc_errors = type_check_single_file(out_f.name, MypyManager('mypy', MAX_TC_TIME))
+        
+        # Writing applied code to temp files has an advantage which isolates the file and as a result, 
+        # type-checking may be successful for some failed cases with the original file
+        # tmp_f = create_tmp_file(".py")
+        # write_to_tmp_file(tmp_f, f_t_applied.code)
+        write_file(f_path, f_t_applied.code)
+        tc, no_tc_err, tc_errors = type_check_single_file(f_path, MypyManager('mypy', MAX_TC_TIME))
+        #delete_tmp_file(tmp_f)
         return tc, no_tc_err, f_t_applied.code, tc_errors
