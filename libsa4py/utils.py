@@ -1,3 +1,4 @@
+import shutil
 from typing import List, Tuple
 from tqdm import tqdm
 from joblib import Parallel
@@ -81,6 +82,13 @@ def read_file(filename: str) -> str:
 def write_file(filename: str, content: str):
     with open(filename, 'w') as file:
         file.write(content)
+
+def mk_dir_cp_file(src_path: str, dest_path: str):
+    """
+    Creates directories in the destination if not exists and copy the given file
+    """
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    shutil.copy(src_path, dest_path)
 
 def save_json(filename: str, dict_obj: dict):
     """
