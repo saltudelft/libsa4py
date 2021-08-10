@@ -20,7 +20,7 @@ from libsa4py.cst_transformers import TypeAnnotationRemover, TypeApplier
 from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file, \
-    create_tmp_file, write_to_tmp_file, delete_tmp_file
+    create_tmp_file, write_to_tmp_file, delete_tmp_file, mk_dir_cp_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
     clean_pyre_config
 from libsa4py.type_check import MypyManager, type_check_single_file
@@ -333,11 +333,11 @@ class TypeAnnotationsRemoval:
 
     MAX_TYPE_ERRORS_PER_FILE = 500
 
-    def __init__(self, projects_path: str, processed_projects_path: str, output_path: str, no_projects_limit: int = None,
+    def __init__(self, input_projects_path: str, output_projects_path: str, processed_projects_path: str, no_projects_limit: int = None,
                  dry_run: bool = False, apply_nlp: bool = True):
-        self.projects_path = projects_path
+        self.input_projects_path = input_projects_path
         self.processed_projects_path = processed_projects_path
-        self.output_path = output_path
+        self.output_projects_path = output_projects_path
         self.no_projects_limit = no_projects_limit
         self.dry_run = dry_run
         self.apply_nlp = apply_nlp
@@ -358,8 +358,8 @@ class TypeAnnotationsRemoval:
                 if f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D'] > 0:
                     try:
                         #tmp_f = create_tmp_file(".py")
-                        f_read = read_file(join(self.projects_path, f))
-                        _, tc_errs, type_annot_r, tc_errors = self.remove_unchecked_type_annot(join(self.projects_path, f),
+                        f_read = read_file(join(self.output_projects_path, f))
+                        _, tc_errs, type_annot_r, tc_errors = self.remove_unchecked_type_annot(join(self.output_projects_path, f),
                                                                                                        f_read, f_d_repr, f_d_repr['tc'][1])
                         print(f"F: {f} | init_tc_errors: {f_d_repr['tc'][1]} | tc_errors: {tc_errs} | ta_r: {type_annot_r} | \
                             total_ta: {f_d_repr['no_types_annot']['I'] + f_d_repr['no_types_annot']['D']} | Queue size: {q.qsize()}")
@@ -369,9 +369,9 @@ class TypeAnnotationsRemoval:
                         # Path(join(self.output_path, Path(f).parent)).mkdir(parents=True, exist_ok=True)
                         if tc_errs == 0:
                             if self.dry_run:
-                                write_file(join(self.projects_path, f), f_read)
+                                write_file(join(self.output_projects_path, f), f_read)
                         else:
-                            write_file(join(self.projects_path, f), f_read)
+                            write_file(join(self.output_projects_path, f), f_read)
                             ignored_files.append(f)
                     except Exception as e:
                         print(f"F: {f} | e: {e}")
@@ -393,8 +393,10 @@ class TypeAnnotationsRemoval:
         q = manager.Queue()
         is_f_loader_done = manager.Value('i', False)
         ignored_files_a = manager.list()
+        type_checked_files = manager.list()
         
-        file_loader = Process(target=self.__load_projects_files, args=(q, is_f_loader_done, ignored_files_a))
+        file_loader = Process(target=self.__load_projects_files, args=(q, is_f_loader_done, ignored_files_a,
+                                                                       type_checked_files))
         file_loader.start()
         #file_loader.join()
 
@@ -430,9 +432,10 @@ class TypeAnnotationsRemoval:
         print(f"Finished fixing invalid types in {str(timedelta(seconds=time.time() - start_t))}")
         save_json(join(self.processed_projects_path, "tc_ta_results_new.json"), tc_res.copy())
         write_file(join(self.processed_projects_path, 'ignored_files.txt'), '\n'.join(list(ignored_files_a) + list(ignored_files_b)))
+        write_file(join(self.processed_projects_path, 'tced_files.txt'), '\n'.join(list(type_checked_files)))
         
-    def __load_projects_files(self, q: Queue, is_done, ignored_files: list):
-        proj_jsons = list_files(join(self.processed_projects_path, 'processed_projects'), '.json')
+    def __load_projects_files(self, q: Queue, is_done, ignored_files: list, type_checked_files: list):
+        proj_jsons, _ = list_files(join(self.processed_projects_path, 'processed_projects'), '.json')
         proj_jsons = proj_jsons[:self.no_projects_limit] if self.no_projects_limit is not None else proj_jsons
         f_loaded = 0
         for p_j in proj_jsons:
@@ -442,15 +445,24 @@ class TypeAnnotationsRemoval:
                     if not f_v['tc'][0]:
                         if f_v['tc'] != [False, None, None]:
                             if f_v['tc'][1] <= TypeAnnotationsRemoval.MAX_TYPE_ERRORS_PER_FILE:
+                                mk_dir_cp_file(join('/home/amir/data/MT4Py-pyre-apply', f), join(self.output_projects_path, f))
                                 q.put((f, f_v))
                                 f_loaded += 1
+                                print(f"Added file {f} to the analysis queue")
                             else:
                                 ignored_files.append(f)
                         else:
                             ignored_files.append(f)
+                    else:
+                        type_checked_files.append(f)
+                        
                         #print("Adding files to Queue...")
         is_done.value = True
         print(f"Loaded {f_loaded} Python files")
+
+        for f in type_checked_files:
+            mk_dir_cp_file(join(self.input_projects_path, f), join(self.output_projects_path, f))
+            print(f"Copied type-checked file: {f}")
             
     def remove_unchecked_type_annot(self, f_path: str, f_read: str, f_d_repr: dict,
                                     init_no_tc_err: int) -> Tuple[str, int, List[str]]:
@@ -459,18 +471,16 @@ class TypeAnnotationsRemoval:
         no_try = 0
         MAX_TRY = 10
 
-        def type_check_ta(curr_no_tc_err: int, curr_f_code: str, org_gt, org_gt_d):
+        def type_check_ta(curr_no_tc_err: int,  org_gt):
             tc, no_tc_err, f_code, tc_errors = self.__type_check_type_annotation(f_path, f_read, f_d_repr)
             nonlocal no_try
             if no_tc_err is not None:
                 if tc:
                     type_annots_removed.append(org_gt)
                 elif no_tc_err < curr_no_tc_err:
-                    curr_f_code = f_code
                     curr_no_tc_err = no_tc_err
                     type_annots_removed.append(org_gt)
                 else:
-                    org_gt_d = org_gt
                     no_try += 1
             else:
                 no_try += 1
@@ -493,10 +503,11 @@ class TypeAnnotationsRemoval:
                 #     type_annots_removed.append(m_v_t)
                 # elif no_tc_err == init_no_tc_err:
                 #     f_d_repr['variables'][m_v] = m_v_t
-                tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, m_v_t,
-                                                      f_d_repr['variables'][m_v])
+                tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, m_v_t)
                 if tc or no_try > MAX_TRY:
-                    return f_code, no_tc_err, type_annots_removed, tc_errors
+                    return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                else:
+                    f_d_repr['variables'][m_v] = m_v_t
 
         for i, fn in enumerate(f_d_repr['funcs']):
             for p_n, p_t in fn['params'].items():
@@ -513,10 +524,11 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(p_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['funcs'][i]['params'][p_n] = p_t
-                    tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, p_t,
-                                                          f_d_repr['funcs'][i]['params'][p_n])
+                    tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, p_t)
                     if tc or no_try > MAX_TRY:
-                        return f_code, no_tc_err, type_annots_removed, tc_errors
+                        return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                    else:
+                        f_d_repr['funcs'][i]['params'][p_n] = p_t
 
             for fn_v, fn_v_t in fn['variables'].items():
                 if fn_v_t != "":
@@ -532,10 +544,11 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(fn_v_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
-                    tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, fn_v_t,
-                                                          f_d_repr['funcs'][i]['variables'][fn_v])
+                    tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, fn_v_t)
                     if tc or no_try > MAX_TRY:
-                        return f_code, no_tc_err, type_annots_removed, tc_errors
+                        return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                    else:
+                        f_d_repr['funcs'][i]['variables'][fn_v] = fn_v_t
 
             # The return type for module-level functions
             if f_d_repr['funcs'][i]['ret_type'] != "":
@@ -552,10 +565,11 @@ class TypeAnnotationsRemoval:
                 #     type_annots_removed.append(org_t)
                 # elif no_tc_err == init_no_tc_err:
                 #     f_d_repr['funcs'][i]['ret_type'] = org_t
-                tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, org_t,
-                                                      f_d_repr['funcs'][i]['ret_type'])
+                tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, org_t)
                 if tc or no_try > MAX_TRY:
-                    return f_code, no_tc_err, type_annots_removed, tc_errors
+                    return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                else:
+                    f_d_repr['funcs'][i]['ret_type'] = org_t
 
         # The type of class-level vars
         for c_i, c in enumerate(f_d_repr['classes']):
@@ -573,10 +587,11 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(c_v_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
-                    tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, c_v_t,
-                                                          f_d_repr['classes'][c_i]['variables'][c_v])
+                    tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, c_v_t)
                     if tc or no_try > MAX_TRY:
-                        return f_code, no_tc_err, type_annots_removed, tc_errors
+                        return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                    else:
+                        f_d_repr['classes'][c_i]['variables'][c_v] = c_v_t
 
             # The type of arguments for class-level functions
             for fn_i, fn in enumerate(c['funcs']):
@@ -594,10 +609,11 @@ class TypeAnnotationsRemoval:
                         #     type_annots_removed.append(p_t)
                         # elif no_tc_err == init_no_tc_err:
                         #     f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
-                        tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, p_t,
-                                                              f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n])
+                        tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, p_t)
                         if tc or no_try > MAX_TRY:
-                            return f_code, no_tc_err, type_annots_removed, tc_errors
+                            return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                        else:
+                            f_d_repr['classes'][c_i]['funcs'][fn_i]['params'][p_n] = p_t
 
                 # The type of local variables for class-level functions
                 for fn_v, fn_v_t in fn['variables'].items():
@@ -614,10 +630,11 @@ class TypeAnnotationsRemoval:
                         #     type_annots_removed.append(fn_v_t)
                         # elif no_tc_err == init_no_tc_err:
                         #     f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
-                        tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, fn_v_t,
-                                                              f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v])
+                        tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, fn_v_t)
                         if tc or no_try > MAX_TRY:
-                            return f_code, no_tc_err, type_annots_removed, tc_errors
+                            return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                        else:
+                            f_d_repr['classes'][c_i]['funcs'][fn_i]['variables'][fn_v] = fn_v_t
 
                 # The return type for class-level functions
                 if f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] != "":
@@ -635,10 +652,11 @@ class TypeAnnotationsRemoval:
                     #     type_annots_removed.append(org_t)
                     # elif no_tc_err == init_no_tc_err:
                     #     f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
-                    tc, no_tc_err, f_code, tc_errors = type_check_ta(init_no_tc_err, out_f_code, org_t,
-                                                          f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'])
+                    tc, no_tc_err, out_f_code, tc_errors = type_check_ta(init_no_tc_err, org_t)
                     if tc or no_try > MAX_TRY:
-                        return f_code, no_tc_err, type_annots_removed, tc_errors
+                        return out_f_code, no_tc_err, type_annots_removed, tc_errors
+                    else:
+                        f_d_repr['classes'][c_i]['funcs'][fn_i]['ret_type'] = org_t
 
         return out_f_code, init_no_tc_err, type_annots_removed, tc_errors
 
