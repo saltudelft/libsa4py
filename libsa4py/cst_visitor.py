@@ -727,3 +727,26 @@ class Visitor(cst.CSTVisitor):
     def __get_line_column_no(self, node) -> Tuple[Tuple[int, int], Tuple[int, int]]:
         lc = self.get_metadata(cst.metadata.PositionProvider, node)
         return (lc.start.line, lc.start.column), (lc.end.line, lc.end.column)
+
+
+class TypeAnnotationCounter(cst.CSTVisitor):
+    """
+    It counts the number of type annotations in a Python source code file
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.total_no_type_annot = 0
+
+    def visit_FunctionDef(self, node: cst.FunctionDef):
+        if node.returns is not None:
+            self.total_no_type_annot += 1
+
+    def visit_Param(self, node: cst.Param):
+        if node.annotation is not None:
+            self.total_no_type_annot += 1
+        return False
+
+    def visit_AnnAssign(self, node: cst.AnnAssign):
+        self.total_no_type_annot += 1
+        return False
