@@ -252,7 +252,8 @@ def __check_func_docstring(self, docstring: str) -> Optional[str]:
 
 
 def normalize_module_code(m_code: str) -> str:
-    # TODO: remove blank lines
+    # Blank lines
+    m_code = re.compile(r"^\n", flags=re.MULTILINE).sub("", m_code)
     # New lines
     m_code = re.compile(r"\n").sub(r" [EOL] ", m_code)
     # white spaces

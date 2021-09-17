@@ -72,21 +72,21 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(processed_f.to_dict()['set'], None)
 
     def test_mod_untyped_seq(self):
-        mod_untyped_seq = "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] " \
-                          "CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = " \
-                          "[number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] " \
-                          "def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / " \
-                          "( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass " \
-                          "[EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo " \
-                          "( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]"
+        mod_untyped_seq = "[docstring] [EOL] from os import path [EOL] import math [EOL] [comment] [EOL] CONSTANT " \
+                          "= [string] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] " \
+                          "[EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] def cls_fn ( self , c ) : " \
+                          "[EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] class " \
+                          "Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] def my_fn ( x ) : [EOL] return x + " \
+                          "[number] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]"
 
         self.assertEqual(mod_untyped_seq, processed_f.to_dict()['untyped_seq'])
 
     def test_mod_typed_seq(self):
-        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 "\
-                        "0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 "\
-                        "0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "\
-                        "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 "\
+                        "0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 "\
+                        "$builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ "\
+                        "0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+
         self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
     def test_mod_type_annot_cove(self):
@@ -184,10 +184,10 @@ class TestOutputSequence(unittest.TestCase):
                          read_file('exp_outputs/normalized_mod_code.txt').strip())
 
     def test_create_output_sequence(self):
-        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 " \
-                      "0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 "\
-                      "0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "\
-                      "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 "\
+                      "0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 "\
+                      "$builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 "\
+                      "$builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
         self.assertEqual(exp_out_seq, create_output_seq(normalize_module_code(processed_f.typed_seq)))
 
     def test_invalid_type_alignment_with_name(self):
