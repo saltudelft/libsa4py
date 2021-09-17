@@ -110,6 +110,7 @@ class TestTypeAdder(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.maxDiff = None
 
     @classmethod
     def setUpClass(cls):
@@ -120,7 +121,6 @@ class TestTypeAdder(unittest.TestCase):
         cls.out_p = cls.out_p.visit(TypeAdder(v.module_all_annotations))
 
     def test_propagated_types_file(self):
-        # TODO: TypeAdder needs improvements to propagate all the types across the file
         self.assertMultiLineEqual(read_file('exp_outputs/propagated_types.py'), self.out_p.code)
 
 

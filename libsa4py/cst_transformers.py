@@ -127,29 +127,39 @@ class TypeAdder(cst.CSTTransformer):
             return updated_node
 
     def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
+        name_type = self._extract_name_type(original_node.value)
+        return updated_node.with_changes(value=f"${name_type}$") if name_type is not None else updated_node
 
-        def extract_module_var_type(module_type_annot: Dict[Tuple, Tuple[str, str]]):
-            if (None, None, original_node.value) in module_type_annot:  # Skips imported module names
-                if module_type_annot[(None, None, original_node.value)][0] != '':
-                    return module_type_annot[(None, None, original_node.value)][0]
+    def _extract_name_type(self, name: str):
+        def extract_name_type(
+                module_type_annot: Dict[Tuple[Optional[str], Optional[str], Optional[str]], Tuple[str, str]],
+                name_slot: Tuple[Optional[str], Optional[str], Optional[str]]):
+            # Skips imported module names and type annotations
+            if name_slot in module_type_annot:
+                if module_type_annot[name_slot][0] != '':
+                    return module_type_annot[name_slot][0]
 
         name_type = None
 
-        # Adds types of class variables, function parameters and function variables
         if len(self.cls_stack) > 0:
-            if (self.cls_stack[-1], self.fn_stack[-1] if len(self.fn_stack) > 0 else None, original_node.value) in \
-                    self.module_type_annot:  # skips classes' identifiers
-                if self.module_type_annot[(self.cls_stack[-1], self.fn_stack[-1] if len(self.fn_stack) > 0 else None,
-                                           original_node.value)][0] != '':
-                    name_type = self.module_type_annot[(self.cls_stack[-1],
-                                                        self.fn_stack[-1] if len(self.fn_stack) > 0 else None,
-                                                        original_node.value)][0]
-            else:  # module-level variables (constants) in a function
-                name_type = extract_module_var_type(self.module_type_annot)
-        else:  # module-level variables (constants)
-            name_type = extract_module_var_type(self.module_type_annot)
+            if len(self.fn_stack) > 0:
+                # Local variables or functions parameters in class methods
+                name_type = extract_name_type(self.module_type_annot, (self.cls_stack[-1], self.fn_stack[-1], name))
+            # Occurrences of class-level variables in classes or class methods
+            if name_type is None:
+                name_type = extract_name_type(self.module_type_annot, (self.cls_stack[-1], None, name))
+            # Occurrences of module-level variable in classes or class methods
+            if name_type is None:
+                name_type = extract_name_type(self.module_type_annot, (None, None, name))
+        else:
+            # Local variables or functions parameters
+            if len(self.fn_stack) > 0:
+                name_type = extract_name_type(self.module_type_annot, (None, self.fn_stack[-1], name))
+            # Occurrences of module-level variable in module functions
+            if name_type is None:
+                name_type = extract_name_type(self.module_type_annot, (None, None, name))
 
-        return updated_node.with_changes(value=f"${name_type}$") if name_type is not None else updated_node
+        return name_type
 
 
 # This class is written by Georgios Gousios (GitHub: @gousiosg)
