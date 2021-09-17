@@ -21,7 +21,7 @@ class TestExtractor(unittest.TestCase):
                                                            include_seq2seq=False)
 
     def test_extractor_output(self):
-        #save_json('./exp_outputs/extractor_out.json', self.extractor_out.to_dict())
+        save_json('./exp_outputs/extractor_out.json', self.extractor_out.to_dict())
         expected_out = load_json('./exp_outputs/extractor_out.json')
 
         expected_out = ModuleInfo.from_dict(expected_out)
