@@ -103,11 +103,13 @@ def find_repos_list(projects_path: str) -> List[dict]:
     repos_list: List[dict] = []
 
     for author in os.listdir(projects_path):
-        if not author.startswith('.') and isdir(join(projects_path, author)):
+        if not author.startswith(".") and isdir(join(projects_path, author)):
             for repo in os.listdir(join(projects_path, author)):
-                repos_list.append({"author": author, "repo": repo})
+                if isdir(join(projects_path, author, repo)):
+                    repos_list.append({"author": author, "repo": repo})
 
     return repos_list
+
 
 
 def mk_dir_not_exist(path: str):
