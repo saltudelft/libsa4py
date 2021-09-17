@@ -12,6 +12,7 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
   - Class variables
   - Functions' local variables
 - Improved the performance of the NLP preprocessing quite significantly (~10x).
+- Adds a CST visitor (`TypeAnnotationCounter`) for counting the total number of type annotations in source files.
 
 ### Fixed
 - When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.
