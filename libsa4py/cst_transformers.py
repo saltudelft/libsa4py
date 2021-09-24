@@ -97,6 +97,7 @@ class TypeAdder(cst.CSTTransformer):
         self.cls_stack: List[str] = []
         self.fn_stack: List[str] = []
         self.module_type_annot = module_type_annot
+        self.visited_class_name: str = ""
         self.__no_name_validation()
 
     def __no_name_validation(self):
@@ -108,6 +109,7 @@ class TypeAdder(cst.CSTTransformer):
 
     def visit_ClassDef(self, node: cst.ClassDef):
         self.cls_stack.append(node.name.value)
+        self.visited_class_name = node.name.value
 
     def leave_ClassDef(self, original_node: cst.ClassDef, updated_node: cst.ClassDef):
         self.cls_stack.pop()
@@ -123,12 +125,21 @@ class TypeAdder(cst.CSTTransformer):
         self.fn_stack.pop()
         if ret_type != '':
             return updated_node.with_changes(name=cst.Name(value=f"${ret_type}$"))
+        elif original_node.returns is None:
+            return updated_node.with_changes(name=cst.Name(value=f"$None$"))
         else:
             return updated_node
 
+    def leave_Annotation(self, original_node: cst.Annotation, updated_node: cst.Annotation):
+        return original_node
+
     def leave_Name(self, original_node: cst.Name, updated_node: cst.Name):
-        name_type = self._extract_name_type(original_node.value)
-        return updated_node.with_changes(value=f"${name_type}$") if name_type is not None else updated_node
+        if original_node.value != self.visited_class_name and original_node.value != "self":
+            name_type = self._extract_name_type(original_node.value)
+            return updated_node.with_changes(value=f"${name_type}$") if name_type is not None \
+                else updated_node.with_changes(value="$typing.Any$")
+        else:
+            return original_node
 
     def _extract_name_type(self, name: str):
         def extract_name_type(

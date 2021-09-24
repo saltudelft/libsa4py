@@ -73,14 +73,13 @@ class TestExtractorPyre(unittest.TestCase):
                              self.extractor_out.to_dict()['classes'][0]['funcs'][1]['variables'])
 
     def test_module_seq2seq_repr(self):
-        exp_mod_seq2seq = "0 0 $float$ 0 0 0 $builtins.int$ 0 0 0 $str$ 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 $int$ 0 "\
-                          "0 0 $str$ 0 0 0 $int$ 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "\
-                          "0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "\
-                          "$typing.Tuple[typing.Tuple[int,int],str]$ 0 0 0 $typing.Tuple[typing.Tuple[int,int],str]$ "\
-                          "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "\
+        exp_mod_seq2seq = "0 0 $float$ 0 0 0 $builtins.int$ 0 0 0 $str$ 0 0 0 $int$ 0 $int$ 0 0 0 0 0 0 0 0 0 $int$ "\
+                          "0 0 0 $str$ 0 0 0 $int$ 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 "\
+                          "$typing.Any$ 0 0 0 0 0 0 0 $typing.List[int]$ 0 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 "\
+                          "$typing.Any$ 0 0 0 $typing.Tuple[typing.Tuple[int,int],str]$ 0 0 0 "\
+                          "$typing.Tuple[typing.Tuple[int,int],str]$ 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 "\
                           "$typing.Tuple[typing_extensions.Literal['Hello'],typing_extensions.Literal['World']]$ 0 0 "\
                           "0 0 0 0 0 $float$ 0 $int$ 0 0 0 0 0 $float$ 0 $float$ 0 $float$ 0"
-
         self.assertEqual(exp_mod_seq2seq, self.extractor_out.to_dict()['typed_seq'])
 
     def test_no_type_annot(self):

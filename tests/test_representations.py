@@ -82,11 +82,13 @@ class TestModuleRepresentations(unittest.TestCase):
         self.assertEqual(mod_untyped_seq, processed_f.to_dict()['untyped_seq'])
 
     def test_mod_typed_seq(self):
-        mod_typed_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 "\
-                        "0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 "\
-                        "$builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ "\
-                        "0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
-
+        mod_typed_seq = "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 " \
+                        "$builtins.int$ 0 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 " \
+                        "0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 0 " \
+                        "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 "\
+                        "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 "\
+                        "$typing.Any$ 0 0 0 0"
+        print(processed_f.to_dict()['typed_seq'])
         self.assertEqual(mod_typed_seq, processed_f.to_dict()['typed_seq'])
 
     def test_mod_type_annot_cove(self):
@@ -184,10 +186,12 @@ class TestOutputSequence(unittest.TestCase):
                          read_file('exp_outputs/normalized_mod_code.txt').strip())
 
     def test_create_output_sequence(self):
-        exp_out_seq = "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 "\
-                      "0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 "\
-                      "$builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 "\
-                      "$builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0"
+        exp_out_seq = "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 " \
+                      "$builtins.int$ 0 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 " \
+                      "0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 0 " \
+                      "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 " \
+                      "$builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 " \
+                      "$typing.Any$ 0 0 0 0"
         self.assertEqual(exp_out_seq, create_output_seq(normalize_module_code(processed_f.typed_seq)))
 
     def test_invalid_type_alignment_with_name(self):

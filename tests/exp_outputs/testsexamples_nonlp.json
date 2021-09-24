@@ -3,7 +3,7 @@
         "src_files": {
             "libsa4py/tests/examples/num_removal.py": {
                 "untyped_seq": "[docstring] [EOL] x = [number] [EOL] y = [number] [EOL] s = [number] [EOL] c = [number] + [number] [EOL] b = [number] [EOL] o = [number] [EOL] h = [number] [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0",
                 "imports": [],
                 "variables": {
                     "x": "",
@@ -111,7 +111,7 @@
             },
             "libsa4py/tests/examples/comment_removal.py": {
                 "untyped_seq": "[docstring] [EOL] [comment] [EOL] x = [number] [comment] [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] def delta ( ) : [EOL] [docstring] [EOL] pass [EOL] class Foo : [EOL] [docstring] [EOL] def bar ( self ) : [EOL] [docstring] [EOL] [comment] [EOL] pass [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [],
                 "variables": {
                     "x": ""
@@ -228,7 +228,7 @@
             },
             "libsa4py/tests/examples/qualified_types.py": {
                 "untyped_seq": "from typing import Dict as _Dict [EOL] from typing import Tuple , Union [EOL] from libsa4py . cst_transformers import TypeQualifierResolver [EOL] from . representations import Bar [EOL] from . . test_imports import TestImports [EOL] import typing as t [EOL] import typing [EOL] from collections . abc import Sequence [EOL] from builtins import str [EOL] import numpy as np [EOL] import builtins [EOL] d = { } [EOL] l = [ ] [EOL] q_v = [ [number] ] [EOL] l_n = ... [EOL] t_e = ( ) [EOL] u_d = None [EOL] c = None [EOL] c_h = None [EOL] t_a = t . List [EOL] tqr = TypeQualifierResolver ( ) [EOL] lt = [string] [EOL] s = [ [number] , [number] ] [EOL] N = [ ] [EOL] rl = Bar ( ) [EOL] b = True [EOL] relative_i = TestImports ( ) [EOL] class Foo : [EOL] foo_seq = [ ] [EOL] def __init__ ( self , x , y = None ) : [EOL] class Delta : [EOL] pass [EOL] self . x = x [EOL] n = np . int ( [number] ) [EOL] d = Delta ( ) [EOL] def bar ( self ) : [EOL] return np . array ( [ [number] , [number] , [number] ] ) [EOL] def shadow_qn ( self ) : [EOL] sq = [string] [EOL] for str in sq : [EOL] print ( str ) [EOL] u = Foo ( t_e ) [EOL] foo = Foo ( t_e ) [EOL] foo_t = ( Foo ( t_e ) , TypeQualifierResolver ( ) ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 0 0 $typing.Callable[...,typing.List]$ 0 0 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 0 0 $typing.Type[typing.List]$ 0 0 0 0 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 0 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 $representations.Bar$ 0 0 0 0 0 $True$ 0 0 0 $test_imports.TestImports$ 0 0 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 0 0 0 0 0 0 0 $Delta$ 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $\"Foo\"$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 0 0 0",
+                "typed_seq": "0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Dict$ 0 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 $typing.Tuple[typing.Any,...]$ 0 0 0 0 $typing.Union[typing.List[typing.Tuple[builtins.str,builtins.int]],typing.Tuple[typing.Any],typing.Tuple[typing.List[typing.Tuple[typing.Set[builtins.int]]]]]$ 0 $typing.Any$ 0 $typing.Callable[...,typing.List]$ 0 $typing.Any$ 0 $typing.Callable[[typing.List,typing.Dict],builtins.int]$ 0 $typing.Any$ 0 $typing.Type[typing.List]$ 0 $typing.Any$ 0 $typing.Any$ 0 $libsa4py.cst_transformers.TypeQualifierResolver$ 0 $typing.Any$ 0 0 0 $typing.Literal[\"123\"]$ 0 0 0 $[]$ 0 0 0 0 0 0 0 $typing.Union[typing.List,None]$ 0 0 0 0 $representations.Bar$ 0 $typing.Any$ 0 0 0 $True$ 0 $typing.Any$ 0 $test_imports.TestImports$ 0 $typing.Any$ 0 0 0 0 0 0 0 $collections.abc.Sequence$ 0 0 0 0 0 $None$ 0 0 0 $typing.Tuple$ 0 $typing.Pattern$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 $typing.Tuple$ 0 $typing.Tuple$ 0 $numpy.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $Delta$ 0 0 0 0 0 0 $numpy.array$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 $builtins.str$ 0 0 0 0 $typing.Any$ 0 $builtins.str$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $\"Foo\"$ 0 $typing.Any$ 0 $typing.Tuple[typing.Any,...]$ 0 0 $Foo$ 0 $typing.Any$ 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Tuple[Foo,libsa4py.cst_transformers.TypeQualifierResolver]$ 0 0 $typing.Any$ 0 $typing.Tuple[typing.Any,...]$ 0 0 $typing.Any$ 0 0 0 0",
                 "imports": [
                     "typing",
                     "Dict",
@@ -792,8 +792,8 @@
                 "type_annot_cove": 0.93
             },
             "libsa4py/tests/examples/types_prop.py": {
-                "untyped_seq": "[docstring] [EOL] CONSTANT = [number] [EOL] CONSTANT_USED = [number] + CONSTANT [EOL] def foo ( x ) : [EOL] y = x + [number] [comment] [EOL] return y + CONSTANT [comment] [EOL] class Bar : [EOL] me = [number] [comment] [EOL] fox = [number] + me + CONSTANT [comment] [EOL] def __init__ ( self ) : [EOL] self . c = [number] + Bar . me [comment] [EOL] self . b = self . c + CONSTANT [comment] [EOL] def bar_method ( self , x ) : [EOL] return self . c + x + [number]",
-                "typed_seq": "0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 $builtins.int$ 0 0 0 $builtins.float$ 0 0 0 $builtins.float$ 0 0 0 0 0 0 0 0 $builtins.float$ 0 0",
+                "untyped_seq": "[docstring] [EOL] CONSTANT = [number] [EOL] CONSTANT_USED = [number] + CONSTANT [EOL] def foo ( x , z ) : [EOL] y = x + [number] + z [comment] [EOL] return y + CONSTANT [comment] [EOL] class Bar : [EOL] me = [number] [comment] [EOL] fox = [number] + me + CONSTANT [comment] [EOL] def __init__ ( self ) : [EOL] self . c = [number] + Bar . me [comment] [EOL] self . b = self . c + CONSTANT [comment] [EOL] def bar_method ( self , x ) : [EOL] return self . c + x + [number]",
+                "typed_seq": "0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 $typing.Any$ 0 0 0 $builtins.float$ 0 $builtins.int$ 0 0 0 $None$ 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 0 0 0 $typing.Any$ 0 0 0 $builtins.float$ 0 $builtins.int$ 0 0 0 $builtins.float$ 0 0 0 $builtins.float$ 0 0 0 0 0 0 $typing.Any$ 0 $builtins.float$ 0 0",
                 "imports": [],
                 "variables": {
                     "CONSTANT": "builtins.int",
@@ -1068,7 +1068,8 @@
                             ]
                         ],
                         "params": {
-                            "x": "builtins.int"
+                            "x": "builtins.int",
+                            "z": ""
                         },
                         "ret_exprs": [
                             "return y + CONSTANT"
@@ -1079,7 +1080,17 @@
                                     "y",
                                     "builtins",
                                     "int",
-                                    "x"
+                                    "x",
+                                    "z"
+                                ]
+                            ],
+                            "z": [
+                                [
+                                    "y",
+                                    "builtins",
+                                    "int",
+                                    "x",
+                                    "z"
                                 ]
                             ]
                         },
@@ -1093,7 +1104,8 @@
                                     "y",
                                     "builtins",
                                     "int",
-                                    "x"
+                                    "x",
+                                    "z"
                                 ],
                                 [
                                     "y",
@@ -1114,7 +1126,8 @@
                             ]
                         },
                         "params_descr": {
-                            "x": ""
+                            "x": "",
+                            "z": ""
                         },
                         "docstring": {
                             "func": null,
@@ -1129,15 +1142,15 @@
                     null
                 ],
                 "no_types_annot": {
-                    "U": 4,
+                    "U": 5,
                     "D": 8,
                     "I": 0
                 },
-                "type_annot_cove": 0.67
+                "type_annot_cove": 0.62
             },
             "libsa4py/tests/examples/vars_args_occur.py": {
                 "untyped_seq": "[docstring] [EOL] from . different_fns import add [EOL] PI = [number] [EOL] MOD_CONSTANT = [number] [EOL] class TestVarArgOccur : [EOL] greeting = [string] [EOL] num = [number] [EOL] cls_constant = MOD_CONSTANT + [number] [EOL] def __init__ ( self , x , y ) : [EOL] self . x = x [EOL] self . y = y [EOL] def fn_params_occur ( self , param1 , param2 ) : [EOL] z = param1 + param2 [EOL] add_x_y = add ( param1 , param2 ) [EOL] list_comp = [ i for i in range ( param1 ** param2 * z ) ] [EOL] if param1 * add_x_y == [number] : [EOL] pass [EOL] elif param1 % param2 < [number] : [EOL] pass [EOL] while param2 * param1 * z // [number] : [EOL] pass [EOL] for i in range ( param1 + z * [number] ) : [EOL] pass [EOL] with z * param2 as f : [EOL] print ( z ** param2 / f ) [EOL] assert param1 == add_x_y * z [EOL] yield z + param2 [EOL] return param1 + [number] + param2 / [number] [EOL] def local_vars_usage ( self , p ) : [EOL] v = sum ( [ [number] , [number] , [number] , [number] ] ) [EOL] v_1 = v + p + [number] [EOL] for i in range ( [number] , v + v_1 ) : [EOL] i += v + [number] [EOL] yield i + v_1 [EOL] if v < [number] and v_1 + v > [number] : [EOL] print ( v ) [EOL] elif v * v_1 != [number] : [EOL] print ( v * v_1 ) [EOL] else : [EOL] print ( v_1 ) [EOL] while v + v_1 < p : [EOL] v *= [number] + v_1 [EOL] with ( v_1 + p // [number] ) as n : [EOL] assert v != n [EOL] return v + p + p + [number] [EOL] [comment] [EOL] def class_vars_usage ( self ) : [EOL] c = self . x + TestVarArgOccur . num [EOL] if TestVarArgOccur . num + c < [number] : [EOL] pass [EOL] for i in range ( [number] , TestVarArgOccur . num ) : [EOL] yield TestVarArgOccur . num + i [EOL] while TestVarArgOccur . num < [number] : [EOL] TestVarArgOccur . num -= [number] [EOL] with ( TestVarArgOccur . greeting + [string] ) as f : [EOL] pass [EOL] assert c != TestVarArgOccur . cls_constant [EOL] return TestVarArgOccur . cls_constant + c [EOL] [comment] [EOL] def module_vars_usage ( self , add_something ) : [EOL] if PI + add_something > [number] : [EOL] pass [EOL] for i in range ( [number] , int ( PI ) ) : [EOL] pass [EOL] while PI + MOD_CONSTANT > [number] : [EOL] PI = - [number] + add_something [EOL] with ( MOD_CONSTANT + PI + add_something ) as n : [EOL] print ( n ) [EOL] def formatted_str ( self , p ) : [EOL] x = [number] [EOL] y = [number] [EOL] print ( f\" [string] { x * y // p } [string] \" ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $None$ 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 $builtins.int$ 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0",
                 "imports": [
                     "different_fns",
                     "add"
@@ -2149,7 +2162,7 @@
             },
             "libsa4py/tests/examples/type_annot_count.py": {
                 "untyped_seq": "[docstring] [EOL] [comment] [EOL] m = [number] [EOL] class Bar : [EOL] bar_var1 = [number] [comment] [EOL] bar_var2 = ... [comment] [EOL] def __init__ ( self , i ) : [comment] [EOL] self . i = i [comment] [EOL] [comment] [EOL] def bar_fn ( self , x , y ) : [comment] [EOL] return x + y [EOL] [comment] [EOL] def foo ( n , i = False ) : [EOL] if i : [EOL] z = [string] + n [comment]",
-                "typed_seq": "0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 0 0 $builtins.str$ 0 $builtins.bool$ 0 0 0 0 0 0 $builtins.bool$ 0 0 $builtins.str$ 0 0 0 $builtins.str$ 0",
+                "typed_seq": "0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 0 $builtins.float$ 0 $builtins.float$ 0 0 0 0 $None$ 0 $builtins.str$ 0 $builtins.bool$ 0 $typing.Any$ 0 0 0 0 $builtins.bool$ 0 0 $builtins.str$ 0 0 0 $builtins.str$ 0",
                 "imports": [],
                 "variables": {
                     "m": "builtins.int"
@@ -2424,7 +2437,7 @@
             },
             "libsa4py/tests/examples/docstrings.py": {
                 "untyped_seq": "def basic_docstring ( ) : [EOL] [docstring] [EOL] pass [EOL] [comment] [EOL] def google_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [comment] [EOL] def rest_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [comment] [EOL] def numpy_docstring ( param1 , param2 ) : [EOL] [docstring] [EOL] if len ( param2 ) == param1 : [EOL] return True [EOL] else : [EOL] return False [EOL] [comment] [EOL] def no_docstring ( ) : [EOL] return None [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 $None$ 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 $None$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 $None$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 $None$ 0 0 0 0 0 $typing.Any$ 0",
                 "imports": [],
                 "variables": {},
                 "mod_var_occur": {},
@@ -2655,7 +2668,7 @@
             },
             "libsa4py/tests/examples/imports.py": {
                 "untyped_seq": "[docstring] [EOL] import math [EOL] import typing as t [EOL] from os . path import join , split [EOL] from string import * [EOL] from . import assignments [EOL] def inner_imports ( ) : [EOL] import collections [EOL] collections . Counter ( ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 0 $None$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0",
                 "imports": [
                     "math",
                     "typing",
@@ -2947,7 +2960,7 @@
             },
             "libsa4py/tests/examples/assignments.py": {
                 "untyped_seq": "[docstring] [EOL] from typing import List [EOL] [comment] [EOL] PI = [number] [EOL] CONSTANT = [number] [EOL] M_FOO , M_BAR = [number] , [number] [EOL] LONG_STRING = [string] [EOL] class Test : [EOL] [comment] [EOL] x = [number] [EOL] u , f = [number] , [string] [EOL] out_y = [string] [EOL] scientific_num = [number] [EOL] def __init__ ( self , x ) : [EOL] self . x = x [EOL] self . y = [string] [EOL] self . b , self . c = [number] , [string] [EOL] self . error = ... [EOL] def local_var_assings ( self ) : [EOL] f_no = [number] [EOL] l = [ [string] , [string] ] [EOL] foo = ... [EOL] def tuple_assigns ( self ) : [EOL] x , y , z = [number] , [number] , [number] [EOL] a , ( b , c ) = [number] , ( [number] , [number] ) [EOL] d , ( ( e , f ) , ( g , h ) ) = [number] , ( ( [number] , [number] ) , ( [number] , [number] ) ) [EOL] [comment] [EOL] [comment] [EOL] [comment] [EOL] [comment]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 $None$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List$ 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $builtins.str$ 0 0 0 $typing.Any$ 0 0 0 0 $None$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.List$ 0 0 0 0 $None$ 0 0 0 0 0 $builtins.float$ 0 0 0 $typing.List[builtins.str]$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 $None$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
                 "imports": [
                     "typing",
                     "List"
@@ -3618,7 +3631,7 @@
             },
             "libsa4py/tests/examples/vars_types_pyre.py": {
                 "untyped_seq": "[docstring] [EOL] PI = [number] [EOL] no = [number] [EOL] CONSTANT = [string] [EOL] X , Y = [number] , [number] [EOL] class Foo : [EOL] foo_num = [number] [EOL] foo_name = [string] [EOL] foo_x , foo_y = [number] , [ [number] , [number] , [number] ] [EOL] def __init__ ( self , t = [string] ) : [EOL] self . x = [ [number] , [number] , [number] ] [EOL] self . y = t [EOL] self . l , self . k = ( [number] , [number] ) , [string] [EOL] def local_vars ( self ) : [EOL] x = ( [string] , [string] ) [EOL] f , g = [number] , [number] [EOL] res = PI + f [EOL]",
-                "typed_seq": "0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0",
                 "imports": [],
                 "variables": {
                     "PI": "",
@@ -4018,7 +4031,7 @@
             },
             "libsa4py/tests/examples/space_tokens.py": {
                 "untyped_seq": "[docstring] [EOL] from typing import List [EOL] import math as m [EOL] CONSTANT = [number] [EOL] STRING = [string] [EOL] [string] [string] == STRING [EOL] d = { k : v for k , v in [ ( [number] , [number] ) , ( [number] , [number] ) ] } [EOL] d_e = { ** d , ** d } [EOL] f_str = f\" [string] { STRING + STRING }\" [EOL] l = [ [number] , [number] , [number] , [number] ] [EOL] print ( l [ [number] ] ) [EOL] class Delta : [EOL] def __init__ ( self ) : [EOL] self . x = [string] [EOL] def foo ( x , y , * s ) : [EOL] global CONSTANT [EOL] n = [number] [EOL] n //= n % x [EOL] y %= x ; x **= n [EOL] if x | x & y | ~ y | x ^ y : [EOL] x << y [EOL] y >> x [EOL] s <<= x [EOL] x >>= y [EOL] y &= x [EOL] x |= y [EOL] x ^= y [EOL] if x <= y or y >= x and ~ x : [EOL] pass [EOL] assert x != y [EOL] return n + x // y [EOL] @ set def bar ( x ) : [EOL] v = foo ( x , [number] ) [EOL] try : [EOL] v /= x [EOL] except ZeroDivisionError : [EOL] raise RuntimeError [EOL] finally : [EOL] pass [EOL] if x < v and v > x : [EOL] x *= x [EOL] else : [EOL] pass [EOL] del x [EOL] return v [EOL] for i in range ( CONSTANT + [number] + bar ( [number] ) ) : [EOL] if i + foo ( i , [number] ) + [number] : [EOL] print ( i / i ) [EOL] i += [number] - [number] ** [number] [EOL] i -= [number] [EOL] while i < [number] : [EOL] i = i + [number] [EOL] with ( i + [number] ) as w : [EOL] pass [EOL] foo ( [number] , [number] , * l )",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.int]$ 0",
+                "typed_seq": "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.List[builtins.int]$ 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 0 $None$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 0 $builtins.int$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 $builtins.int$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 $typing.Any$ 0 0 $typing.Any$ 0 $typing.Any$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 0 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 $typing.List[builtins.int]$ 0",
                 "imports": [
                     "typing",
                     "List",
@@ -4531,7 +4544,7 @@
             },
             "libsa4py/tests/examples/different_fns.py": {
                 "untyped_seq": "[docstring] [EOL] from typing import Optional [EOL] [comment] [EOL] def add ( x , y ) : [EOL] return x + y [EOL] [comment] [EOL] def noargs ( ) : [EOL] return [number] [EOL] [comment] [EOL] def no_params ( ) : [EOL] return [number] [EOL] [comment] [EOL] def noreturn ( x ) : [EOL] print ( x ) [EOL] [comment] [EOL] def return_none ( x ) : [EOL] print ( x ) [EOL] [comment] [EOL] def return_optional ( y ) : [EOL] if len ( y ) == [number] : [EOL] return None [EOL] return y [EOL] [comment] [EOL] def untyped_args ( x , y ) : [EOL] return x + y [EOL] [comment] [EOL] def with_inner ( ) : [EOL] def inner ( x ) : [EOL] [docstring] [EOL] return [number] + x [EOL] return inner ( [number] ) [EOL] [comment] [EOL] def varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [comment] [EOL] def untyped_varargs ( * xs ) : [EOL] sum = [number] [EOL] for x in xs : [EOL] sum += x [EOL] return sum [EOL] [comment] [EOL] def kwarg_method ( a , * b , ** c ) : [EOL] return c [EOL] [comment] [EOL] async def async_fn ( y ) : [EOL] return await y [EOL] [comment] [EOL] def abstract_fn ( name ) : ... [EOL] [comment] [EOL] def fn_lineno ( x ) : [EOL] print ( x )",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $typing.Optional[builtins.int]$ 0 $builtins.list$ 0 0 0 0 0 0 $builtins.list$ 0 0 0 0 0 0 0 0 0 $builtins.list$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 $builtins.float$ 0 0 0 0 $builtins.float$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.str$ 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 $None$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 $None$ 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 $typing.Optional[builtins.int]$ 0 $builtins.list$ 0 0 0 0 $typing.Any$ 0 $builtins.list$ 0 0 0 0 0 0 $typing.Any$ 0 0 $builtins.list$ 0 0 0 0 $builtins.int$ 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 0 0 $None$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 $typing.Any$ 0 0 0 0 0 0 0 $builtins.int$ 0 0 $builtins.int$ 0 0 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 $builtins.int$ 0 $typing.Any$ 0 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 $typing.Any$ 0 0 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $builtins.int$ 0 $typing.Any$ 0 0 $builtins.int$ 0 0 0 0 $None$ 0 $builtins.int$ 0 0 $builtins.int$ 0 0 $builtins.float$ 0 0 0 0 $builtins.float$ 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 $builtins.str$ 0 $builtins.str$ 0 0 0 0 0 0 0 $None$ 0 $typing.Any$ 0 0 0 $typing.Any$ 0 $typing.Any$ 0",
                 "imports": [
                     "typing",
                     "Optional"
@@ -5158,7 +5171,7 @@
             },
             "libsa4py/tests/examples/representations.py": {
                 "untyped_seq": "[docstring] [EOL] from os import path [EOL] import math [EOL] [comment] [EOL] CONSTANT = [string] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 $None$ 0 0 0 $typing.Any$ 0 0 0 0 0 $typing.Any$ 0 $typing.Any$ 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 $typing.Any$ 0 $builtins.int$ 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $typing.Any$ 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 $builtins.int$ 0 0 0 0 $builtins.int$ 0 0 0 0 $None$ 0 0 0 0 0 0 $typing.Any$ 0 0 0 0",
                 "imports": [
                     "os",
                     "path",
@@ -5499,7 +5512,7 @@
             },
             "libsa4py/tests/examples/string_removal.py": {
                 "untyped_seq": "[docstring] [EOL] s = [string] [EOL] multi_line_str = [string] [EOL] f_str = f\" [string] { multi_line_str }\" [EOL]",
-                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "typed_seq": "0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 $typing.Any$ 0 0 0 0 $typing.Any$ 0 0",
                 "imports": [],
                 "variables": {
                     "s": "",
@@ -5563,6 +5576,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.41
+        "type_annot_cove": 0.4
     }
 }
