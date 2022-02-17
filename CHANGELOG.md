@@ -2,6 +2,8 @@
 All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) tool will be documented in this file. The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.3.0] - 2022-02-17
 ### Added
 - Adding the `--tc` CLI arg for the `process` command to type-check source files in Python projects using mypy.
 - Supporting qualified names for classes by adding the `q_name` field to the JSON output.
@@ -16,6 +18,9 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 
 ### Fixed
 - When applying types to functions' parameters, parameters with the default value of lambdas causes an exception for matching functions' signature.
+
+### Changed
+- Python 3.6 is no longer supported.
 
 ## [0.2.0] - 2021-06-02
 ### Added
