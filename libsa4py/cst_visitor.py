@@ -750,3 +750,14 @@ class TypeAnnotationCounter(cst.CSTVisitor):
     def visit_AnnAssign(self, node: cst.AnnAssign):
         self.total_no_type_annot += 1
         return False
+
+
+class CountParametricTypeDepth(cst.CSTVisitor):
+    """
+    Counts the depth of parametric types. E.g., List[List[int]] has a depth of 2.
+    """
+    def __init__(self):
+        self.type_annot_depth = 0
+
+    def visit_Subscript(self, node):
+        self.type_annot_depth += 1
