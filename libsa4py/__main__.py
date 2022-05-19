@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
+from importlib.metadata import requires
 from multiprocessing import cpu_count
-from libsa4py.mt4py_pipeline import Mt4pyPredictProjects
+from libsa4py.mt4py_pipeline import Mt4pyApplyPredictionMethod, Mt4pyPredictProjects
 from libsa4py.utils import find_repos_list
 from libsa4py.cst_pipeline import Pipeline, TypeAnnotatingProjects
 from libsa4py.merge import merge_projects
@@ -30,8 +31,14 @@ def apply_types_projects(args):
 
 def mt4py_predict_projects(args):
     print("predicting projects...")
-    mt4py_pp = Mt4pyPredictProjects(args.s, args.o, args.m)
+    mt4py_pp = Mt4pyPredictProjects(args.s, args.o, args.m, args.l)
     mt4py_pp.run()
+
+
+def mt4py_apply_prediction_method(args):
+    print("Applying prediction method...")
+    mt4py_apm = Mt4pyApplyPredictionMethod(args.m)
+    mt4py_apm.run()
 
 
 def main():
@@ -134,6 +141,12 @@ def main():
     apply_parser.set_defaults(func=apply_types_projects)
 
     # MyType4Py
+    mt4py_apm_parser = sub_parsers.add_parser("mt4py_apm")
+    mt4py_apm_parser.add_argument(
+        "--m", required=True, type=str, help="Apply prediction method"
+    )
+    mt4py_apm_parser.set_defaults(func=mt4py_apply_prediction_method)
+
     mt4py_predict_parser = sub_parsers.add_parser("mt4py_predict")
     mt4py_predict_parser.add_argument(
         "--s",
@@ -152,6 +165,9 @@ def main():
         required=False,
         type=str,
         help="mode",
+    )
+    mt4py_predict_parser.add_argument(
+        "--l", required=False, type=int, help="limit of files to predict"
     )
     mt4py_predict_parser.set_defaults(func=mt4py_predict_projects)
 
