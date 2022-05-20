@@ -26,7 +26,7 @@ class TestQualifiedTypes(unittest.TestCase):
                       'tqr': 'libsa4py.cst_transformers.TypeQualifierResolver',
                       'lt': 'typing.Literal["123"]',
                       'c_h': 'typing.Callable[[typing.List, typing.Dict], builtins.int]',
-                      's': '[]', 'u': '"Foo"', 'foo': 'Foo', 'b': 'True',
+                      's': '[]', 'u': 'Foo', 'foo': 'Foo', 'b': 'True',
                       'foo_t': 'typing.Tuple[Foo, libsa4py.cst_transformers.TypeQualifierResolver]',
                       'N': 'typing.Union[typing.List, None]',
                       'rl': 'representations.Bar',
