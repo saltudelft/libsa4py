@@ -1,7 +1,12 @@
 from argparse import ArgumentParser
 from importlib.metadata import requires
 from multiprocessing import cpu_count
-from libsa4py.mt4py_pipeline import Mt4pyApplyPredictionMethod, Mt4pyPredictProjects
+from libsa4py.mt4py_pipeline import (
+    Mt4PyApplyTypesSourcecode,
+    Mt4pyApplyPredictionMethod,
+    Mt4pyApplyTypecheck,
+    Mt4pyPredictProjects,
+)
 from libsa4py.utils import find_repos_list
 from libsa4py.cst_pipeline import Pipeline, TypeAnnotatingProjects
 from libsa4py.merge import merge_projects
@@ -37,8 +42,20 @@ def mt4py_predict_projects(args):
 
 def mt4py_apply_prediction_method(args):
     print("Applying prediction method...")
-    mt4py_apm = Mt4pyApplyPredictionMethod(args.m)
+    mt4py_apm = Mt4pyApplyPredictionMethod(args.m, args.s)
     mt4py_apm.run()
+
+
+def mt4py_apply_types_sourcecode(args):
+    print("Applying types to source code..")
+    mt4py_ats = Mt4PyApplyTypesSourcecode(args.p, args.s, args.o, args.l)
+    mt4py_ats.run()
+
+
+def mt4py_apply_type_check(args):
+    print("Applying type check...")
+    mt4py_atc = Mt4pyApplyTypecheck(args.s, args.l)
+    mt4py_atc.run()
 
 
 def main():
@@ -141,9 +158,33 @@ def main():
     apply_parser.set_defaults(func=apply_types_projects)
 
     # MyType4Py
+    mt4py_ats_parser = sub_parsers.add_parser("mt4py_ats")
+    mt4py_ats_parser.add_argument(
+        "--p", required=True, type=str, help="Path to prediction folder"
+    )
+    mt4py_ats_parser.add_argument(
+        "--s", required=True, type=str, help="Path to source code folder"
+    )
+    mt4py_ats_parser.add_argument(
+        "--o", required=True, type=str, help="Path to output folder of applied types"
+    )
+    mt4py_ats_parser.add_argument("--l", required=False, type=int, help="Limit")
+    mt4py_ats_parser.set_defaults(func=mt4py_apply_types_sourcecode)
+
+    mt4py_atc_parser = sub_parsers.add_parser("mt4py_atc")
+    mt4py_atc_parser.add_argument(
+        "--s", required=True, type=str, help="Path to sourcode folder"
+    )
+    mt4py_atc_parser.add_argument(
+        "--l", required=True, type=int, help="limit of files to typecheck"
+    )
+    mt4py_atc_parser.set_defaults(func=mt4py_apply_type_check)
     mt4py_apm_parser = sub_parsers.add_parser("mt4py_apm")
     mt4py_apm_parser.add_argument(
         "--m", required=True, type=str, help="Apply prediction method"
+    )
+    mt4py_apm_parser.add_argument(
+        "--s", required=True, type=str, help="prediction source folder"
     )
     mt4py_apm_parser.set_defaults(func=mt4py_apply_prediction_method)
 

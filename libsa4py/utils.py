@@ -15,21 +15,27 @@ def text_progessbar(seq, total=None):
     while True:
         time_diff = time.time() - tick
         avg_speed = time_diff / step
-        total_str = 'of %n' % total if total else ''
-        print('step', step, '%.2f' % time_diff, 'avg: %.2f iter/sec' % avg_speed, total_str)
+        total_str = "of %n" % total if total else ""
+        print(
+            "step",
+            step,
+            "%.2f" % time_diff,
+            "avg: %.2f iter/sec" % avg_speed,
+            total_str,
+        )
         step += 1
         yield next(seq)
 
 
 all_bar_funcs = {
-    'tqdm': lambda args: lambda x: tqdm(x, **args),
-    'txt': lambda args: lambda x: text_progessbar(x, **args),
-    'False': lambda args: iter,
-    'None': lambda args: iter,
+    "tqdm": lambda args: lambda x: tqdm(x, **args),
+    "txt": lambda args: lambda x: text_progessbar(x, **args),
+    "False": lambda args: iter,
+    "None": lambda args: iter,
 }
 
 
-def ParallelExecutor(use_bar='tqdm', **joblib_args):
+def ParallelExecutor(use_bar="tqdm", **joblib_args):
     def aprun(bar=use_bar, **tq_args):
         def tmp(op_iter):
             if str(bar) in all_bar_funcs.keys():
@@ -75,15 +81,31 @@ def read_file(filename: str) -> str:
     with open(filename) as file:
         return file.read()
 
+
+def read_file_strong(filename: str) -> str:
+    """
+    Open a file and return its contents as a string
+    """
+    with open(filename, encoding="utf-8") as file:
+        return file.read()
+
+
 def write_file(filename: str, content: str):
-    with open(filename, 'w') as file:
+    with open(filename, "w") as file:
         file.write(content)
+
+
+def write_file_strong(filename: str, content: str):
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, "w+", encoding="utf-8") as file:
+        file.write(content)
+
 
 def save_json(filename: str, dict_obj: dict):
     """
     Dumps a dict object into a JSON file
     """
-    with open(filename, 'w') as json_f:
+    with open(filename, "w") as json_f:
         json.dump(dict_obj, json_f, indent=4)
 
 
@@ -91,7 +113,7 @@ def load_json(filename: str) -> dict:
     """
     Loads a json file into a dictionary
     """
-    with open(filename, 'r') as json_f:
+    with open(filename, "r") as json_f:
         return json.load(json_f)
 
 
@@ -109,7 +131,6 @@ def find_repos_list(projects_path: str) -> List[dict]:
                     repos_list.append({"author": author, "repo": repo})
 
     return repos_list
-
 
 
 def mk_dir_not_exist(path: str):

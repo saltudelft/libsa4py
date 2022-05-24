@@ -6,6 +6,7 @@ MIT License
 """
 
 from abc import ABC, abstractmethod
+from distutils.log import error
 from os.path import dirname, basename
 from typing import Tuple, Union
 from collections import Counter, namedtuple
@@ -15,7 +16,15 @@ import subprocess
 import pkg_resources
 
 
-fields = ("no_type_errs", "no_files", "no_ignored_errs", "no_warnings", "err_breakdown")
+fields = (
+    "error_codes",
+    "line_numbers",
+    "no_type_errs",
+    "no_files",
+    "no_ignored_errs",
+    "no_warnings",
+    "err_breakdown",
+)
 ParsedResult = namedtuple("ParsedResult", fields, defaults=(None,) * len(fields))
 
 
@@ -45,8 +54,10 @@ class OutputParseError(CustomError):
 class TCManager(ABC):
     def __init__(self, tc, timeout):
         self._timeout = timeout
-        #self._logger = logging.getLogger(__name__)
-        errcodes = toml.load(pkg_resources.resource_filename(__name__, 'tc_errcodes.toml'))[tc]
+        # self._logger = logging.getLogger(__name__)
+        errcodes = toml.load(
+            pkg_resources.resource_filename(__name__, "tc_errcodes.toml")
+        )[tc]
         self._all_errcodes = errcodes["all"]
         self._inc_errcodes = errcodes["included"]
 
@@ -91,7 +102,7 @@ class TCManager(ABC):
     def light_assess(self, fpath):
         print(f"Light assessing {fpath}.")
         try:
-            #self._check_basics(fpath)
+            # self._check_basics(fpath)
             retcode, outlines = self._type_check(fpath)
             self._check_tc_outcome(retcode, outlines)
             print("Passed the light assessment.")
@@ -124,14 +135,33 @@ class TCManager(ABC):
 class MypyManager(TCManager):
     def _build_tc_cmd(self, fpath):
         # Mypy needs a flag to display the error codes
-        return ["mypy", "--show-error-codes", "--no-incremental", "--cache-dir=/dev/null", fpath]
+        return [
+            "mypy",
+            "--ignore-missing-imports",
+            "--show-error-codes",
+            "--no-incremental",
+            "--cache-dir=/dev/null",
+            fpath,
+        ]
 
     def _check_tc_outcome(self, _, outlines):
         if any(l.endswith(err) for l in outlines for err in self._inc_errcodes):
             raise FailToTypeCheck
 
     def _parse_tc_output(self, retcode, outlines):
+        line_numbers = []
+        error_codes = []
+
         last_line = outlines[-1]
+
+        for line in outlines:
+            if not line == last_line:
+                error_code = line.split(".py:")[1]
+                line_number = error_code.split(":", 1)[0]
+                error_text = error_code.split(": ", 1)[1]
+                error_codes.append(error_text)
+                line_numbers.append(line_number)
+
         err_breakdown = None
         if retcode == 0:
             if not last_line.startswith("Success: "):
@@ -154,22 +184,34 @@ class MypyManager(TCManager):
                 raise OutputParseError
 
         return ParsedResult(
-            no_type_errs, no_files, no_ignored_errs, err_breakdown=err_breakdown
+            error_codes,
+            line_numbers,
+            no_type_errs,
+            no_files,
+            no_ignored_errs,
+            err_breakdown=err_breakdown,
         )
 
     def _report_errors(self, parsed_result):
-        print(
-            f"Produced {parsed_result.no_type_errs} type error(s) in {parsed_result.no_files} file(s)."
-        )
-        if parsed_result.err_breakdown:
-            print(f"Error breaking down: {parsed_result.err_breakdown}.")
+        return parsed_result
+
+        # print(
+        #     f"Produced {parsed_result.no_type_errs} type error(s) in {parsed_result.no_files} file(s)."
+        # )
+        # if parsed_result.err_breakdown:
+        #     print(f"Error breaking down: {parsed_result.err_breakdown}.")
 
 
 def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None]]:
     try:
         no_t_err = tc.heavy_assess(f_path)
+        return no_t_err
         if no_t_err is not None:
-            return (True, 0) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs)
+            return (
+                (True, 0)
+                if no_t_err.no_type_errs == 0
+                else (False, no_t_err.no_type_errs)
+            )
         else:
             return False, None
     except IndexError:
