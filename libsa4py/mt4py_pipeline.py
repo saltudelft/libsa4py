@@ -148,8 +148,9 @@ class Mt4PyApplyTypesSourcecode:
             file = list(data[path]["src_files"])[0]
             src_file_path = path + file.split(".", 1)[1]
             clean_src_path = src_file_path.split("/", 2)[2]
-            src_file_path = "./" + self.sourcecode_path + clean_src_path
-            out_file_path = self.output_path + "/" + clean_src_path
+            src_file_path = self.sourcecode_path + clean_src_path
+            out_file_path = self.output_path + clean_src_path
+
             data = data[path]["src_files"][file]
         # print(src_file_path)
         # print(data)
@@ -161,12 +162,16 @@ class Mt4PyApplyTypesSourcecode:
                     f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
                         TypeApplier(data, True)
                     )
-                    print(out_file_path)
                     write_file_strong(out_file_path, f_parsed.code)
                 except KeyError as ke:
                     print(
                         f"A variable not found | project {self.sourcecode_path} | file {src_file_path}",
                         ke,
+                    )
+                    write_file_strong(
+                        "./ats_errors",
+                        f"A variable not found | project {self.sourcecode_path} | file {src_file_path}"
+                        + ke,
                     )
                 except TypeError as te:
                     print(f"Project {self.sourcecode_path} | file {src_file_path}", te)
@@ -191,47 +196,47 @@ class Mt4PyApplyTypesSourcecode:
         print("run")
 
 
-class TypeAnnotatingProjects:
-    """
-    It applies the inferred type annotations to the input dataset
-    """
+# class TypeAnnotatingProjects:
+#     """
+#     It applies the inferred type annotations to the input dataset
+#     """
 
-    def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
-        self.projects_path = projects_path
-        self.output_path = output_path
-        self.apply_nlp = apply_nlp
+#     def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
+#         self.projects_path = projects_path
+#         self.output_path = output_path
+#         self.apply_nlp = apply_nlp
 
-    def process_project(self, proj_json_path: str):
-        proj_json = load_json(proj_json_path)
-        for p in proj_json.keys():
-            for i, (f, f_d) in enumerate(proj_json[p]["src_files"].items()):
-                f_read = read_file(join(self.projects_path, f))
-                if len(f_read) != 0:
-                    try:
-                        f_parsed = cst.parse_module(f_read)
-                        try:
-                            f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
-                                TypeApplier(f_d, self.apply_nlp)
-                            )
-                            write_file(join(self.projects_path, f), f_parsed.code)
-                        except KeyError as ke:
-                            print(
-                                f"A variable not found | project {proj_json_path} | file {f}",
-                                ke,
-                            )
-                            traceback.print_exc()
-                        except TypeError as te:
-                            print(f"Project {proj_json_path} | file {f}", te)
-                            traceback.print_exc()
-                    except cst._exceptions.ParserSyntaxError as pse:
-                        print(f"Can't parsed file {f} in project {proj_json_path}", pse)
+#     def process_project(self, proj_json_path: str):
+#         proj_json = load_json(proj_json_path)
+#         for p in proj_json.keys():
+#             for i, (f, f_d) in enumerate(proj_json[p]["src_files"].items()):
+#                 f_read = read_file(join(self.projects_path, f))
+#                 if len(f_read) != 0:
+#                     try:
+#                         f_parsed = cst.parse_module(f_read)
+#                         try:
+#                             f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
+#                                 TypeApplier(f_d, self.apply_nlp)
+#                             )
+#                             write_file(join(self.projects_path, f), f_parsed.code)
+#                         except KeyError as ke:
+#                             print(
+#                                 f"A variable not found | project {proj_json_path} | file {f}",
+#                                 ke,
+#                             )
+#                             traceback.print_exc()
+#                         except TypeError as te:
+#                             print(f"Project {proj_json_path} | file {f}", te)
+#                             traceback.print_exc()
+#                     except cst._exceptions.ParserSyntaxError as pse:
+#                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
 
-    def run(self, jobs: int):
-        proj_jsons = list_files(join(self.output_path, "processed_projects"), ".json")
-        proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
-        ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(
-            delayed(self.process_project)(p_j) for p_j in proj_jsons
-        )
+#     def run(self, jobs: int):
+#         proj_jsons = list_files(join(self.output_path, "processed_projects"), ".json")
+#         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
+#         ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(
+#             delayed(self.process_project)(p_j) for p_j in proj_jsons
+#         )
 
 
 class Mt4pyApplyPredictionMethod:
