@@ -1119,3 +1119,349 @@ class TypeApplier(cst.CSTTransformer):
             if regex.search(regex.compile(t_alias), t):
                 t = regex.sub(regex.compile(t_alias), type_aliases[t_alias], t)
         return t
+
+class TypeApplierExtended(cst.CSTTransformer):
+    """
+    It applies (inferred) type annotations to a source code file.
+    Specifically, it applies the type of arguments, return types, and variables' type.
+    """
+
+    METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider, cst.metadata.QualifiedNameProvider,
+                             cst.metadata.PositionProvider)
+
+    def __init__(self, f_processeed_dict: dict, apply_nlp: bool=True):
+        self.f_processed_dict = f_processeed_dict
+        self.cls_visited: List[Tuple[dict, Counter]] = []
+        self.fn_visited: List[Tuple[dict, Counter]] = []
+
+        self.last_visited_assign_t_name = None
+        self.last_visited_assign_t_count = 0
+        self.lambda_d = 0
+
+        self.all_applied_types = set()
+        self.no_applied_types = 0
+        self.no_failed_applied_types = 0
+
+        self.imported_names: List[str] = []
+
+        if apply_nlp:
+            self.nlp_p = NLPreprocessor().process_identifier
+        else:
+            self.nlp_p = lambda x: x
+
+    def __get_fn(self, f_node: cst.FunctionDef) -> dict:
+        if len(self.cls_visited) != 0:
+            fns = self.cls_visited[-1][0]['funcs']
+        else:
+            fns = self.f_processed_dict['funcs']
+
+        qn = self.__get_qualified_name(f_node.name)
+        fn_params = set(self.__get_fn_params(f_node.params))
+        fn_lc = self.__get_line_column_no(f_node)
+        for fn in fns:
+            if (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == fn_lc:
+                return fn
+
+        for fn in fns:
+            if fn['q_name'] == qn and set(list(fn['params'].keys())) == fn_params:
+                return fn
+
+    def __get_fn_param_type(self, param_name: str):
+        fn_param_type = self.fn_visited[-1][0]['params'][self.nlp_p(param_name)]
+        if fn_param_type != "":
+            fn_param_type_resolved = self.resolve_type_alias(fn_param_type)
+            fn_param_type = self.__name2annotation(fn_param_type_resolved)
+            if fn_param_type is not None:
+                self.all_applied_types.add((fn_param_type_resolved, fn_param_type))
+                self.no_applied_types += 1
+                return fn_param_type
+            else:
+                self.no_failed_applied_types += 1
+
+    def __get_cls(self, cls: cst.ClassDef) -> dict:
+        cls_lc = self.__get_line_column_no(cls)
+        cls_qn = self.__get_qualified_name(cls.name)
+        for c in self.f_processed_dict['classes']:
+            if (c['cls_lc'][0][0], c['cls_lc'][1][0]) == cls_lc:
+                return c
+
+        for c in self.f_processed_dict['classes']:
+            if c['q_name'] == cls_qn:
+                return c
+
+    def __get_fn_vars(self, var_name: str) -> dict:
+        if var_name in self.fn_visited[-1][0]['variables']:
+            if self.fn_visited[-1][0]['variables'][var_name] != "":
+                return self.fn_visited[-1][0]['variables'][var_name]
+
+    def __get_fn_params(self, fn_params: cst.Parameters):
+        p_names: List[str] = []
+        kwarg = [fn_params.star_kwarg] if fn_params.star_kwarg is not None else []
+        stararg = [fn_params.star_arg] if match.matches(fn_params.star_arg, match.Param(
+            name=match.Name(value=match.DoNotCare()))) else []
+        for p in list(fn_params.params) + list(fn_params.kwonly_params) + list(fn_params.posonly_params) + stararg + kwarg:
+            p_names.append(self.nlp_p(p.name.value))
+        return p_names
+
+    def __get_cls_vars(self, var_name: str) -> dict:
+        if var_name in self.cls_visited[-1][0]['variables']:
+            return self.cls_visited[-1][0]['variables'][var_name]
+
+    def __get_mod_vars(self):
+        return self.f_processed_dict['variables']
+
+    def __get_var_type_assign_t(self, var_name: str, var_node):
+        t: str = None
+        var_line_no = self.__get_line_column_no(var_node)
+        if len(self.cls_visited) != 0:
+            if len(self.fn_visited) != 0:
+                # A class method's variable
+                if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
+                    t = self.__get_fn_vars(self.nlp_p(var_name))
+            else:
+                # A class variable
+                if self.cls_visited[-1][0]["cls_var_ln"][var_name][0][0] == var_line_no[0]:
+                    t = self.__get_cls_vars(self.nlp_p(var_name))
+        elif len(self.fn_visited) != 0:
+            # A module function's variable
+            #if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+            if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
+                t = self.__get_fn_vars(self.nlp_p(var_name))
+        else:
+            # A module's variables
+            if self.f_processed_dict['mod_var_ln'][var_name][0][0] == var_line_no[0]:
+                t = self.__get_mod_vars()[self.nlp_p(var_name)]
+        return t
+
+    def __get_var_type_an_assign(self, var_name: str):
+        if len(self.cls_visited) != 0:
+            if len(self.fn_visited) != 0:
+                # A class method's variable
+                t = self.__get_fn_vars(self.nlp_p(var_name))
+            else:
+                # A class variable
+                t = self.__get_cls_vars(self.nlp_p(var_name))
+        elif len(self.fn_visited) != 0:
+            # A module function's variable
+            t = self.__get_fn_vars(self.nlp_p(var_name))
+        else:
+            # A module's variables
+            t = self.__get_mod_vars()[self.nlp_p(var_name)]
+        return t
+
+    def __get_var_names_counter(self, node, scope):
+        vars_name = match.extractall(node, match.OneOf(match.AssignTarget(target=match.SaveMatchedNode(
+            match.Name(value=match.DoNotCare()), "name")), match.AnnAssign(target=match.SaveMatchedNode(
+            match.Name(value=match.DoNotCare()), "name"))
+        ))
+        attr_name = match.extractall(node, match.OneOf(match.AssignTarget(
+                target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr")),
+            match.AnnAssign(target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr"))))
+        return Counter([n['name'].value for n in vars_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
+                                                                                           n['name']), scope)] +
+                       [n['attr'].attr.value for n in attr_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
+                                                                                           n['attr']), scope)])
+
+    def visit_ClassDef(self, node: cst.ClassDef):
+        self.cls_visited.append((self.__get_cls(node),
+                                 self.__get_var_names_counter(node, cst.metadata.ClassScope)))
+
+    def leave_ClassDef(self, original_node: cst.ClassDef, updated_node: cst.ClassDef):
+        self.cls_visited.pop()
+        return updated_node
+
+    def visit_FunctionDef(self, node: cst.FunctionDef):
+        self.fn_visited.append((self.__get_fn(node),
+                                self.__get_var_names_counter(node, cst.metadata.FunctionScope)))
+
+    def leave_FunctionDef(self, original_node: cst.FunctionDef, updated_node: cst.FunctionDef):
+        fn_ret_type = self.fn_visited[-1][0]['ret_type']
+        self.fn_visited.pop()
+        if fn_ret_type != "":
+            fn_ret_type_resolved = self.resolve_type_alias(fn_ret_type)
+            fn_ret_type = self.__name2annotation(fn_ret_type_resolved)
+            if fn_ret_type is not None:
+                self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
+                self.no_applied_types += 1
+                return updated_node.with_changes(returns=fn_ret_type)
+            else:
+                self.no_failed_applied_types += 1
+        else:
+            return updated_node.with_changes(returns=None)
+
+        return updated_node
+
+    def visit_Lambda(self, node: cst.Lambda):
+        self.lambda_d += 1
+
+    def leave_Lambda(self, original_node: cst.Lambda, updated_node: cst.Lambda):
+        self.lambda_d -= 1
+        return original_node
+
+    def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
+                                  updated_node: cst.SimpleStatementLine):
+
+        # Untyped variables
+        t = None
+        if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.DoNotCare())])])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.Name(value=match.DoNotCare()))])])):
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value,
+                                                 original_node.body[0].targets[0].target)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.Attribute(value=match.Name(value=match.DoNotCare()), attr=match.Name(value=match.DoNotCare())))])])):
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.attr.value,
+                                                 original_node.body[0].targets[0].target)
+
+            if t is not None:
+                t_annot_node_resolved = self.resolve_type_alias(t)
+                t_annot_node = self.__name2annotation(t_annot_node_resolved)
+                if t_annot_node is not None:
+                    self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
+                    return updated_node.with_changes(body=[cst.AnnAssign(
+                        target=original_node.body[0].targets[0].target,
+                        value=original_node.body[0].value,
+                        annotation=t_annot_node,
+                        equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
+                                            whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
+                    )
+                else:
+                    self.no_failed_applied_types += 1
+        # Typed variables
+        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare(),
+                                                                                          value=match.MatchIfTrue(lambda v: v is not None))])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.value)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Attribute(value=match.Name(value=match.DoNotCare()),
+                                                                                              attr=match.Name(value=match.DoNotCare())))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.attr.value)
+            if t:
+                t_annot_node_resolved = self.resolve_type_alias(t)
+                t_annot_node = self.__name2annotation(t_annot_node_resolved)
+                if t_annot_node is not None:
+                    self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
+                    return updated_node.with_changes(body=[cst.AnnAssign(
+                        target=original_node.body[0].target,
+                        value=original_node.body[0].value,
+                        annotation=t_annot_node,
+                        equal=original_node.body[0].equal)])
+                else:
+                    self.no_failed_applied_types += 1
+            else:
+                return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                            whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                            whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                value=original_node.body[0].value)])
+                    
+
+        return original_node
+
+    def leave_Param(self, original_node: cst.Param, updated_node: cst.Param):
+        if self.lambda_d == 0:
+            fn_param_type = self.__get_fn_param_type(original_node.name.value)
+            if fn_param_type is not None:
+                return updated_node.with_changes(annotation=fn_param_type)
+            else:
+                return updated_node.with_changes(annotation=None)
+
+        return original_node
+
+    def visit_AssignTarget(self, node: cst.AssignTarget):
+        if match.matches(node, match.AssignTarget(target=match.Name(value=match.DoNotCare()))):
+            if self.last_visited_assign_t_name == node.target.value:
+                self.last_visited_assign_t_count += 1
+            elif self.last_visited_assign_t_count == 0:
+                self.last_visited_assign_t_count = 1
+            else:
+                self.last_visited_assign_t_count = 1
+            self.last_visited_assign_t_name = node.target.value
+
+    def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
+        return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
+
+    def visit_ImportAlias(self, node: cst.ImportAlias):
+        self.imported_names.extend([n.value for n in match.findall(node.name, match.Name(value=match.DoNotCare()))])
+
+    # TODO: Check the imported modules before adding new ones
+    def __get_required_imports(self):
+        def find_required_modules(all_types, imported_names):
+            req_mod = set()
+            for _, a_node in all_types:
+                m = match.findall(a_node.annotation, match.Attribute(value=match.DoNotCare(), attr=match.DoNotCare()))
+                if len(m) != 0:
+                    for i in m:
+                        mod_imp = [n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0]
+                        if mod_imp not in imported_names:
+                            req_mod.add(mod_imp)
+            # if n.value not in imported_names
+            print(req_mod)
+            return req_mod
+
+        req_imports = []
+        self.imported_names = set(self.imported_names)
+        all_req_mods = find_required_modules(self.all_applied_types, self.imported_names)
+        all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t[0]), self.all_applied_types)))
+        all_type_names = all_type_names - self.imported_names
+
+        typing_imports = PY_TYPING_MOD & all_type_names
+        collection_imports = PY_COLLECTION_MOD & all_type_names
+
+        if len(typing_imports) > 0:
+            req_imports.append(cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="typing"),
+                                                                 names=[cst.ImportAlias(name=cst.Name(value=t),
+                                                                                        asname=None) for t in
+                                                                        typing_imports]),]))
+        if len(collection_imports) > 0:
+            req_imports.append(cst.SimpleStatementLine(body=[cst.ImportFrom(module=cst.Name(value="collections"),
+                                                       names=[cst.ImportAlias(name=cst.Name(value=t), asname=None) \
+                                                              for t in collection_imports]),]))
+        if len(all_req_mods) > 0:
+            for mod_name in all_req_mods:
+                req_imports.append(cst.SimpleStatementLine(body=[cst.Import(names=[cst.ImportAlias(name=cst.Name(value=mod_name),
+                                                                                    asname=None)])]))
+
+        return req_imports
+
+    def __name2annotation(self, type_name: str):
+        ext_annot = lambda t: match.extract(cst.parse_module("x: %s=None" % t).body[0].body[0],
+                                            match.AnnAssign(target=match.Name(value=match.DoNotCare()),
+                                                            annotation=match.SaveMatchedNode(match.DoNotCare(), "type")))['type']
+        try:
+            return ext_annot(type_name)
+        except cst._exceptions.ParserSyntaxError:
+            return None
+
+    def __get_qualified_name(self, node) -> Optional[str]:
+        q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
+        return q_name[0].name if len(q_name) != 0 else None
+
+    def __get_line_column_no(self, node) -> Tuple[int, int]:
+        lc = self.get_metadata(cst.metadata.PositionProvider, node)
+        return lc.start.line, lc.end.line
+
+    def resolve_type_alias(self, t: str):
+        type_aliases = {'^{}$|^Dict$|(?<=.*)Dict\[\](?<=.*)|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$': 'dict',
+                        '^Set$|(?<=.*)Set\[\](?<=.*)|^Set\[Any\]$': 'set',
+                        '^Tuple$|(?<=.*)Tuple\[\](?<=.*)|^Tuple\[Any\]$|(?<=.*)Tuple\[Any, *?\.\.\.\](?=.*)|^Tuple\[unknown, *?unknown\]$|^Tuple\[unknown, *?Any\]$|(?<=.*)tuple\[\](?<=.*)': 'tuple',
+                        '^Tuple\[(.+), *?\.\.\.\]$': r'Tuple[\1]',
+                        '\\bText\\b': 'str',
+                        '^\[\]$|(?<=.*)List\[\](?<=.*)|^List\[Any\]$|^List$': 'list',
+                        '^\[{}\]$': 'List[dict]',
+                        '(?<=.*)Literal\[\'.*?\'\](?=.*)': 'Literal',
+                        '(?<=.*)Literal\[\d+\](?=.*)': 'Literal',  # Maybe int?!
+                        '^Callable\[\.\.\., *?Any\]$|^Callable\[\[Any\], *?Any\]$|^Callable[[Named(x, Any)], Any]$': 'Callable',
+                        '^Iterator[Any]$': 'Iterator',
+                        '^OrderedDict[Any, *?Any]$': 'OrderedDict',
+                        '^Counter[Any]$': 'Counter',
+                        '(?<=.*)Match[Any](?<=.*)': 'Match',
+                        '^\.(.+)': r'\1',
+                        '(?<=.*)Optional\[\](?<=.*)': 'Optional'}
+        for t_alias in type_aliases:
+            if regex.search(regex.compile(t_alias), t):
+                t = regex.sub(regex.compile(t_alias), type_aliases[t_alias], t)
+        return t

@@ -8,7 +8,7 @@ from joblib import delayed
 
 import requests
 from tqdm import tqdm
-from libsa4py.cst_transformers import TypeApplier
+from libsa4py.cst_transformers import TypeApplier, TypeApplierExtended
 from libsa4py.type_check import MypyManager, TCManager, type_check_single_file
 
 from libsa4py.utils import (
@@ -86,10 +86,10 @@ class Mt4pyPredictProjects:
 
     def read_existing_predictions(self):
         path = Path("./existing_predictions.txt")
+        self.amount_predictions = list_files(self.output_path, file_ext=".json")
         if path.is_file():
             with open("./existing_predictions.txt", "r", encoding="utf-8") as ep:
                 lines = ep.readlines()
-                self.amount_predictions = len(lines)
                 if len(lines) > 0:
                     for line in lines:
                         self.existing_predictions.add(line.strip())
@@ -119,7 +119,7 @@ class Mt4pyPredictProjects:
         else:
             limit = self.limit
 
-        for i in tqdm(range(limit), initial=self.amount_predictions):
+        for i in tqdm(range(limit)):
             file = files[i]
             if not self.is_existing_prediction(file):
                 print(f"Predicting file: {file}")
@@ -128,115 +128,6 @@ class Mt4pyPredictProjects:
                 self.format_prediction(prediction, file)
                 self.append_existing_predictions(file)
         self.output_errors()
-
-
-class Mt4PyApplyTypesSourcecode:
-    def __init__(self, prediction_path, sourcecode_path, output_path, limit=-1):
-        self.prediction_path = prediction_path
-        self.sourcecode_path = sourcecode_path
-        self.output_path = output_path
-        if limit is None:
-            self.limit = -1
-        else:
-            self.limit = limit
-        print("init")
-
-    def apply_file(self, json_file):
-        with open(json_file, "+r", encoding="utf-8") as f:
-            data = json.load(f)
-            path = list(data)[0]
-            file = list(data[path]["src_files"])[0]
-            src_file_path = path + file.split(".", 1)[1]
-            clean_src_path = src_file_path.split("/", 2)[2]
-            src_file_path = self.sourcecode_path + clean_src_path
-            out_file_path = self.output_path + clean_src_path
-
-            data = data[path]["src_files"][file]
-        # print(src_file_path)
-        # print(data)
-        f_read = read_file_strong(src_file_path)
-        if len(f_read) != 0:
-            try:
-                f_parsed = cst.parse_module(f_read)
-                try:
-                    f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
-                        TypeApplier(data, True)
-                    )
-                    write_file_strong(out_file_path, f_parsed.code)
-                except KeyError as ke:
-                    print(
-                        f"A variable not found | project {self.sourcecode_path} | file {src_file_path}",
-                        ke,
-                    )
-                    write_file_strong(
-                        "./ats_errors",
-                        f"A variable not found | project {self.sourcecode_path} | file {src_file_path}"
-                        + ke,
-                    )
-                except TypeError as te:
-                    print(f"Project {self.sourcecode_path} | file {src_file_path}", te)
-
-            except cst._exceptions.ParserSyntaxError as pse:
-                print(f"Can't parsed file {f} in project {src_file_path}", pse)
-
-    def run(self):
-        files = list_files(self.prediction_path, file_ext=".json")
-        if platform == "win32":
-            # print("currently running on a windows machine")
-            files = [file.replace("\\", "/") for file in files]
-
-        if self.limit == -1 or self.limit > len(files):
-            limit = len(files)
-        else:
-            limit = self.limit
-        print(limit)
-        for i in tqdm(range(limit)):
-            file = files[i]
-            self.apply_file(file)
-        print("run")
-
-
-# class TypeAnnotatingProjects:
-#     """
-#     It applies the inferred type annotations to the input dataset
-#     """
-
-#     def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
-#         self.projects_path = projects_path
-#         self.output_path = output_path
-#         self.apply_nlp = apply_nlp
-
-#     def process_project(self, proj_json_path: str):
-#         proj_json = load_json(proj_json_path)
-#         for p in proj_json.keys():
-#             for i, (f, f_d) in enumerate(proj_json[p]["src_files"].items()):
-#                 f_read = read_file(join(self.projects_path, f))
-#                 if len(f_read) != 0:
-#                     try:
-#                         f_parsed = cst.parse_module(f_read)
-#                         try:
-#                             f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
-#                                 TypeApplier(f_d, self.apply_nlp)
-#                             )
-#                             write_file(join(self.projects_path, f), f_parsed.code)
-#                         except KeyError as ke:
-#                             print(
-#                                 f"A variable not found | project {proj_json_path} | file {f}",
-#                                 ke,
-#                             )
-#                             traceback.print_exc()
-#                         except TypeError as te:
-#                             print(f"Project {proj_json_path} | file {f}", te)
-#                             traceback.print_exc()
-#                     except cst._exceptions.ParserSyntaxError as pse:
-#                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
-
-#     def run(self, jobs: int):
-#         proj_jsons = list_files(join(self.output_path, "processed_projects"), ".json")
-#         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
-#         ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(
-#             delayed(self.process_project)(p_j) for p_j in proj_jsons
-#         )
 
 
 class Mt4pyApplyPredictionMethod:
@@ -340,10 +231,6 @@ class Mt4pyApplyPredictionMethod:
         parsed_file_name = split_file_name[len(split_file_name) - 1]
         with open("./prediction_methods/p1_predictions/" + parsed_file_name, "+w") as f:
             f.write(json.dumps(data))
-        # print("find matching ground truths in prediction file")
-        # print("save matching ground truths")
-        # print("apply #1 predictions to prediction json and make new files")
-        # print("save #1 predictions")
 
     # Case match for different prediction methods
     def apply_prediction_method(self, file):
@@ -359,6 +246,103 @@ class Mt4pyApplyPredictionMethod:
             file = files[i]
             self.apply_prediction_method(file)
 
+class Mt4PyApplyTypesSourcecode:
+    def __init__(self, prediction_path, sourcecode_path, output_path, limit=-1):
+        self.prediction_path = prediction_path
+        self.sourcecode_path = sourcecode_path
+        self.output_path = output_path
+        if limit is None:
+            self.limit = -1
+        else:
+            self.limit = limit
+
+    def apply_file(self, json_file):
+        with open(json_file, "+r", encoding="utf-8") as f:
+            data = json.load(f)
+            path = list(data)[0]
+            file = list(data[path]["src_files"])[0]
+            src_file_path = path + file.split(".", 1)[1]
+            clean_src_path = src_file_path.split("/", 2)[2]
+            src_file_path = self.sourcecode_path + clean_src_path
+            out_file_path = self.output_path + clean_src_path
+            data = data[path]["src_files"][file]
+        f_read = read_file_strong(src_file_path)
+        if len(f_read) != 0:
+            try:
+                f_parsed = cst.parse_module(f_read)
+                try:
+                    f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
+                        TypeApplierExtended(data, True)
+                    )
+                    write_file_strong(out_file_path, f_parsed.code)
+                except KeyError as ke:
+                    print(
+                        f"A variable not found | project {self.sourcecode_path} | file {src_file_path}",
+                        ke,
+                    )
+                except TypeError as te:
+                    print(f"Project {self.sourcecode_path} | file {src_file_path}", te)
+
+            except cst._exceptions.ParserSyntaxError as pse:
+                print(f"Can't parsed file {f} in project {src_file_path}", pse)
+
+    def run(self):
+        files = list_files(self.prediction_path, file_ext=".json")
+        if platform == "win32":
+            files = [file.replace("\\", "/") for file in files]
+
+        if self.limit == -1 or self.limit > len(files):
+            limit = len(files)
+        else:
+            limit = self.limit
+        print(limit)
+        for i in tqdm(range(limit)):
+            file = files[i]
+            self.apply_file(file)
+        print("run")
+
+
+# class TypeAnnotatingProjects:
+#     """
+#     It applies the inferred type annotations to the input dataset
+#     """
+
+#     def __init__(self, projects_path: str, output_path: str, apply_nlp: bool = True):
+#         self.projects_path = projects_path
+#         self.output_path = output_path
+#         self.apply_nlp = apply_nlp
+
+#     def process_project(self, proj_json_path: str):
+#         proj_json = load_json(proj_json_path)
+#         for p in proj_json.keys():
+#             for i, (f, f_d) in enumerate(proj_json[p]["src_files"].items()):
+#                 f_read = read_file(join(self.projects_path, f))
+#                 if len(f_read) != 0:
+#                     try:
+#                         f_parsed = cst.parse_module(f_read)
+#                         try:
+#                             f_parsed = cst.metadata.MetadataWrapper(f_parsed).visit(
+#                                 TypeApplier(f_d, self.apply_nlp)
+#                             )
+#                             write_file(join(self.projects_path, f), f_parsed.code)
+#                         except KeyError as ke:
+#                             print(
+#                                 f"A variable not found | project {proj_json_path} | file {f}",
+#                                 ke,
+#                             )
+#                             traceback.print_exc()
+#                         except TypeError as te:
+#                             print(f"Project {proj_json_path} | file {f}", te)
+#                             traceback.print_exc()
+#                     except cst._exceptions.ParserSyntaxError as pse:
+#                         print(f"Can't parsed file {f} in project {proj_json_path}", pse)
+
+#     def run(self, jobs: int):
+#         proj_jsons = list_files(join(self.output_path, "processed_projects"), ".json")
+#         proj_jsons.sort(key=lambda f: os.stat(f).st_size, reverse=True)
+#         ParallelExecutor(n_jobs=jobs)(total=len(proj_jsons))(
+#             delayed(self.process_project)(p_j) for p_j in proj_jsons
+#         )
 
 class Mt4pyApplyTypecheck:
     """
