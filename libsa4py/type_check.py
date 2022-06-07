@@ -27,6 +27,18 @@ fields = (
 )
 ParsedResult = namedtuple("ParsedResult", fields, defaults=(None,) * len(fields))
 
+fieldsEdited = (
+    "errors",
+    "no_type_errs",
+    "no_files",
+    "no_ignored_errs",
+    "no_warnings",
+    "err_breakdown",
+)
+ParsedResultEdited = namedtuple(
+    "ParsedResult", fieldsEdited, defaults=(None,) * len(fieldsEdited)
+)
+
 
 class CustomError(Exception):
     pass
@@ -60,6 +72,7 @@ class TCManager(ABC):
         )[tc]
         self._all_errcodes = errcodes["all"]
         self._inc_errcodes = errcodes["included"]
+        self.cwd = os.getcwd()
 
     # def _check_file_existence(self, fpath):
     #     if not isfile(fpath):
@@ -74,7 +87,7 @@ class TCManager(ABC):
     #     self._check_py3_compatibility(fpath)
 
     @abstractmethod
-    def _build_tc_cmd(self, fpath):
+    def _build_tc_cmd(self, fpath, cwd):
         pass
 
     def _type_check(self, fpath):
@@ -82,11 +95,12 @@ class TCManager(ABC):
             cwd = os.getcwd()
             os.chdir(dirname(fpath))
             result = subprocess.run(
-                self._build_tc_cmd(basename(fpath)),
+                self._build_tc_cmd(basename(fpath), cwd),
                 capture_output=True,
                 text=True,
                 timeout=self._timeout,
             )
+            # print(result)
             retcode = result.returncode
             outlines = result.stdout.splitlines()
             return retcode, outlines
@@ -127,13 +141,14 @@ class TCManager(ABC):
             retcode, outlines = self._type_check(fpath)
             parsed_result = self._parse_tc_output(retcode, outlines)
             self._report_errors(parsed_result)
+            print(parsed_result)
             return parsed_result
         except CustomError as e:
             print(str(e))
 
 
 class MypyManager(TCManager):
-    def _build_tc_cmd(self, fpath):
+    def _build_tc_cmd(self, fpath, cwd):
         # Mypy needs a flag to display the error codes
         return [
             "mypy",
@@ -141,6 +156,7 @@ class MypyManager(TCManager):
             "--show-error-codes",
             "--no-incremental",
             "--cache-dir=/dev/null",
+            f"--config-file={cwd}/libsa4py/libsa4py/mypy.ini",
             fpath,
         ]
 
@@ -183,9 +199,9 @@ class MypyManager(TCManager):
             else:
                 raise OutputParseError
 
-        return ParsedResult(
-            error_codes,
-            line_numbers,
+        errors = zip(error_codes, line_numbers)
+        return ParsedResultEdited(
+            list(errors),
             no_type_errs,
             no_files,
             no_ignored_errs,

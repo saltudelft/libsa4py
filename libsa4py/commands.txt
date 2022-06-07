@@ -1,3 +1,5 @@
+
 libsa4py mt4py_predict --s ./source_files/ --o ./predicted_projects/ --l 1200
-libsa4py mt4py_apm --m p1_prediction --s ./predicted_projects_test/ 
-libsa4py mt4py_atc --s ./source_files_test/ --l 100
+libsa4py mt4py_apm --m p1_prediction --s ./predicted_projects_test/ --t 0.1 --o p1_test
+libsa4py mt4py_ats --p ./prediction_methods/p1_07/ --s ./source_files/ --o ./typed_source_files/p1_07/
+libsa4py mt4py_atc --s ./typed_source_files/p1_07/ --l 100
