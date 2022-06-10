@@ -8,8 +8,10 @@ from pathlib import Path
 from sys import platform
 from textwrap import indent
 import time
+from typing import OrderedDict
 from joblib import delayed
 from psutil import cpu_count
+import regex
 
 import requests
 from tqdm import tqdm
@@ -86,8 +88,7 @@ class Mt4pyPredictProjects:
             header = {folderpath: {"src_files": {filename: prediction["response"]}}}
             with open(
                 self.output_path
-                + file.split("repos/")[1].replace("/", "").replace(".py", "")
-                + ".json",
+                + file.split("repos/")[1].replace("/", "").replace(".py", ".json"),
                 "+w",
             ) as f:
                 f.write(json.dumps(header))
@@ -103,6 +104,7 @@ class Mt4pyPredictProjects:
                         self.existing_predictions.add(line.strip())
 
     def append_existing_predictions(self, file):
+
         with open("./existing_predictions.txt", "a", encoding="utf-8") as f:
             if not file == "":
                 f.write(file + "\n")
@@ -113,9 +115,6 @@ class Mt4pyPredictProjects:
         return False
 
     def run(self):
-        # print("mode is:", self.mode)
-        # print("sourcecode path is: ", self.sourcecode_path)
-        # print("output path is:", self.output_path)
         files = list_files(self.sourcecode_path)
         if platform == "win32":
             # print("currently running on a windows machine")
@@ -138,6 +137,9 @@ class Mt4pyPredictProjects:
         self.output_errors()
 
 
+# TODO:
+# Sanitize original to work with typings and other common similiar types
+# Add start argument to say where to start
 class Mt4pyApplyPredictionMethod:
     def __init__(self, method, prediction_path, treshold, output_folder):
         method_exists = False
@@ -306,111 +308,12 @@ class Mt4pyApplyPredictionMethod:
         with open(path + "/" + parsed_file_name, "+w") as f:
             f.write(filestat)
 
-    # Applies prediction method gt match to variables
-    def gt_variables(self, object):
-        variables = object["variables"]
-        p_variables = object["variables_p"]
-        if variables and p_variables:
-            for variable in variables:
-                # If variable has atleast 1 prediction:
-                if len(p_variables[variable]) > 0:
-                    # If confidence of prediction is higher than minimum confidence:
-                    for p_variable in p_variables:
-                        if (
-                            p_variable[0] == variable
-                            and p_variable[1] > self.min_confidence
-                        ):
-                            variables[variable] = p_variable[0]
-        object["variables"] = variables
-        return object
-
-    # Applies prediction method p1 to functions
-    def gt_functions(self, f_object):
-        # Return type:
-        if "ret_type" in f_object and "ret_type_p" in f_object:
-            return_type = f_object["ret_type"]
-            p_return_types = f_object["ret_type_p"]
-            # If return type has atleast 1 prediction:
-            if len(p_return_types) > 0:
-                # If confidence of prediction is higher than minimum confidence:
-                for p_return_type in p_return_types:
-                    if (
-                        p_return_type[0] == return_type
-                        and p_return_type[1] > self.min_confidence
-                    ):
-                        f_object["ret_type"] = p_return_type[0]
-        # Parameters:
-        if "params_p" in f_object and "params" in f_object:
-            params = f_object["params"]
-            p_params = f_object["params_p"]
-            if params and p_params:
-                for param in params:
-                    # If param has atleast 1 prediction:
-                    if len(p_params[param]) > 0:
-                        # If confidence of prediction is higher than minimum confidence:
-                        for p_param in p_params:
-                            if p_param[0] == param and p_param[1] > self.min_confidence:
-                                params[param] = p_param[0]
-        f_object["params"] = params
-
-        # Variables:
-        f_object = self.gt_variables(f_object)
-
-        return f_object
-
-    def gt_classes(self, c_object):
-        # Variables
-        c_object = self.gt_variables(c_object)
-        # Functions:
-        functions = c_object["funcs"]
-        if len(functions) > 0:
-            for index, f_object in enumerate(functions):
-                functions[index] = self.gt_functions(f_object)
-        c_object["funcs"] = functions
-        return c_object
-
-    # Applies gt match prediction method
-    def apply_gt_match_prediction(self, file):
-        data = ""
-        with open(file, "+r") as f:
-            data = json.load(f)
-
-        first_key = list(data.keys())[0]
-        second_key = "src_files"
-        third_key = list(data[first_key][second_key].keys())[0]
-
-        # Global variables
-        g_object = data[first_key][second_key][third_key]
-        data[first_key][second_key][third_key] = self.gt_variables(g_object)
-
-        # Functions:
-        functions = data[first_key][second_key][third_key]["funcs"]
-        if len(functions) > 0:
-            for index, f_object in enumerate(functions):
-                functions[index] = self.gt_functions(f_object)
-        data[first_key][second_key][third_key]["funcs"] = functions
-
-        # Classes:
-        classes = data[first_key][second_key][third_key]["classes"]
-        if len(classes) > 0:
-            for index, c_object in enumerate(classes):
-                classes[index] = self.gt_classes(c_object)
-        data[first_key][second_key][third_key]["classes"] = classes
-
-        # Rewrite filename and save to appropiate folder
-        split_file_name = file.split("/", 2)
-        parsed_file_name = split_file_name[len(split_file_name) - 1]
-        with open("./prediction_methods/gt_predictions/" + parsed_file_name, "+w") as f:
-            f.write(json.dumps(data))
-
     # Case match for different prediction methods
     def apply_prediction_method(self, file):
         if self.method.value == 1:
             predictions, file_stat = self.apply_p1_prediction_method(file)
             self.write_predictions(file, predictions)
             self.write_filestats(file, file_stat)
-        if self.method.value == 2:
-            self.apply_gt_match_prediction(file)
 
     def run(self):
         files = list_files(self.prediction_path, file_ext=".json")
@@ -456,7 +359,10 @@ class Mt4PyApplyTypesSourcecode:
             src_file_path = self.sourcecode_path + clean_src_path
             out_file_path = self.output_path + clean_src_path
             data = data[path]["src_files"][file]
-        f_read = read_file_strong(src_file_path)
+        try:
+            f_read = read_file_strong(src_file_path)
+        except:
+            return
         if len(f_read) != 0:
             try:
                 f_parsed = cst.parse_module(f_read)
@@ -487,10 +393,13 @@ class Mt4PyApplyTypesSourcecode:
         start_t = time.time()
         jobs = cpu_count()
         start = 0
-        ParallelExecutor(n_jobs=jobs)(total=limit)(
+        ParallelExecutor(n_jobs=jobs)(total=limit - start)(
             delayed(self.apply_file)(file)
             for i, file in enumerate(files[start:limit], start=start)
         )
+        # for i in tqdm(range(limit)):
+        #     file = files[i]
+        #     self.apply_file(file)
         print(
             "Finished processing %d files in %s "
             % (limit, str(timedelta(seconds=time.time() - start_t)))
@@ -519,7 +428,7 @@ class Mt4pyApplyTypecheck:
         return result
 
     def write_to_file(self, parsed_file, type_check):
-        with open("tc_results/" + parsed_file, "+w") as f:
+        with open("tc_results/p1_07/" + parsed_file, "+w") as f:
             json.dump(type_check, f, indent=4)
 
     def run(self):
@@ -534,7 +443,7 @@ class Mt4pyApplyTypecheck:
         start_t = time.time()
         jobs = cpu_count()
         start = 0
-        ParallelExecutor(n_jobs=jobs)(total=limit)(
+        ParallelExecutor(n_jobs=jobs)(total=limit - start)(
             delayed(self.type_check_files)(file)
             for i, file in enumerate(files[start:limit], start=start)
         )
@@ -563,13 +472,41 @@ class Mt4pyEvaluate:
     def __init__(self, filestat_folder, tc_results_folder, name, limit):
         self.filestat_folder = filestat_folder
         self.tc_results_folder = tc_results_folder
+        self.name = name
         self.limit = limit
         if limit is None:
             self.limit = -1
         else:
             self.limit = limit
+
+        self.type_info = {
+            "type_info": {
+                "variable": {
+                    "match_types": {
+                        "empty": {"original_types": [], "predicted_types": []},
+                        "match": {"original_types": [], "predicted_types": []},
+                        "mismatch": {"original_types": [], "predicted_types": []},
+                    }
+                },
+                "return_type": {
+                    "match_types": {
+                        "empty": {"original_types": [], "predicted_types": []},
+                        "match": {"original_types": [], "predicted_types": []},
+                        "mismatch": {"original_types": [], "predicted_types": []},
+                    }
+                },
+                "parameter": {
+                    "match_types": {
+                        "empty": {"original_types": [], "predicted_types": []},
+                        "match": {"original_types": [], "predicted_types": []},
+                        "mismatch": {"original_types": [], "predicted_types": []},
+                    }
+                },
+            }
+        }
         self.result = {
             "evaluation": {
+                "total": 0,
                 "variable": {
                     "match_types": {
                         "empty": {
@@ -580,7 +517,7 @@ class Mt4pyEvaluate:
                         "mismatch": {"total": 0, "errors": 0},
                     },
                 },
-                "ret_type": {
+                "return_type": {
                     "match_types": {
                         "empty": {
                             "total": 0,
@@ -603,22 +540,43 @@ class Mt4pyEvaluate:
             }
         }
 
+    def resolve_type_alias(self, t: str):
+        type_aliases = {
+            "(?<=.*)any(?<=.*)|(?<=.*)unknown(?<=.*)": "Any",
+            "^{}$|^Dict$|^Dict\[\]$|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$": "dict",
+            "^Set$|(?<=.*)Set\[\](?<=.*)|^Set\[Any\]$": "set",
+            "^Tuple$|(?<=.*)Tuple\[\](?<=.*)|^Tuple\[Any\]$|(?<=.*)Tuple\[Any, *?\.\.\.\](?=.*)|^Tuple\[unknown, *?unknown\]$|^Tuple\[unknown, *?Any\]$|(?<=.*)tuple\[\](?<=.*)": "tuple",
+            "^Tuple\[(.+), *?\.\.\.\]$": r"Tuple[\1]",
+            "\\bText\\b": "str",
+            "^\[\]$|(?<=.*)List\[\](?<=.*)|^List\[Any\]$|^List$": "list",
+            "^\[{}\]$": "List[dict]",
+            "(?<=.*)Literal\['.*?'\](?=.*)": "Literal",
+            "(?<=.*)Literal\[\d+\](?=.*)": "Literal",  # Maybe int?!
+            "^Callable\[\.\.\., *?Any\]$|^Callable\[\[Any\], *?Any\]$|^Callable[[Named(x, Any)], Any]$": "Callable",
+            "^Iterator[Any]$": "Iterator",
+            "^OrderedDict[Any, *?Any]$": "OrderedDict",
+            "^Counter[Any]$": "Counter",
+            "(?<=.*)Match[Any](?<=.*)": "Match",
+        }
+
+        for t_alias in type_aliases:
+            if regex.search(regex.compile(t_alias), t):
+                t = regex.sub(regex.compile(t_alias), type_aliases[t_alias], t)
+        return t
+
     def run(self):
         files_stats = list_files(self.filestat_folder, ".json")
         files_a = list(map(lambda file: file.split("/")[3], files_stats))
         files_predictions = list_files(self.tc_results_folder, ".json")
-        files_b = list(map(lambda file: file.split("/")[2], files_predictions))
+        files_b = list(map(lambda file: file.split("/")[3], files_predictions))
 
         files = []
-        print(files_a[:5])
-        print(files_b[:5])
-
+        # print(files_stats)
         for file in files_a:
             # if file in files_predictions:
             if file in files_b:
-                print(file)
                 files.append(file)
-
+        # print(files)
         if platform == "win32":
             # print("currently running on a windows machine")
             files = [file.replace("\\", "/") for file in files]
@@ -626,7 +584,6 @@ class Mt4pyEvaluate:
             limit = len(files)
         else:
             limit = self.limit
-        self.evaluate_predictions(files[0])
         # start_t = time.time()
         # jobs = cpu_count()
         # start = 0
@@ -638,15 +595,54 @@ class Mt4pyEvaluate:
         #     "Finished processing %d files in %s "
         #     % (limit, str(timedelta(seconds=time.time() - start_t)))
         # )
+        # Single run
+
+        for i in tqdm(range(limit)):
+            file = files[i]
+            self.evaluate_predictions(file)
+
+        self.write_type_info()
+        self.write_result()
+
+    def write_result(self):
+        path = "evaluations/" + self.name
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        results = json.dumps(self.result, indent=4)
+        write_file_strong(path + "/results.json", results)
+
+    def write_type_info(self):
+        path = "evaluations/" + self.name
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        type_info = json.dumps(self.type_info, indent=4)
+        write_file_strong(path + "/type_info.json", type_info)
 
     def evaluate_predictions(self, file):
-        print(self.result)
+
         with open(f"{self.filestat_folder}{file}", "r") as f:
             predictions = json.loads(f.read())
-        with open(f"{self.tc_results_folder}{file}", "r") as f:
-            errors = json.loads(f.read())
+        try:
+            with open(f"{self.tc_results_folder}{file}", "r") as f:
+                errors = json.loads(f.read())
+        except:
+            return
         predictionElements = predictions["predictionElements"]
+        line_numbers = []
+        if errors and errors[0] and errors[0][0]:
+            for error in errors[0]:
+                line_numbers.append(error[1])
+
         for element in predictionElements:
+            self.result["evaluation"]["total"] = self.result["evaluation"]["total"] + 1
+            sanitized_type = self.resolve_type_alias(element["original_type"])
+            if "builtins." in sanitized_type:
+                sanitized_type = sanitized_type.split("builtins.")[1]
+                if sanitized_type == element["predicted_type"]:
+                    element["original_type"] = sanitized_type
+                    element["match_case"] = "match"
+
+            # add to total
             self.result["evaluation"][element["type"]]["match_types"][
                 element["match_case"]
             ]["total"] = (
@@ -655,4 +651,53 @@ class Mt4pyEvaluate:
                 ]["total"]
                 + 1
             )
-        print(self.result)
+            # add to errors
+            if line_numbers:
+                if str(element["line_number"]) in line_numbers:
+                    self.result["evaluation"][element["type"]]["match_types"][
+                        element["match_case"]
+                    ]["errors"] = (
+                        self.result["evaluation"][element["type"]]["match_types"][
+                            element["match_case"]
+                        ]["errors"]
+                        + 1
+                    )
+
+            # add count of original and prediction types
+            original = element["original_type"]
+            prediction = element["predicted_type"]
+            originals = self.type_info["type_info"][element["type"]]["match_types"][
+                element["match_case"]
+            ]["original_types"]
+            predictions = self.type_info["type_info"][element["type"]]["match_types"][
+                element["match_case"]
+            ]["predicted_types"]
+            found_original = False
+            found_prediction = False
+            if originals:
+                for i, el in enumerate(originals):
+                    # print(el)
+                    if el[0] == original:
+                        self.type_info["type_info"][element["type"]]["match_types"][
+                            element["match_case"]
+                        ]["original_types"][i] = (el[0], el[1] + 1)
+                        found_original = True
+                        break
+            if original and (not originals or not found_original):
+                newType = (original, 1)
+                self.type_info["type_info"][element["type"]]["match_types"][
+                    element["match_case"]
+                ]["original_types"].append(newType)
+            if predictions:
+                for i, el in enumerate(predictions):
+                    if el[0] == prediction:
+                        self.type_info["type_info"][element["type"]]["match_types"][
+                            element["match_case"]
+                        ]["predicted_types"][i] = (el[0], el[1] + 1)
+                        found_prediction = True
+                        break
+            if not predictions or not found_prediction:
+                newType = (prediction, 1)
+                self.type_info["type_info"][element["type"]]["match_types"][
+                    element["match_case"]
+                ]["predicted_types"].append(newType)

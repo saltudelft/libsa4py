@@ -141,7 +141,6 @@ class TCManager(ABC):
             retcode, outlines = self._type_check(fpath)
             parsed_result = self._parse_tc_output(retcode, outlines)
             self._report_errors(parsed_result)
-            print(parsed_result)
             return parsed_result
         except CustomError as e:
             print(str(e))
@@ -232,4 +231,4 @@ def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int,
             return False, None
     except IndexError:
         print(f"f: {f_path} - No output from Mypy!")
-        return False, None
+        return [[], False, None]

@@ -95,9 +95,9 @@ def write_file(filename: str, content: str):
         file.write(content)
 
 
-def write_file_strong(filename: str, content: str):
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w+", encoding="utf-8") as file:
+def write_file_strong(path: str, content: str):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w+", encoding="utf-8") as file:
         file.write(content)
 
 
