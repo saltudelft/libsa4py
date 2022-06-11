@@ -340,10 +340,16 @@ class Mt4pyApplyPredictionMethod:
 
 
 class Mt4PyApplyTypesSourcecode:
-    def __init__(self, prediction_path, sourcecode_path, output_path, limit=-1):
+    def __init__(
+        self, prediction_path, sourcecode_path, output_path, limit=-1, cores=-1
+    ):
         self.prediction_path = prediction_path
         self.sourcecode_path = sourcecode_path
         self.output_path = output_path
+        if cores is None:
+            self.cores = -1
+        else:
+            self.cores = cores
         if limit is None:
             self.limit = -1
         else:
@@ -392,6 +398,8 @@ class Mt4PyApplyTypesSourcecode:
             limit = self.limit
         start_t = time.time()
         jobs = cpu_count()
+        if self.cores != -1:
+            jobs = self.cores
         start = 0
         ParallelExecutor(n_jobs=jobs)(total=limit - start)(
             delayed(self.apply_file)(file)
@@ -415,11 +423,15 @@ class Mt4pyApplyTypecheck:
     Apply typechecking and report results
     """
 
-    def __init__(self, sourcecodepath, resultsfolder, limit):
+    def __init__(self, sourcecodepath, resultsfolder, limit, cores=-1):
         if limit is None:
             self.limit = -1
         else:
             self.limit = limit
+        if cores is None:
+            self.cores = -1
+        else: 
+            self.cores = cores
         self.tc_manager = MypyManager("mypy", 1000)
         self.sourcecode_path = sourcecodepath
         self.resultsfolder = resultsfolder
@@ -446,6 +458,8 @@ class Mt4pyApplyTypecheck:
             limit = self.limit
         start_t = time.time()
         jobs = cpu_count()
+        if self.cores != -1:
+            jobs = self.cores
         start = 0
         ParallelExecutor(n_jobs=jobs)(total=limit - start)(
             delayed(self.type_check_files)(file)

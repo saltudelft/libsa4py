@@ -51,13 +51,13 @@ def mt4py_apply_prediction_method(args):
 
 def mt4py_apply_types_sourcecode(args):
     print("Applying types to source code..")
-    mt4py_ats = Mt4PyApplyTypesSourcecode(args.p, args.s, args.o, args.l)
+    mt4py_ats = Mt4PyApplyTypesSourcecode(args.p, args.s, args.o, args.l, args.c)
     mt4py_ats.run()
 
 
 def mt4py_apply_type_check(args):
     print("Applying type check...")
-    mt4py_atc = Mt4pyApplyTypecheck(args.s, args.r, args.l)
+    mt4py_atc = Mt4pyApplyTypecheck(args.s, args.r, args.l, args.c)
     mt4py_atc.run()
 
 
@@ -195,6 +195,7 @@ def main():
     )
 
     mt4py_ats_parser.add_argument("--l", required=False, type=int, help="Limit")
+    mt4py_ats_parser.add_argument("--c", required=False, type=int, help="Amount cores")
     mt4py_ats_parser.set_defaults(func=mt4py_apply_types_sourcecode)
     # Apply type check
     mt4py_atc_parser = sub_parsers.add_parser("mt4py_atc")
@@ -207,6 +208,7 @@ def main():
     mt4py_atc_parser.add_argument(
         "--r", required=True, type=str, help="folder in tc_results"
     )
+    mt4py_atc_parser.add_argument("--c", required=False, type=int, help="Amount cores")
     mt4py_atc_parser.set_defaults(func=mt4py_apply_type_check)
     # apply prediction method
     mt4py_apm_parser = sub_parsers.add_parser("mt4py_apm")
