@@ -415,20 +415,24 @@ class Mt4pyApplyTypecheck:
     Apply typechecking and report results
     """
 
-    def __init__(self, sourcecodepath, limit):
+    def __init__(self, sourcecodepath, resultsfolder, limit):
         if limit is None:
             self.limit = -1
         else:
             self.limit = limit
         self.tc_manager = MypyManager("mypy", 1000)
         self.sourcecode_path = sourcecodepath
+        self.resultsfolder = resultsfolder
 
     def typecheck_file(self, file):
         result = type_check_single_file(file, self.tc_manager)
         return result
 
     def write_to_file(self, parsed_file, type_check):
-        with open("tc_results/p1_07/" + parsed_file, "+w") as f:
+        path = f"tc_results/{self.resultsfolder}/"
+        if not os.path.isdir(path):
+            Path(path).mkdir(parents=True, exist_ok=True)
+        with open(path + parsed_file, "+w") as f:
             json.dump(type_check, f, indent=4)
 
     def run(self):

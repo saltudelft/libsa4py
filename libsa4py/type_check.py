@@ -167,8 +167,10 @@ class MypyManager(TCManager):
         line_numbers = []
         error_codes = []
 
-        last_line = outlines[-1]
-
+        try:
+            last_line = outlines[-1]
+        except:
+            raise IndexError(outlines)
         for line in outlines:
             if not line == last_line:
                 error_code = line.split(".py:")[1]
@@ -230,5 +232,5 @@ def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int,
         else:
             return False, None
     except IndexError:
-        print(f"f: {f_path} - No output from Mypy!")
+        # print(f"f: {f_path} - No output from Mypy!")
         return [[], False, None]

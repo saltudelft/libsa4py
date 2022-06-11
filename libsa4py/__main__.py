@@ -57,7 +57,7 @@ def mt4py_apply_types_sourcecode(args):
 
 def mt4py_apply_type_check(args):
     print("Applying type check...")
-    mt4py_atc = Mt4pyApplyTypecheck(args.s, args.l)
+    mt4py_atc = Mt4pyApplyTypecheck(args.s, args.r, args.l)
     mt4py_atc.run()
 
 
@@ -193,6 +193,7 @@ def main():
     mt4py_ats_parser.add_argument(
         "--o", required=True, type=str, help="Path to output folder of applied types"
     )
+
     mt4py_ats_parser.add_argument("--l", required=False, type=int, help="Limit")
     mt4py_ats_parser.set_defaults(func=mt4py_apply_types_sourcecode)
     # Apply type check
@@ -201,7 +202,10 @@ def main():
         "--s", required=True, type=str, help="Path to sourcode folder"
     )
     mt4py_atc_parser.add_argument(
-        "--l", required=True, type=int, help="limit of files to typecheck"
+        "--l", required=False, type=int, help="limit of files to typecheck"
+    )
+    mt4py_atc_parser.add_argument(
+        "--r", required=True, type=str, help="folder in tc_results"
     )
     mt4py_atc_parser.set_defaults(func=mt4py_apply_type_check)
     # apply prediction method
