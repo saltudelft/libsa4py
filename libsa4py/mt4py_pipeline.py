@@ -430,7 +430,7 @@ class Mt4pyApplyTypecheck:
             self.limit = limit
         if cores is None:
             self.cores = -1
-        else: 
+        else:
             self.cores = cores
         self.tc_manager = MypyManager("mypy", 1000)
         self.sourcecode_path = sourcecodepath
@@ -584,8 +584,14 @@ class Mt4pyEvaluate:
 
     def run(self):
         files_stats = list_files(self.filestat_folder, ".json")
-        files_a = list(map(lambda file: file.split("/")[3], files_stats))
         files_predictions = list_files(self.tc_results_folder, ".json")
+        if platform == "win32":
+            # print("currently running on a windows machine")
+            files_stats = [file.replace("\\", "/") for file in files_stats]
+            files_predictions = [file.replace("\\", "/") for file in files_stats]
+
+        files_a = list(map(lambda file: file.split("/")[3], files_stats))
+
         files_b = list(map(lambda file: file.split("/")[3], files_predictions))
 
         files = []
