@@ -47,6 +47,8 @@ Description of the fields:
   - `I`: No. of type slots w/ Pyre-inferred annotations.
 - `type_annot_cove`: Type annotations coverage for source code files and the whole project.
 
+> NOTE: For files with no type slots, the value of `type_annot_cove` is 1.0 and the sum of values in `no_types_annot` are 0.
+
 ## Classes
 The following JSON object represents a processed class:
 
