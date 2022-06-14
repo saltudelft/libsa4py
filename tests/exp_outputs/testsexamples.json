@@ -4633,6 +4633,32 @@
                 },
                 "type_annot_cove": 0.73
             },
+            "libsa4py/tests/examples/no_typeslots.py": {
+                "untyped_seq": "[docstring] [EOL] [EOL] from y . x import * [EOL] from z import * [EOL] from f import * [EOL]",
+                "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+                "imports": [
+                    "y",
+                    "x",
+                    "z",
+                    "f"
+                ],
+                "variables": {},
+                "mod_var_occur": {},
+                "mod_var_ln": {},
+                "classes": [],
+                "funcs": [],
+                "set": null,
+                "tc": [
+                    false,
+                    null
+                ],
+                "no_types_annot": {
+                    "U": 0,
+                    "D": 0,
+                    "I": 0
+                },
+                "type_annot_cove": 1.0
+            },
             "libsa4py/tests/examples/representations.py": {
                 "untyped_seq": "[docstring] [EOL] [EOL] from os import path [EOL] import math [EOL] [EOL] [comment] [EOL] CONSTANT = [string] [EOL] [EOL] [EOL] class MyClass : [EOL] [docstring] [EOL] cls_var = [number] [comment] [EOL] [EOL] def __init__ ( self , y ) : [EOL] self . y = y [EOL] [EOL] def cls_fn ( self , c ) : [EOL] n = c + [number] [EOL] return MyClass . cls_var + c / ( [number] + n ) [EOL] [EOL] [EOL] class Bar : [EOL] def __init__ ( self ) : [EOL] pass [EOL] [EOL] [EOL] def my_fn ( x ) : [EOL] return x + [number] [EOL] [EOL] [EOL] def foo ( ) : [EOL] [docstring] [EOL] print ( [string] ) [EOL]",
                 "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.float$ 0 0 0 $builtins.int$ 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 0 0 $None$ 0 0 0 0 0 0 0 0 0 0 0",
@@ -5022,6 +5048,6 @@
                 "type_annot_cove": 0.0
             }
         },
-        "type_annot_cove": 0.4
+        "type_annot_cove": 0.43
     }
 }

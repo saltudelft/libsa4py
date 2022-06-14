@@ -19,6 +19,7 @@ class TestExtractor(unittest.TestCase):
         cls.extractor_out = Extractor().extract(read_file('./examples/representations.py'))
         cls.extractor_out_wo_seq2seq = Extractor().extract(read_file('./examples/representations.py'),
                                                            include_seq2seq=False)
+        cls.extractor_out_no_typeslots = Extractor().extract(read_file('./examples/no_typeslots.py')).to_dict()
 
     def test_extractor_output(self):
         #save_json('./exp_outputs/extractor_out.json', self.extractor_out.to_dict())
@@ -36,6 +37,15 @@ class TestExtractor(unittest.TestCase):
 
         self.assertEqual(expected_out, self.extractor_out_wo_seq2seq)
 
+    def test_extractor_no_typeslots(self):
+        """
+        Tests the default behaviour of Extractor when calculating type annotation coverage for files without type slots
+        """
+        expected_type_annot_cove = 1.0
+        expected_num_type_annot = 0
+
+        self.assertEqual(expected_type_annot_cove, self.extractor_out_no_typeslots['type_annot_cove'])
+        self.assertEqual(expected_num_type_annot, sum(self.extractor_out_no_typeslots['no_types_annot'].values()))
 
 class TestExtractorPyre(unittest.TestCase):
     """
