@@ -11,10 +11,11 @@ import os
 import shutil
 import signal
 import json
+from run_process import run
 
 
 def pyre_server_init(project_path: str):
-    stdout, stderr, r_code = run_command("cd %s; echo -ne '.\n' | pyre init; pyre start" % project_path)
+    stdout, stderr, r_code = run("cd %s; echo -ne '.\n' | pyre init; pyre start" % project_path)
     print(f"[PYRE_SERVER] initialized at {project_path} ", stdout, stderr)
     #TODO: Raise an exception if the pyre server has not been started
 
@@ -53,7 +54,7 @@ def pyre_kill_all_servers():
 def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> Optional[PyreData]:
     try:
         file_types = None
-        stdout, stderr, r_code = run_command('''cd %s; pyre query "types(path='%s')"''' % (project_path,
+        stdout, stderr, r_code = run('''cd %s; pyre query "types(path='%s')"''' % (project_path,
                                              str(Path(file_path).relative_to(Path(project_path)))),
                                              timeout=timeout)
         if r_code == 0:
