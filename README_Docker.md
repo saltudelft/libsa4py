@@ -45,17 +45,22 @@ pyre
 
 <!-- docker run --platform linux/amd64 -it -v /Users/fenglang/Desktop/libsa4py/dataset:/data/source -v /Users/fenglang/Desktop/libsa4py/processedprojects:/data/results libsa4py bash  -->
 
-### make changes to the libsapy `pipiline` as well as `pyre utils`
-```
-cd /libsa4py/libsa4py
-```
-#### modify `cst_pipeline`
+[//]: # (### make changes to the libsapy `pipiline` as well as `pyre utils`)
+
+[//]: # (```)
+
+[//]: # (cd /libsa4py/libsa4py)
+
+[//]: # (```)
+
+[//]: # (#### modify `cst_pipeline`)
+
+[//]: # ()
+[//]: # ()
+[//]: # (#### modify `pyre.py`)
 
 
-#### modify `pyre.py`
-
-
-#### run libsa4py with pyre options
+### run libsa4py with pyre options
 ```
 cd /data
 libsa4py process --p source --o results --pyre
