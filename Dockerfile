@@ -42,7 +42,7 @@ unzip typeshed.zip && cd ../../..
 
 
 # install libsa4py
-RUN git clone https://github.com/saltudelft/libsa4py.git
+RUN git clone https://github.com/LangFeng0912/libsa4py.git
 RUN pip install -e libsa4py/
 RUN pip install -r libsa4py/requirements.txt
 
