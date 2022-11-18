@@ -18,6 +18,7 @@ docker build -t libsa4py .
 docker run --platform linux/amd64 -it -v [source]:/data/source -v [result]:/data/results libsa4py bash 
 ```
 > `[source]` refers the location for the dataset in the local machine
+> 
 > `[result]` refers the location for the dataset in the local machine
 
 
