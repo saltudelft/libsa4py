@@ -162,7 +162,7 @@ class Pipeline:
                     print(f"Running pyre for {project_id}")
                     # therefore we need to start pyre manually
                     # clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
-                    # pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+                    pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
 
                 for filename, f_relative, f_split in project_files:
                     try:

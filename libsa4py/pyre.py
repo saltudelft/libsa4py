@@ -15,7 +15,7 @@ from libsa4py.run_process import run
 import subprocess
 
 def pyre_server_init(project_path: str):
-    stdout, stderr, r_code = run("cd %s; pyre init; pyre" % project_path)
+    stdout, stderr, r_code = run("cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
     print(f"[PYRE_SERVER] initialized at {project_path} ", stdout, stderr)
     #TODO: Raise an exception if the pyre server has not been started
 
