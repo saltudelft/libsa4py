@@ -215,8 +215,8 @@ class Pipeline:
 
                     save_json(self.get_project_filename(project), project_analyzed_files)
 
-                # if self.use_pyre:
-                    # pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
+                if self.use_pyre:
+                    pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
 
             else:
                 raise NullProjectException(project_id)
