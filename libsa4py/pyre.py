@@ -11,13 +11,15 @@ import os
 import shutil
 import signal
 import json
-from libsa4py.run_process import run
+from utils import run
 import subprocess
 
+
 def pyre_server_init(project_path: str):
-    stdout, stderr, r_code = run("cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
+    stdout, stderr, r_code = run(
+        "cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
     print(f"[PYRE_SERVER] initialized at {project_path} ", stdout, stderr)
-    #TODO: Raise an exception if the pyre server has not been started
+    # TODO: Raise an exception if the pyre server has not been started
 
 
 def find_pyre_server(project_path: str) -> Optional[int]:
@@ -47,7 +49,7 @@ def pyre_server_shutdown(project_path: str):
 
 
 def pyre_kill_all_servers():
-    run_command("pyre kill")
+    run("pyre kill")
     print("Killed all instances of pyre's servers")
 
 
@@ -55,8 +57,9 @@ def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> O
     try:
         file_types = None
         stdout, stderr, r_code = run('''cd %s; pyre query "types(path='%s')"''' % (project_path,
-                                             str(Path(file_path).relative_to(Path(project_path)))),
-                                             timeout=timeout)
+                                                                                   str(Path(file_path).relative_to(
+                                                                                       Path(project_path)))),
+                                     timeout=timeout)
         if r_code == 0:
             file_types = json.loads(stdout)["response"][0]
         else:

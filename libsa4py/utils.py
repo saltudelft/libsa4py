@@ -7,6 +7,8 @@ import time
 import os
 import signal
 import json
+import subprocess
+from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 
 def text_progessbar(seq, total=None):
@@ -75,9 +77,11 @@ def read_file(filename: str) -> str:
     with open(filename) as file:
         return file.read()
 
+
 def write_file(filename: str, content: str):
     with open(filename, 'w') as file:
         file.write(content)
+
 
 def save_json(filename: str, dict_obj: dict):
     """
@@ -111,7 +115,13 @@ def find_repos_list(projects_path: str) -> List[dict]:
     return repos_list
 
 
-
 def mk_dir_not_exist(path: str):
     if not isdir(path):
         os.mkdir(path)
+
+
+def run(
+        cmd_args: List[str], timeout: Optional[int] = None
+) -> Tuple[str, str, int]:
+    process = subprocess.run(cmd_args, shell=True, capture_output=True, timeout=timeout)
+    return process.stdout.decode(), process.stderr.decode(), process.returncode

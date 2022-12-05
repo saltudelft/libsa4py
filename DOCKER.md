@@ -21,25 +21,41 @@ docker run --platform linux/amd64 -it -v [source]:/data/source -v [result]:/data
 > 
 > `[result]` refers the location for the dataset in the local machine
 
+[//]: # ()
+[//]: # (### cd to data folder and start pyre && watchman)
 
-### cd to data folder and start pyre && watchman
-```
-cd data && ls
-```
-the output should be `results  source`
-#### pyre init 
-```
-pyre init
-```
-**--interations:**
-##### Also initialize watchman in the current directory? [Y/n] `Y`
-##### Unable to locate typeshed, please enter its root:  `/pyre-check/stubs/typeshed/typeshed-master`
-##### Which directory(ies) should pyre analyze? (Default: `.`):  `.`
+[//]: # (```)
 
-#### start pyre
-```
-pyre
-```
+[//]: # (cd data && ls)
+
+[//]: # (```)
+
+[//]: # (the output should be `results  source`)
+
+[//]: # (#### pyre init )
+
+[//]: # (```)
+
+[//]: # (pyre init)
+
+[//]: # (```)
+
+[//]: # (**--interations:**)
+
+[//]: # (##### Also initialize watchman in the current directory? [Y/n] `Y`)
+
+[//]: # (##### Unable to locate typeshed, please enter its root:  `/pyre-check/stubs/typeshed/typeshed-master`)
+
+[//]: # (##### Which directory&#40;ies&#41; should pyre analyze? &#40;Default: `.`&#41;:  `.`)
+
+[//]: # ()
+[//]: # (#### start pyre)
+
+[//]: # (```)
+
+[//]: # (pyre)
+
+[//]: # (```)
 
 
 
@@ -60,8 +76,8 @@ pyre
 [//]: # (#### modify `pyre.py`)
 
 
-### run libsa4py with pyre options
+## run libsa4py with pyre options
 ```
-cd /data
+cd data
 libsa4py process --p source --o results --pyre
 ```
