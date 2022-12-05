@@ -1,6 +1,6 @@
 FROM --platform=linux/amd64 ubuntu 
 
-VOLUME [ "/data/source", "/data/results" ]
+# VOLUME [ "/data/source", "/data/results" ]
 
 # define watchmen version for watchman installation
 ARG WM_VERSION=v2022.11.07.00
