@@ -42,10 +42,12 @@ def clean_pyre_config(project_path: str):
 
 
 def pyre_server_shutdown(project_path: str):
-    server_pid = find_pyre_server(project_path)
-    if server_pid is not None:
-        os.kill(server_pid, signal.SIGKILL)
-        print("Stopped pyre server with pid ", server_pid)
+    # server_pid = find_pyre_server(project_path)
+    # if server_pid is not None:
+    #     os.kill(server_pid, signal.SIGKILL)
+    #     print("Stopped pyre server with pid ", server_pid)
+    run("pyre stop")
+    print("Stopped pyre server")
 
 
 def pyre_kill_all_servers():
