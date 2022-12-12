@@ -160,7 +160,7 @@ class Pipeline:
             if len(project_files) != 0:
                 if self.use_pyre:
                     print(f"Running pyre for {project_id}")
-                    clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
+                    # clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
                     pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
                     pyre_start = check_pyre_server(join(self.projects_path, project["author"], project["repo"]))
 
