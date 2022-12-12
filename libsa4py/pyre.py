@@ -15,6 +15,15 @@ from libsa4py.utils import run
 import subprocess
 import re
 
+def clean_watchman_config(project_path: str):
+    # if exists(join(project_path, '.watchman_config')):
+    #     os.remove(join(project_path, '.watchman_config'))
+    #     print(f"[PYRE_CLEAN] config of {project_path} ")
+    dict = {"root":"."}
+    with open(join(project_path, '.watchmanconfig'),"w") as f:
+        json.dump(dict,f)
+        # print()
+
 
 def start_watchman(project_path: str):
     stdout, stderr, r_code = run(
