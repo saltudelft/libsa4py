@@ -11,15 +11,28 @@ import os
 import shutil
 import signal
 import json
-from utils import run
+from libsa4py.utils import run
 import subprocess
+import re
 
 
-def pyre_server_init(project_path: str):
+def pyre_server_init(project_path: str) -> int:
     stdout, stderr, r_code = run(
         "cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
     print(f"[PYRE_SERVER] initialized at {project_path} ", stdout, stderr)
     # TODO: Raise an exception if the pyre server has not been started
+
+
+def check_pyre_server(project_path: str):
+    exist = False
+    stdout, stderr, r_code = run("pyre servers")
+    folder = r"%s" % project_path
+    m = re.search(folder, stdout)
+    if m is not None:
+        exist = True
+    else:
+        print("Pyre server in %s did not started" % project_path)
+    return exist
 
 
 def find_pyre_server(project_path: str) -> Optional[int]:
@@ -46,8 +59,8 @@ def pyre_server_shutdown(project_path: str):
     # if server_pid is not None:
     #     os.kill(server_pid, signal.SIGKILL)
     #     print("Stopped pyre server with pid ", server_pid)
-    run("pyre stop")
-    print("Stopped pyre server")
+    run("cd %s ; pyre stop" % project_path)
+    print("Stopped pyre server in ", project_path)
 
 
 def pyre_kill_all_servers():

@@ -16,7 +16,7 @@ from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
-    clean_pyre_config
+    clean_pyre_config, check_pyre_server
 from libsa4py.type_check import MypyManager, type_check_single_file
 from libsa4py import MAX_TC_TIME
 
@@ -162,11 +162,12 @@ class Pipeline:
                     print(f"Running pyre for {project_id}")
                     clean_pyre_config(join(self.projects_path, project["author"], project["repo"]))
                     pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
+                    pyre_start = check_pyre_server(join(self.projects_path, project["author"], project["repo"]))
 
                 for filename, f_relative, f_split in project_files:
                     try:
                         pyre_data_file = pyre_query_types(join(self.projects_path, project["author"], project["repo"]),
-                                                          filename) if self.use_pyre else None
+                                                          filename) if self.use_pyre and pyre_start else None
 
                         project_analyzed_files[project_id]["src_files"][f_relative] = \
                             self.apply_nlp_transf(
