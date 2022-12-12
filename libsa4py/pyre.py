@@ -16,6 +16,11 @@ import subprocess
 import re
 
 
+def start_watchman(project_path: str):
+    stdout, stderr, r_code = run(
+        "cd %s; watchman watch-project ." % project_path)
+
+
 def pyre_server_init(project_path: str) -> int:
     # stdout, stderr, r_code = run(
     #     "cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
