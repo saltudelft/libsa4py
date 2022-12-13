@@ -46,8 +46,6 @@ def check_pyre_server(project_path: str):
     m = re.search(folder, stdout)
     if m is not None:
         exist = True
-    else:
-        print("Pyre server in %s did not started" % project_path)
     return exist
 
 
