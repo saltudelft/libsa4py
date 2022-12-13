@@ -164,28 +164,31 @@ class Pipeline:
                     clean_watchman_config(join(self.projects_path, project["author"], project["repo"]))
                     start_watchman(join(self.projects_path, project["author"], project["repo"]))
                     pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
-                    pyre_start = check_pyre_server(join(self.projects_path, project["author"], project["repo"]))
+                    # pyre_start = check_pyre_server(join(self.projects_path, project["author"], project["repo"]))
 
                 for filename, f_relative, f_split in project_files:
                     try:
                         pyre_data_file = None
                         if self.use_pyre:
-                            if pyre_start:
-                                print("Pyre server in %s is started, pyre query is running" % join(self.projects_path, project["author"], project["repo"]) )
+                            if True:
+                                # print("Pyre server in %s is started, pyre query is running" % join(self.projects_path, project["author"], project["repo"]) )
                                 pyre_data_file = pyre_query_types(
                                     join(self.projects_path, project["author"], project["repo"]),
                                     filename)
-                            else:
-                                time.sleep(5)
-                                if check_pyre_server(join(self.projects_path, project["author"], project["repo"])):
-                                    print("Pyre server in %s is started after 5 seconds, pyre query is running" % join(
-                                        self.projects_path,
-                                        project["author"],
-                                        project["repo"]))
-                                    pyre_data_file = pyre_query_types(
-                                        join(self.projects_path, project["author"], project["repo"]),
-                                        filename)
-                                else:
+                                print("Pyre server in %s is started, pyre query is running" % join(self.projects_path,
+                                                                                                   project["author"],
+                                                                                                   project["repo"]))
+                            # else:
+                            #     time.sleep(5)
+                            #     if check_pyre_server(join(self.projects_path, project["author"], project["repo"])):
+                            #         print("Pyre server in %s is started after 5 seconds, pyre query is running" % join(
+                            #             self.projects_path,
+                            #             project["author"],
+                            #             project["repo"]))
+                            #         pyre_data_file = pyre_query_types(
+                            #             join(self.projects_path, project["author"], project["repo"]),
+                            #             filename)
+                        else:
                                     print("Pyre server in %s is not started " % join(self.projects_path,
                                                                                                    project["author"],
                                                                                                    project["repo"]))
