@@ -15,13 +15,15 @@ from libsa4py.utils import run
 import subprocess
 import re
 
+
 def clean_watchman_config(project_path: str):
     # if exists(join(project_path, '.watchman_config')):
     #     os.remove(join(project_path, '.watchman_config'))
     #     print(f"[PYRE_CLEAN] config of {project_path} ")
-    dict = {"root":"."}
-    with open(join(project_path, '.watchmanconfig'),"w") as f:
-        json.dump(dict,f)
+    dict = {"root": "."}
+    if not exists(join(project_path, '.watchmanconfig')):
+        with open(join(project_path, '.watchmanconfig'), "w") as f:
+            json.dump(dict, f)
         # print()
 
 
@@ -59,13 +61,21 @@ def find_pyre_server(project_path: str) -> Optional[int]:
 
 
 def clean_pyre_config(project_path: str):
-    if exists(join(project_path, '.pyre_configuration')):
-        os.remove(join(project_path, '.pyre_configuration'))
-        print(f"[PYRE_CLEAN] config of {project_path} ")
+    dict = {
+        "site_package_search_strategy": "pep561",
+        "source_directories": [
+            "."
+        ],
+        "typeshed": "/pyre-check/stubs/typeshed/typeshed-master"
+    }
 
-    if exists(join(project_path, '.pyre')):
-        shutil.rmtree(join(project_path, '.pyre'))
-        print(f"[PYRE_CLEAN] pyre folder of {project_path} ")
+    if not exists(join(project_path, '.pyre_configuration')):
+        with open(join(project_path, '.pyre_configuration'), "w") as f:
+            json.dump(dict, f)
+    #
+    # if exists(join(project_path, '.pyre')):
+    #     shutil.rmtree(join(project_path, '.pyre'))
+    #     print(f"[PYRE_CLEAN] pyre folder of {project_path} ")
 
 
 def pyre_server_shutdown(project_path: str):
