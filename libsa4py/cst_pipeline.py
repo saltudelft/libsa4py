@@ -177,10 +177,11 @@ class Pipeline:
                                     filename)
                             else:
                                 time.sleep(5)
-                                print("Pyre server in %s is started after 5 seconds, pyre query is running" % join(self.projects_path,
-                                                                                                   project["author"],
-                                                                                                   project["repo"]))
                                 if check_pyre_server(join(self.projects_path, project["author"], project["repo"])):
+                                    print("Pyre server in %s is started after 5 seconds, pyre query is running" % join(
+                                        self.projects_path,
+                                        project["author"],
+                                        project["repo"]))
                                     pyre_data_file = pyre_query_types(
                                         join(self.projects_path, project["author"], project["repo"]),
                                         filename)
