@@ -15,7 +15,7 @@ docker build -t libsa4py .
 
 ## docker run
 ```
-docker run --platform linux/amd64 -it -v [source]:/data/source -v [result]:/data/results libsa4py bash 
+docker run -it -v [source]:/data/source -v [result]:/data/results libsa4py bash 
 ```
 > `[source]` refers the location for the dataset in the local machine
 > 
@@ -59,7 +59,7 @@ docker run --platform linux/amd64 -it -v [source]:/data/source -v [result]:/data
 
 
 
-<!-- docker run --platform linux/amd64 -it -v /Users/fenglang/Desktop/libsa4py/dataset:/data/source -v /Users/fenglang/Desktop/libsa4py/processedprojects:/data/results libsa4py bash  -->
+<!-- docker -it -v /Users/fenglang/Desktop/libsa4py/dataset:/data/source -v /Users/fenglang/Desktop/libsa4py/processedprojects:/data/results libsa4py bash  -->
 
 [//]: # (### make changes to the libsapy `pipiline` as well as `pyre utils`)
 
@@ -75,6 +75,12 @@ docker run --platform linux/amd64 -it -v [source]:/data/source -v [result]:/data
 [//]: # ()
 [//]: # (#### modify `pyre.py`)
 
+## install watchman manually in docker
+```
+dpkg -i watchman_ubuntu20.04_v2022.12.12.00.deb
+apt-get -f -y install
+watchman version
+```
 
 ## run libsa4py with pyre options
 ```
