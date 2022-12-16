@@ -17,24 +17,22 @@ import re
 
 
 def clean_watchman_config(project_path: str):
-    # if exists(join(project_path, '.watchman_config')):
-    #     os.remove(join(project_path, '.watchman_config'))
-    #     print(f"[PYRE_CLEAN] config of {project_path} ")
+    # add the watchman config to the project
     dict = {"root": "."}
     if not exists(join(project_path, '.watchmanconfig')):
         with open(join(project_path, '.watchmanconfig'), "w") as f:
             json.dump(dict, f)
-        # print()
+
 
 
 def start_watchman(project_path: str):
+    # start watchman for the project
     stdout, stderr, r_code = run(
         "cd %s; watchman watch-project ." % project_path)
 
 
 def pyre_server_init(project_path: str) -> int:
-    # stdout, stderr, r_code = run(
-    #     "cd %s; printf 'Y\n/pyre-check/stubs/typeshed/typeshed-master\n.\n' | pyre init; pyre start" % project_path)
+   # start pyre server
     stdout, stderr, r_code = run(
         "cd %s; pyre start" % project_path)
     print(f"[PYRE_SERVER] initialized at {project_path} ", stdout, stderr)
@@ -61,6 +59,7 @@ def find_pyre_server(project_path: str) -> Optional[int]:
 
 
 def clean_pyre_config(project_path: str):
+    # add pyre initiation file for the path
     dict = {
         "site_package_search_strategy": "pep561",
         "source_directories": [
@@ -72,17 +71,10 @@ def clean_pyre_config(project_path: str):
     if not exists(join(project_path, '.pyre_configuration')):
         with open(join(project_path, '.pyre_configuration'), "w") as f:
             json.dump(dict, f)
-    #
-    # if exists(join(project_path, '.pyre')):
-    #     shutil.rmtree(join(project_path, '.pyre'))
-    #     print(f"[PYRE_CLEAN] pyre folder of {project_path} ")
 
 
 def pyre_server_shutdown(project_path: str):
-    # server_pid = find_pyre_server(project_path)
-    # if server_pid is not None:
-    #     os.kill(server_pid, signal.SIGKILL)
-    #     print("Stopped pyre server with pid ", server_pid)
+    # stop pyre server in the project path
     run("cd %s ; pyre stop" % project_path)
     print("Stopped pyre server in ", project_path)
 
