@@ -68,10 +68,12 @@ class TCManager(ABC):
 
     def _type_check(self, fpath):
         try:
-            cwd = os.getcwd()
-            os.chdir(dirname(fpath))
+            # cwd = os.getcwd()
+            # os.chdir(dirname(fpath))
+            # Runs mypy with the file's absolute path
+            # It may improve detection of type erorrs in some cases!
             result = subprocess.run(
-                self._build_tc_cmd(basename(fpath)),
+                self._build_tc_cmd(fpath), # basename(fpath)
                 capture_output=True,
                 text=True,
                 timeout=self._timeout,
@@ -81,8 +83,8 @@ class TCManager(ABC):
             return retcode, outlines
         except subprocess.TimeoutExpired:
             raise TypeCheckingTooLong
-        finally:
-            os.chdir(cwd)
+        # finally:
+        #     os.chdir(cwd)
 
     @abstractmethod
     def _check_tc_outcome(self, returncode, outlines):
@@ -124,7 +126,8 @@ class TCManager(ABC):
 class MypyManager(TCManager):
     def _build_tc_cmd(self, fpath):
         # Mypy needs a flag to display the error codes
-        return ["mypy", "--show-error-codes", "--no-incremental", "--cache-dir=/dev/null", fpath]
+        return ["mypy", "--show-error-codes", "--no-incremental", "--cache-dir=/dev/null",
+                "--follow-imports=silent", "--ignore-missing-imports", fpath]
 
     def _check_tc_outcome(self, _, outlines):
         if any(l.endswith(err) for l in outlines for err in self._inc_errcodes):
@@ -165,13 +168,13 @@ class MypyManager(TCManager):
             print(f"Error breaking down: {parsed_result.err_breakdown}.")
 
 
-def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None]]:
+def type_check_single_file(f_path: str, tc: TCManager) -> Tuple[bool, Union[int, None], Union[dict, None]]:
     try:
         no_t_err = tc.heavy_assess(f_path)
         if no_t_err is not None:
-            return (True, 0) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs)
+            return (True, 0, no_t_err.err_breakdown) if no_t_err.no_type_errs == 0 else (False, no_t_err.no_type_errs, no_t_err.err_breakdown)
         else:
-            return False, None
+            return False, None, None
     except IndexError:
         print(f"f: {f_path} - No output from Mypy!")
-        return False, None
+        return False, None, None

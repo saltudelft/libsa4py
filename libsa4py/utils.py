@@ -1,7 +1,9 @@
-from typing import List
+import shutil
+from typing import List, Tuple
 from tqdm import tqdm
 from joblib import Parallel
 from os.path import join, isdir
+from tempfile import NamedTemporaryFile
 from pathlib import Path
 import time
 import os
@@ -54,18 +56,20 @@ def ParallelExecutor(use_bar='tqdm', **joblib_args):
 #     return directory
 
 
-def list_files(directory: str, file_ext: str = ".py") -> list:
+def list_files(directory: str, file_ext: str = ".py") -> Tuple[list, int]:
     """
     List all files in the given directory (recursively)
     """
     filenames = []
+    dir_size = 0
 
     for root, dirs, files in os.walk(directory):
         for filename in files:
             if filename.endswith(file_ext):
                 filenames.append(os.path.join(root, filename))
+                dir_size += Path(os.path.join(root, filename)).stat().st_size
 
-    return filenames
+    return filenames, dir_size
 
 
 def read_file(filename: str) -> str:
@@ -78,6 +82,13 @@ def read_file(filename: str) -> str:
 def write_file(filename: str, content: str):
     with open(filename, 'w') as file:
         file.write(content)
+
+def mk_dir_cp_file(src_path: str, dest_path: str):
+    """
+    Creates directories in the destination if not exists and copy the given file
+    """
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    shutil.copy(src_path, dest_path)
 
 def save_json(filename: str, dict_obj: dict):
     """
@@ -115,3 +126,24 @@ def find_repos_list(projects_path: str) -> List[dict]:
 def mk_dir_not_exist(path: str):
     if not isdir(path):
         os.mkdir(path)
+
+
+def create_tmp_file(suffix: str):
+    """
+    It creates a temporary file.
+    NOTE: the temp file should be deleted manually after creation.
+    """
+    return NamedTemporaryFile(mode="w", delete=False, suffix=suffix)
+
+
+def delete_tmp_file(tmp_f: NamedTemporaryFile):
+    try:
+        os.unlink(tmp_f.name)
+    except TypeError:
+        print("Couldn't delete ", tmp_f.name)
+
+
+def write_to_tmp_file(tmp_f: NamedTemporaryFile, text: str):
+    tmp_f.write(text)
+    #tmp_f.close()
+    return tmp_f

@@ -853,13 +853,15 @@ class ParametricTypeDepthReducer(cst.CSTTransformer):
             return updated_node
 
 
+# TODO: Write two separate CSTTransformers for applying and removing type annotations
 class TypeApplier(cst.CSTTransformer):
     """
     It applies (inferred) type annotations to a source code file.
     Specifically, it applies the type of arguments, return types, and variables' type.
     """
 
-    METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider, cst.metadata.QualifiedNameProvider)
+    METADATA_DEPENDENCIES = (cst.metadata.ScopeProvider, cst.metadata.QualifiedNameProvider,
+                             cst.metadata.PositionProvider)
 
     def __init__(self, f_processeed_dict: dict, apply_nlp: bool=True):
         self.f_processed_dict = f_processeed_dict
@@ -871,6 +873,10 @@ class TypeApplier(cst.CSTTransformer):
         self.lambda_d = 0
 
         self.all_applied_types = set()
+        self.no_applied_types = 0
+        self.no_failed_applied_types = 0
+
+        self.imported_names: List[str] = []
 
         if apply_nlp:
             self.nlp_p = NLPreprocessor().process_identifier
@@ -883,9 +889,15 @@ class TypeApplier(cst.CSTTransformer):
         else:
             fns = self.f_processed_dict['funcs']
 
+        qn = self.__get_qualified_name(f_node.name)
+        fn_params = set(self.__get_fn_params(f_node.params))
+        fn_lc = self.__get_line_column_no(f_node)
         for fn in fns:
-            if fn['q_name'] == self.__get_qualified_name(f_node.name) and \
-                    set(list(fn['params'].keys())) == set(self.__get_fn_params(f_node.params)):
+            if (fn['fn_lc'][0][0], fn['fn_lc'][1][0]) == fn_lc:
+                return fn
+
+        for fn in fns:
+            if fn['q_name'] == qn and set(list(fn['params'].keys())) == fn_params:
                 return fn
 
     def __get_fn_param_type(self, param_name: str):
@@ -895,11 +907,20 @@ class TypeApplier(cst.CSTTransformer):
             fn_param_type = self.__name2annotation(fn_param_type_resolved)
             if fn_param_type is not None:
                 self.all_applied_types.add((fn_param_type_resolved, fn_param_type))
+                self.no_applied_types += 1
                 return fn_param_type
+            else:
+                self.no_failed_applied_types += 1
 
     def __get_cls(self, cls: cst.ClassDef) -> dict:
+        cls_lc = self.__get_line_column_no(cls)
+        cls_qn = self.__get_qualified_name(cls.name)
         for c in self.f_processed_dict['classes']:
-            if c['q_name'] == self.__get_qualified_name(cls.name):
+            if (c['cls_lc'][0][0], c['cls_lc'][1][0]) == cls_lc:
+                return c
+
+        for c in self.f_processed_dict['classes']:
+            if c['q_name'] == cls_qn:
                 return c
 
     def __get_fn_vars(self, var_name: str) -> dict:
@@ -923,24 +944,27 @@ class TypeApplier(cst.CSTTransformer):
     def __get_mod_vars(self):
         return self.f_processed_dict['variables']
 
-    def __get_var_type_assign_t(self, var_name: str):
+    def __get_var_type_assign_t(self, var_name: str, var_node):
         t: str = None
+        var_line_no = self.__get_line_column_no(var_node)
         if len(self.cls_visited) != 0:
             if len(self.fn_visited) != 0:
                 # A class method's variable
-                if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
                     t = self.__get_fn_vars(self.nlp_p(var_name))
             else:
                 # A class variable
-                if self.cls_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+                if self.cls_visited[-1][0]["cls_var_ln"][var_name][0][0] == var_line_no[0]:
                     t = self.__get_cls_vars(self.nlp_p(var_name))
         elif len(self.fn_visited) != 0:
             # A module function's variable
-            if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+            #if self.fn_visited[-1][1][var_name] == self.last_visited_assign_t_count:
+            if self.fn_visited[-1][0]['fn_var_ln'][var_name][0][0] == var_line_no[0]:
                 t = self.__get_fn_vars(self.nlp_p(var_name))
         else:
             # A module's variables
-            t = self.__get_mod_vars()[self.nlp_p(var_name)]
+            if self.f_processed_dict['mod_var_ln'][var_name][0][0] == var_line_no[0]:
+                t = self.__get_mod_vars()[self.nlp_p(var_name)]
         return t
 
     def __get_var_type_an_assign(self, var_name: str):
@@ -962,9 +986,17 @@ class TypeApplier(cst.CSTTransformer):
     def __get_var_names_counter(self, node, scope):
         vars_name = match.extractall(node, match.OneOf(match.AssignTarget(target=match.SaveMatchedNode(
             match.Name(value=match.DoNotCare()), "name")), match.AnnAssign(target=match.SaveMatchedNode(
-            match.Name(value=match.DoNotCare()), "name"))))
+            match.Name(value=match.DoNotCare()), "name"))
+        ))
+        attr_name = match.extractall(node, match.OneOf(match.AssignTarget(
+                target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr")),
+            match.AnnAssign(target=match.SaveMatchedNode(match.Attribute(value=match.Name(value=match.DoNotCare()), attr=
+            match.Name(value=match.DoNotCare())), "attr"))))
         return Counter([n['name'].value for n in vars_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
-                                                                                           n['name']), scope)])
+                                                                                           n['name']), scope)] +
+                       [n['attr'].attr.value for n in attr_name if isinstance(self.get_metadata(cst.metadata.ScopeProvider,
+                                                                                           n['attr']), scope)])
 
     def visit_ClassDef(self, node: cst.ClassDef):
         self.cls_visited.append((self.__get_cls(node),
@@ -986,7 +1018,12 @@ class TypeApplier(cst.CSTTransformer):
             fn_ret_type = self.__name2annotation(fn_ret_type_resolved)
             if fn_ret_type is not None:
                 self.all_applied_types.add((fn_ret_type_resolved, fn_ret_type))
+                self.no_applied_types += 1
                 return updated_node.with_changes(returns=fn_ret_type)
+            else:
+                self.no_failed_applied_types += 1
+        else:
+            return updated_node.with_changes(returns=None)
 
         return updated_node
 
@@ -999,15 +1036,26 @@ class TypeApplier(cst.CSTTransformer):
 
     def leave_SimpleStatementLine(self, original_node: cst.SimpleStatementLine,
                                   updated_node: cst.SimpleStatementLine):
+
+        # Untyped variables
+        t = None
         if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.DoNotCare())])])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
                 target=match.Name(value=match.DoNotCare()))])])):
-            t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value)
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.value,
+                                                 original_node.body[0].targets[0].target)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.Assign(targets=[match.AssignTarget(
+                target=match.Attribute(value=match.Name(value=match.DoNotCare()), attr=match.Name(value=match.DoNotCare())))])])):
+                t = self.__get_var_type_assign_t(original_node.body[0].targets[0].target.attr.value,
+                                                 original_node.body[0].targets[0].target)
 
             if t is not None:
                 t_annot_node_resolved = self.resolve_type_alias(t)
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
                     self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].targets[0].target,
                         value=original_node.body[0].value,
@@ -1015,18 +1063,35 @@ class TypeApplier(cst.CSTTransformer):
                         equal=cst.AssignEqual(whitespace_after=original_node.body[0].targets[0].whitespace_after_equal,
                                             whitespace_before=original_node.body[0].targets[0].whitespace_before_equal))]
                     )
-        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
-            t = self.__get_var_type_an_assign(original_node.body[0].target.value)
-            if t is not None:
+                else:
+                    self.no_failed_applied_types += 1
+        # Typed variables
+        elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.DoNotCare(),
+                                                                                          value=match.MatchIfTrue(lambda v: v is not None))])):
+            if match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Name(value=match.DoNotCare()))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.value)
+            elif match.matches(original_node, match.SimpleStatementLine(body=[match.AnnAssign(target=match.Attribute(value=match.Name(value=match.DoNotCare()),
+                                                                                              attr=match.Name(value=match.DoNotCare())))])):
+                t = self.__get_var_type_an_assign(original_node.body[0].target.attr.value)
+            if t:
                 t_annot_node_resolved = self.resolve_type_alias(t)
                 t_annot_node = self.__name2annotation(t_annot_node_resolved)
                 if t_annot_node is not None:
                     self.all_applied_types.add((t_annot_node_resolved, t_annot_node))
+                    self.no_applied_types += 1
                     return updated_node.with_changes(body=[cst.AnnAssign(
                         target=original_node.body[0].target,
                         value=original_node.body[0].value,
                         annotation=t_annot_node,
                         equal=original_node.body[0].equal)])
+                else:
+                    self.no_failed_applied_types += 1
+            else:
+                return updated_node.with_changes(body=[cst.Assign(targets=[cst.AssignTarget(target=original_node.body[0].target,
+                                                                                            whitespace_before_equal=original_node.body[0].equal.whitespace_before,
+                                                                                            whitespace_after_equal=original_node.body[0].equal.whitespace_after)],
+                                                                value=original_node.body[0].value)])
+                    
 
         return original_node
 
@@ -1035,6 +1100,8 @@ class TypeApplier(cst.CSTTransformer):
             fn_param_type = self.__get_fn_param_type(original_node.name.value)
             if fn_param_type is not None:
                 return updated_node.with_changes(annotation=fn_param_type)
+            else:
+                return updated_node.with_changes(annotation=None)
 
         return original_node
 
@@ -1051,20 +1118,29 @@ class TypeApplier(cst.CSTTransformer):
     def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
         return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))
 
+    def visit_ImportAlias(self, node: cst.ImportAlias):
+        self.imported_names.extend([n.value for n in match.findall(node.name, match.Name(value=match.DoNotCare()))])
+
     # TODO: Check the imported modules before adding new ones
     def __get_required_imports(self):
-        def find_required_modules(all_types):
+        def find_required_modules(all_types, imported_names):
             req_mod = set()
             for _, a_node in all_types:
                 m = match.findall(a_node.annotation, match.Attribute(value=match.DoNotCare(), attr=match.DoNotCare()))
                 if len(m) != 0:
                     for i in m:
-                        req_mod.add([n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0])
+                        mod_imp = [n.value for n in match.findall(i, match.Name(value=match.DoNotCare()))][0]
+                        if mod_imp not in imported_names:
+                            req_mod.add(mod_imp)
+            # if n.value not in imported_names
+            print(req_mod)
             return req_mod
 
         req_imports = []
-        all_req_mods = find_required_modules(self.all_applied_types)
+        self.imported_names = set(self.imported_names)
+        all_req_mods = find_required_modules(self.all_applied_types, self.imported_names)
         all_type_names = set(chain.from_iterable(map(lambda t: regex.findall(r"\w+", t[0]), self.all_applied_types)))
+        all_type_names = all_type_names - self.imported_names
 
         typing_imports = PY_TYPING_MOD & all_type_names
         collection_imports = PY_COLLECTION_MOD & all_type_names
@@ -1097,6 +1173,10 @@ class TypeApplier(cst.CSTTransformer):
     def __get_qualified_name(self, node) -> Optional[str]:
         q_name = list(self.get_metadata(cst.metadata.QualifiedNameProvider, node))
         return q_name[0].name if len(q_name) != 0 else None
+
+    def __get_line_column_no(self, node) -> Tuple[int, int]:
+        lc = self.get_metadata(cst.metadata.PositionProvider, node)
+        return lc.start.line, lc.end.line
 
     def resolve_type_alias(self, t: str):
         type_aliases = {'^{}$|^Dict$|(?<=.*)Dict\[\](?<=.*)|(?<=.*)Dict\[Any, *?Any\](?=.*)|^Dict\[unknown, *Any\]$': 'dict',

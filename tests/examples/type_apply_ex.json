@@ -1,417 +1,605 @@
 {
-  "tests/examples": {
-    "src_files": {
-      "type_apply.py": {
-    "untyped_seq": "from typing import Tuple , Dict , List , Literal [EOL] from collections import defaultdict [EOL] import pandas [EOL] import pathlib [EOL] import builtins [EOL] import collections [EOL] import typing [EOL] from pathlib import Path [EOL] x = [number] [EOL] l = [ ( [number] , [number] ) ] [EOL] c = defaultdict ( int ) [EOL] df = pd . DataFrame ( [ [number] , [number] ] ) [EOL] dff = pd . DataFrame ( [ [number] , [number] ] ) [EOL] lit = [string] [EOL] class Foo : [EOL] foo_v = [string] [EOL] class Delta : [EOL] foo_d = [string] [EOL] foo_p = Path ( [string] ) [EOL] def __init__ ( ) : [EOL] def foo_inner ( c , d ) : [EOL] pass [EOL] def foo_fn ( self , y ) : [EOL] def foo_inner ( a , b , c , d ) : [EOL] pass [EOL] d = { [string] : True } [EOL] return d [EOL] @ event . getter def get_e ( self ) : [EOL] return Foo . foo_v [EOL] @ event . setter def get_e ( self , y ) : [EOL] Foo . foo_v = y [EOL] return Foo . foo_v [EOL] foo_v = [string] [EOL] def Bar ( x = [ [string] , [string] ] ) : [EOL] v = x [EOL] l = lambda e : e + [number] [EOL] return v [EOL]",
-    "typed_seq": "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 0 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 $collections.defaultdict$ 0 0 0 0 0 0 $pandas.DataFrame$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.List[pandas.arrays.PandasArray]$ 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Literal$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $pathlib.Path$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 $typing.Dict[builtins.str,builtins.bool]$ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 $builtins.str$ 0 0 0 0 0 0 0 0 0 0 0 $typing.List[builtins.str]$ 0 $builtins.int$ 0 0 0 0 0 0 0 0 0 0 0 $builtins.int$ 0 $typing.List[typing.Tuple[builtins.int,builtins.int]]$ 0 0 0 0 0 0 0 0 0 0 0",
-    "imports": [
-        "Tuple",
-        "Dict",
-        "List",
-        "Literal",
-        "defaultdict",
-        "pandas",
-        "pathlib",
-        "builtins",
-        "collections",
-        "typing",
-        "Path"
-    ],
-    "variables": {
-        "x": "builtins.int",
-        "l": "typing.List[typing.Tuple[builtins.int, builtins.int]]",
-        "c": "collections.defaultdict",
-        "df": "pandas.DataFrame",
-        "dff": "typing.List[pandas.arrays.PandasArray]",
-        "lit": "typing.Literal"
-    },
-    "mod_var_occur": {
-        "x": [
-            [
-                "v",
-                "typing",
-                "List",
-                "builtins",
-                "str",
-                "x"
-            ]
-        ],
-        "l": [
-            [
-                "l",
-                "e",
-                "e"
-            ]
-        ],
-        "c": [],
-        "df": [],
-        "dff": [],
-        "lit": []
-    },
-    "classes": [
-        {
-            "name": "Delta",
-            "q_name": "Foo.Delta",
-            "variables": {
-                "foo_d": ""
-            },
-            "cls_var_occur": {
-                "foo_d": []
-            },
-            "funcs": []
-        },
-        {
-            "name": "Foo",
-            "q_name": "Foo",
-            "variables": {
-                "foo_v": "",
-                "foo_p": "pathlib.Path"
-            },
-            "cls_var_occur": {
-                "foo_v": [
-                    [
-                        "Foo",
-                        "foo_v"
-                    ],
-                    [
-                        "Foo",
-                        "foo_v",
-                        "y"
-                    ],
-                    [
-                        "Foo",
-                        "foo_v"
-                    ]
+    "tests/examples": {
+        "src_files": {
+            "type_apply.py": {
+                "untyped_seq": "",
+                "typed_seq": "",
+                "imports": [
+                    "pathlib",
+                    "Path",
+                    "pandas"
                 ],
-                "foo_p": []
-            },
-            "funcs": [
-                {
-                    "name": "foo_inner",
-                    "q_name": "Foo.__init__.<locals>.foo_inner",
-                    "fn_lc": [
-                        [
-                            21,
-                            8
-                        ],
-                        [
-                            22,
-                            16
-                        ]
-                    ],
-                    "params": {
-                        "c": "str",
-                        "d": ""
-                    },
-                    "ret_exprs": [],
-                    "params_occur": {
-                        "c": [],
-                        "d": []
-                    },
-                    "ret_type": "",
-                    "variables": {},
-                    "fn_var_occur": {},
-                    "params_descr": {
-                        "c": "",
-                        "d": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
+                "variables": {
+                    "x": "builtins.int",
+                    "l": "typing.List[typing.Tuple[builtins.int, builtins.int]]",
+                    "c": "collections.defaultdict",
+                    "df": "pandas.DataFrame",
+                    "dff": "typing.List[pandas.arrays.PandasArray]",
+                    "lit": "typing.Literal"
                 },
-                {
-                    "name": "__init__",
-                    "q_name": "Foo.__init__",
-                    "fn_lc": [
+                "mod_var_occur": {
+                    "x": [
                         [
-                            20,
-                            4
-                        ],
-                        [
-                            22,
-                            16
+                            "v",
+                            "typing",
+                            "List",
+                            "builtins",
+                            "str",
+                            "x"
                         ]
                     ],
-                    "params": {},
-                    "ret_exprs": [],
-                    "params_occur": {},
-                    "ret_type": "",
-                    "variables": {},
-                    "fn_var_occur": {},
-                    "params_descr": {},
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
+                    "l": [
+                        [
+                            "l",
+                            "e",
+                            "e"
+                        ]
+                    ],
+                    "c": [],
+                    "df": [],
+                    "dff": [],
+                    "lit": []
                 },
-                {
-                    "name": "foo_inner",
-                    "q_name": "Foo.foo_fn.<locals>.foo_inner",
-                    "fn_lc": [
+                "mod_var_ln": {
+                    "x": [
                         [
-                            24,
-                            8
+                            3,
+                            0
                         ],
                         [
-                            25,
-                            16
+                            3,
+                            1
                         ]
                     ],
-                    "params": {
-                        "a": "",
-                        "b": "",
-                        "c": "",
-                        "d": "",
-                        "args": "",
-                        "kwargs": ""
-                    },
-                    "ret_exprs": [],
-                    "params_occur": {
-                        "a": [],
-                        "b": [],
-                        "c": [],
-                        "d": []
-                    },
-                    "ret_type": "",
-                    "variables": {},
-                    "fn_var_occur": {},
-                    "params_descr": {
-                        "a": "",
-                        "b": "",
-                        "c": "",
-                        "d": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
+                    "l": [
+                        [
+                            4,
+                            0
+                        ],
+                        [
+                            4,
+                            1
+                        ]
+                    ],
+                    "c": [
+                        [
+                            5,
+                            0
+                        ],
+                        [
+                            5,
+                            1
+                        ]
+                    ],
+                    "df": [
+                        [
+                            6,
+                            0
+                        ],
+                        [
+                            6,
+                            2
+                        ]
+                    ],
+                    "dff": [
+                        [
+                            7,
+                            0
+                        ],
+                        [
+                            7,
+                            3
+                        ]
+                    ],
+                    "lit": [
+                        [
+                            8,
+                            0
+                        ],
+                        [
+                            8,
+                            3
+                        ]
+                    ]
                 },
-                {
-                    "name": "foo_fn",
-                    "q_name": "Foo.foo_fn",
-                    "fn_lc": [
-                        [
-                            23,
-                            4
-                        ],
-                        [
-                            27,
-                            16
-                        ]
-                    ],
-                    "params": {
-                        "self": "",
-                        "y": ""
-                    },
-                    "ret_exprs": [
-                        "return d"
-                    ],
-                    "params_occur": {
-                        "self": [],
-                        "y": []
-                    },
-                    "ret_type": "typing.Dict[builtins.str, builtins.bool]",
-                    "variables": {
-                        "d": "typing.Dict[builtins.str, builtins.bool]"
-                    },
-                    "fn_var_occur": {
-                        "d": [
+                "classes": [
+                    {
+                        "name": "Delta",
+                        "q_name": "Foo.Delta",
+                        "cls_lc": [
                             [
-                                "d",
-                                "typing",
-                                "Dict",
-                                "builtins",
-                                "str",
-                                "builtins",
-                                "bool",
-                                "True"
-                            ]
-                        ]
-                    },
-                    "params_descr": {
-                        "self": "",
-                        "y": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
-                },
-                {
-                    "name": "get_e",
-                    "q_name": "Foo.get_e",
-                    "fn_lc": [
-                        [
-                            29,
-                            4
-                        ],
-                        [
-                            30,
-                            24
-                        ]
-                    ],
-                    "params": {
-                        "self": ""
-                    },
-                    "ret_exprs": [
-                        "return Foo.foo_v"
-                    ],
-                    "params_occur": {
-                        "self": []
-                    },
-                    "ret_type": "",
-                    "variables": {},
-                    "fn_var_occur": {},
-                    "params_descr": {
-                        "self": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
-                    }
-                },
-                {
-                    "name": "get_e",
-                    "q_name": "Foo.get_e",
-                    "fn_lc": [
-                        [
-                            32,
-                            4
-                        ],
-                        [
-                            34,
-                            24
-                        ]
-                    ],
-                    "params": {
-                        "self": "",
-                        "y": "builtins.str"
-                    },
-                    "ret_exprs": [
-                        "return Foo.foo_v"
-                    ],
-                    "params_occur": {
-                        "self": [],
-                        "y": [
-                            [
-                                "Foo",
-                                "foo_v",
-                                "y"
-                            ]
-                        ]
-                    },
-                    "ret_type": "",
-                    "variables": {
-                        "foo_v": ""
-                    },
-                    "fn_var_occur": {
-                        "foo_v": [
-                            [
-                                "Foo",
-                                "foo_v",
-                                "y"
+                                11,
+                                4
                             ],
                             [
-                                "Foo",
-                                "foo_v"
+                                12,
+                                31
                             ]
+                        ],
+                        "variables": {
+                            "foo_d": ""
+                        },
+                        "cls_var_occur": {
+                            "foo_d": []
+                        },
+                        "cls_var_ln": {
+                            "foo_d": [
+                                [
+                                    12,
+                                    8
+                                ],
+                                [
+                                    12,
+                                    13
+                                ]
+                            ]
+                        },
+                        "funcs": []
+                    },
+                    {
+                        "name": "Foo",
+                        "q_name": "Foo",
+                        "cls_lc": [
+                            [
+                                9,
+                                0
+                            ],
+                            [
+                                30,
+                                30
+                            ]
+                        ],
+                        "variables": {
+                            "foo_v": "builtins.str",
+                            "foo_p": "pathlib.Path"
+                        },
+                        "cls_var_occur": {
+                            "foo_v": [
+                                [
+                                    "Foo",
+                                    "foo_v"
+                                ],
+                                [
+                                    "Foo",
+                                    "foo_v",
+                                    "y"
+                                ],
+                                [
+                                    "Foo",
+                                    "foo_v"
+                                ]
+                            ],
+                            "foo_p": []
+                        },
+                        "cls_var_ln": {
+                            "foo_v": [
+                                [
+                                    30,
+                                    4
+                                ],
+                                [
+                                    30,
+                                    9
+                                ]
+                            ],
+                            "foo_p": [
+                                [
+                                    13,
+                                    4
+                                ],
+                                [
+                                    13,
+                                    9
+                                ]
+                            ]
+                        },
+                        "funcs": [
+                            {
+                                "name": "foo_inner",
+                                "q_name": "Foo.__init__.<locals>.foo_inner",
+                                "fn_lc": [
+                                    [
+                                        16,
+                                        8
+                                    ],
+                                    [
+                                        17,
+                                        16
+                                    ]
+                                ],
+                                "params": {
+                                    "c": "builtins.str",
+                                    "d": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "c": [],
+                                    "d": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "fn_var_ln": {},
+                                "params_descr": {
+                                    "c": "",
+                                    "d": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "__init__",
+                                "q_name": "Foo.__init__",
+                                "fn_lc": [
+                                    [
+                                        14,
+                                        4
+                                    ],
+                                    [
+                                        17,
+                                        16
+                                    ]
+                                ],
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "i": "builtins.int"
+                                },
+                                "fn_var_occur": {
+                                    "i": []
+                                },
+                                "fn_var_ln": {
+                                    "i": [
+                                        [
+                                            15,
+                                            8
+                                        ],
+                                        [
+                                            15,
+                                            14
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "foo_inner",
+                                "q_name": "Foo.foo_fn.<locals>.foo_inner",
+                                "fn_lc": [
+                                    [
+                                        19,
+                                        8
+                                    ],
+                                    [
+                                        20,
+                                        16
+                                    ]
+                                ],
+                                "params": {
+                                    "a": "",
+                                    "b": "",
+                                    "c": "",
+                                    "d": "",
+                                    "args": "",
+                                    "kwargs": ""
+                                },
+                                "ret_exprs": [],
+                                "params_occur": {
+                                    "a": [],
+                                    "b": [],
+                                    "c": [],
+                                    "d": [],
+                                    "args": [],
+                                    "kwargs": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "fn_var_ln": {},
+                                "params_descr": {
+                                    "a": "",
+                                    "b": "",
+                                    "c": "",
+                                    "d": "",
+                                    "args": "",
+                                    "kwargs": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "foo_fn",
+                                "q_name": "Foo.foo_fn",
+                                "fn_lc": [
+                                    [
+                                        18,
+                                        4
+                                    ],
+                                    [
+                                        22,
+                                        16
+                                    ]
+                                ],
+                                "params": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "ret_exprs": [
+                                    "return d"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "y": []
+                                },
+                                "ret_type": "typing.Dict[builtins.str, builtins.bool]",
+                                "variables": {
+                                    "d": "typing.Dict[builtins.str, builtins.bool]"
+                                },
+                                "fn_var_occur": {
+                                    "d": [
+                                        [
+                                            "d",
+                                            "typing",
+                                            "Dict",
+                                            "builtins",
+                                            "str",
+                                            "builtins",
+                                            "bool",
+                                            "True"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "d": [
+                                        [
+                                            21,
+                                            8
+                                        ],
+                                        [
+                                            21,
+                                            9
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "get_e",
+                                "q_name": "Foo.get_e",
+                                "fn_lc": [
+                                    [
+                                        24,
+                                        4
+                                    ],
+                                    [
+                                        25,
+                                        24
+                                    ]
+                                ],
+                                "params": {
+                                    "self": ""
+                                },
+                                "ret_exprs": [
+                                    "return Foo.foo_v"
+                                ],
+                                "params_occur": {
+                                    "self": []
+                                },
+                                "ret_type": "",
+                                "variables": {},
+                                "fn_var_occur": {},
+                                "fn_var_ln": {},
+                                "params_descr": {
+                                    "self": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            },
+                            {
+                                "name": "get_e",
+                                "q_name": "Foo.get_e",
+                                "fn_lc": [
+                                    [
+                                        27,
+                                        4
+                                    ],
+                                    [
+                                        29,
+                                        24
+                                    ]
+                                ],
+                                "params": {
+                                    "self": "",
+                                    "y": "builtins.str"
+                                },
+                                "ret_exprs": [
+                                    "return Foo.foo_v"
+                                ],
+                                "params_occur": {
+                                    "self": [],
+                                    "y": [
+                                        [
+                                            "Foo",
+                                            "foo_v",
+                                            "y"
+                                        ]
+                                    ]
+                                },
+                                "ret_type": "",
+                                "variables": {
+                                    "foo_v": ""
+                                },
+                                "fn_var_occur": {
+                                    "foo_v": [
+                                        [
+                                            "Foo",
+                                            "foo_v",
+                                            "y"
+                                        ],
+                                        [
+                                            "Foo",
+                                            "foo_v"
+                                        ]
+                                    ]
+                                },
+                                "fn_var_ln": {
+                                    "foo_v": [
+                                        [
+                                            28,
+                                            8
+                                        ],
+                                        [
+                                            28,
+                                            17
+                                        ]
+                                    ]
+                                },
+                                "params_descr": {
+                                    "self": "",
+                                    "y": ""
+                                },
+                                "docstring": {
+                                    "func": null,
+                                    "ret": null,
+                                    "long_descr": null
+                                }
+                            }
                         ]
-                    },
-                    "params_descr": {
-                        "self": "",
-                        "y": ""
-                    },
-                    "docstring": {
-                        "func": null,
-                        "ret": null,
-                        "long_descr": null
                     }
-                }
-            ]
-        }
-    ],
-    "funcs": [
-        {
-            "name": "Bar",
-            "q_name": "Bar",
-            "fn_lc": [
-                [
-                    36,
-                    0
                 ],
-                [
-                    39,
-                    12
-                ]
-            ],
-            "params": {
-                "x": "typing.List[builtins.str]",
-                "c": ""
-            },
-            "ret_exprs": [
-                "return v"
-            ],
-            "params_occur": {
-                "x": [
-                    [
-                        "v",
-                        "typing",
-                        "List",
-                        "builtins",
-                        "str",
-                        "x"
-                    ]
-                ]
-            },
-            "ret_type": "typing.List[builtins.str]",
-            "variables": {
-                "v": "typing.List[builtins.str]",
-                "l": ""
-            },
-            "fn_var_occur": {
-                "v": [
-                    [
-                        "v",
-                        "typing",
-                        "List",
-                        "builtins",
-                        "str",
-                        "x"
-                    ]
+                "funcs": [
+                    {
+                        "name": "Bar",
+                        "q_name": "Bar",
+                        "fn_lc": [
+                            [
+                                31,
+                                0
+                            ],
+                            [
+                                34,
+                                12
+                            ]
+                        ],
+                        "params": {
+                            "x": "typing.List[builtins.str]",
+                            "c": ""
+                        },
+                        "ret_exprs": [
+                            "return v"
+                        ],
+                        "params_occur": {
+                            "x": [
+                                [
+                                    "v",
+                                    "typing",
+                                    "List",
+                                    "builtins",
+                                    "str",
+                                    "x"
+                                ]
+                            ],
+                            "c": []
+                        },
+                        "ret_type": "typing.List[builtins.str]",
+                        "variables": {
+                            "v": "typing.List[builtins.str]",
+                            "l": ""
+                        },
+                        "fn_var_occur": {
+                            "v": [
+                                [
+                                    "v",
+                                    "typing",
+                                    "List",
+                                    "builtins",
+                                    "str",
+                                    "x"
+                                ]
+                            ],
+                            "l": [
+                                [
+                                    "l",
+                                    "e",
+                                    "e"
+                                ]
+                            ]
+                        },
+                        "fn_var_ln": {
+                            "v": [
+                                [
+                                    32,
+                                    4
+                                ],
+                                [
+                                    32,
+                                    5
+                                ]
+                            ],
+                            "l": [
+                                [
+                                    33,
+                                    4
+                                ],
+                                [
+                                    33,
+                                    5
+                                ]
+                            ]
+                        },
+                        "params_descr": {
+                            "x": "",
+                            "c": ""
+                        },
+                        "docstring": {
+                            "func": null,
+                            "ret": null,
+                            "long_descr": null
+                        }
+                    }
                 ],
-                "l": [
-                    [
-                        "l",
-                        "e",
-                        "e"
-                    ]
-                ]
-            },
-            "params_descr": {
-                "x": ""
-            },
-            "docstring": {
-                "func": null,
-                "ret": null,
-                "long_descr": null
+                "set": null,
+                "tc": [
+                    false,
+                    null
+                ],
+                "no_types_annot": {
+                    "U": 14,
+                    "D": 15,
+                    "I": 0
+                },
+                "type_annot_cove": 0.52
             }
         }
-    ],
-    "set": null,
-    "tc": false,
-    "no_types_annot": {
-        "U": 12,
-        "D": 13,
-        "I": 0
-    },
-    "type_annot_cove": 0.52
-}
     }
-  }
 }
