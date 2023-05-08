@@ -1040,13 +1040,13 @@ class TypeApplier(cst.CSTTransformer):
 
     def visit_AssignTarget(self, node: cst.AssignTarget):
         if match.matches(node, match.AssignTarget(target=match.Name(value=match.DoNotCare()))):
-            if self.last_visited_assign_t_name == node.target.value:
+            if self.last_visited_assign_t_name == self.__get_qualified_name(node.target):
                 self.last_visited_assign_t_count += 1
             elif self.last_visited_assign_t_count == 0:
                 self.last_visited_assign_t_count = 1
             else:
                 self.last_visited_assign_t_count = 1
-            self.last_visited_assign_t_name = node.target.value
+            self.last_visited_assign_t_name = self.__get_qualified_name(node.target)
 
     def leave_Module(self, original_node: cst.Module, updated_node: cst.Module):
         return updated_node.with_changes(body=self.__get_required_imports() + list(updated_node.body))

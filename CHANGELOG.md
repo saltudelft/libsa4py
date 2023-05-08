@@ -4,6 +4,8 @@ All notable changes to the [LibSA4Py](https://github.com/saltudelft/libsa4py) to
 ## [Unreleased]
 ### Added
 - Adds the `CountParametricTypeDepth` visitor to count the depth of parametric types.
+### Fixed
+- Fixed an issue where type annotations for local variables with the same name in methods were not applied (`TypeAlpplier`).
 
 ## [0.3.0] - 2022-02-17
 ### Added
