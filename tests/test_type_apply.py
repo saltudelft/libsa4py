@@ -1,8 +1,11 @@
 from libsa4py.utils import mk_dir_not_exist, write_file, read_file, save_json
 from libsa4py.cst_pipeline import TypeAnnotatingProjects
+from libsa4py.cst_extractor import Extractor
+from libsa4py.cst_transformers import TypeAnnotationRemover, TypeApplier
 from collections import Counter
 import unittest
 import shutil
+import libcst
 
 test_file = """from pathlib import Path
 x: int = 12
@@ -79,6 +82,14 @@ def Bar(x: typing.List[builtins.str]=['apple', 'orange'], *, c)-> typing.List[bu
     return v
 """
 
+test_local_vars = """
+def f():
+    x: builtin.int = 10
+
+def g():
+    x: builtin.str = "Hello World"
+"""
+
 
 class TestTypeAnnotatingProjects(unittest.TestCase):
     """
@@ -108,6 +119,24 @@ class TestTypeAnnotatingProjects(unittest.TestCase):
         self.assertEqual(exp, out)
         # The imported types from typing
         self.assertEqual(Counter(" ".join(exp_split[0:7])), Counter(" ".join(out_split[0:7])))
+
+    def test_type_apply_local_vars(self):
+        """
+        This tests whether type annotations for local variables with the same names are applied correctly.
+        """
+        mod = libcst.parse_module(test_local_vars)
+        annot_org = Extractor.extract(mod.code).to_dict()
+
+        annot_less = mod.visit(TypeAnnotationRemover())
+        annot_new = libcst.metadata.MetadataWrapper(annot_less,
+                                                    unsafe_skip_copy=True).visit(TypeApplier(annot_org,
+                                                                                             apply_nlp=False))
+        exp_split = mod.code.splitlines()
+        out_split = annot_new.code.splitlines()
+
+        exp = """{}""".format("\n".join(exp_split[1:]))
+        out = """{}""".format("\n".join(out_split[2:]))
+        self.assertEqual(exp, out)
 
     @classmethod
     def tearDownClass(cls):
