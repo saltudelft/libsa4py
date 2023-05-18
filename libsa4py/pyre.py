@@ -93,6 +93,7 @@ def pyre_kill_all_servers():
 
 
 def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> Optional[PyreData]:
+    # pyre query for each file
     try:
         file_types = None
         stdout, stderr, r_code = run('''cd %s; pyre query "types(path='%s')"''' % (project_path,

@@ -16,7 +16,7 @@ from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
-    clean_pyre_config, check_pyre_server, start_watchman, clean_watchman_config
+    clean_pyre_config, check_pyre_server, start_watchman, clean_watchman_config, clean_config, pyre_infer
 from libsa4py.type_check import MypyManager, type_check_single_file
 from libsa4py import MAX_TC_TIME
 
@@ -164,34 +164,17 @@ class Pipeline:
                     clean_watchman_config(join(self.projects_path, project["author"], project["repo"]))
                     start_watchman(join(self.projects_path, project["author"], project["repo"]))
                     pyre_server_init(join(self.projects_path, project["author"], project["repo"]))
-                    # pyre_start = check_pyre_server(join(self.projects_path, project["author"], project["repo"]))
+                    #pyre infer
+                    pyre_infer(join(self.projects_path, project["author"], project["repo"]))
 
                 for filename, f_relative, f_split in project_files:
                     try:
                         pyre_data_file = None
                         if self.use_pyre:
-                            if True:
-                                # print("Pyre server in %s is started, pyre query is running" % join(self.projects_path, project["author"], project["repo"]) )
-                                pyre_data_file = pyre_query_types(
-                                    join(self.projects_path, project["author"], project["repo"]),
-                                    filename)
-                                print("Pyre server in %s is started, pyre query is running" % join(self.projects_path,
-                                                                                                   project["author"],
-                                                                                                   project["repo"]))
-                            # else:
-                            #     time.sleep(5)
-                            #     if check_pyre_server(join(self.projects_path, project["author"], project["repo"])):
-                            #         print("Pyre server in %s is started after 5 seconds, pyre query is running" % join(
-                            #             self.projects_path,
-                            #             project["author"],
-                            #             project["repo"]))
-                            #         pyre_data_file = pyre_query_types(
-                            #             join(self.projects_path, project["author"], project["repo"]),
-                            #             filename)
-                        else:
-                                    print("Pyre server in %s is not started " % join(self.projects_path,
-                                                                                                   project["author"],
-                                                                                                   project["repo"]))
+                            pyre_data_file = pyre_query_types(
+                                join(self.projects_path, project["author"], project["repo"]),
+                                filename)
+
                         project_analyzed_files[project_id]["src_files"][f_relative] = \
                             self.apply_nlp_transf(
                                 Extractor().extract(read_file(filename), pyre_data_file).to_dict()) if self.nlp_transf \
@@ -240,6 +223,7 @@ class Pipeline:
 
                 if self.use_pyre:
                     pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
+                    clean_config(join(self.projects_path, project["author"], project["repo"]))
 
             else:
                 raise NullProjectException(project_id)
