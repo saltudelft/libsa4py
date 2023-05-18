@@ -3,8 +3,6 @@
 # pyre works with ubuntu 20 or newer
 FROM ubuntu:20.04
 
-# VOLUME [ "/data/source", "/data/results" ]
-
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 
 # RUN apt-get purge libappstream3
@@ -45,7 +43,7 @@ RUN pip install --upgrade pip
 RUN pip install setuptools-rust
 
 # install libsa4py
-RUN git clone https://github.com/LangFeng0912/libsa4py
+RUN git clone https://github.com/saltudelft/libsa4py.git
 RUN pip install -r libsa4py/requirements.txt
 RUN pip install libsa4py/
 

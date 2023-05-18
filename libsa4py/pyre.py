@@ -17,11 +17,15 @@ import re
 
 
 def clean_watchman_config(project_path: str):
-    # add the watchman config to the project
+    # update the watchman config to the project
     dict = {"root": "."}
-    if not exists(join(project_path, '.watchmanconfig')):
-        with open(join(project_path, '.watchmanconfig'), "w") as f:
-            json.dump(dict, f)
+    if exists(join(project_path, '.watchmanconfig')):
+        os.remove(join(project_path, '.watchmanconfig'))
+        print(f"[WATCHMAN_CLEAN] config of {project_path} ")
+
+    with open(join(project_path, '.watchmanconfig'), "w") as f:
+        json.dump(dict, f)
+        print(f"[WATCHMAN_WRITE] config of {project_path} ")
 
 
 
@@ -65,12 +69,16 @@ def clean_pyre_config(project_path: str):
         "source_directories": [
             "."
         ],
-        "typeshed": "/pyre-check/stubs/typeshed/typeshed-master"
+        "typeshed": "/pyre-check/stubs/typeshed/typeshed",
+        "workers": 64
     }
 
-    if not exists(join(project_path, '.pyre_configuration')):
-        with open(join(project_path, '.pyre_configuration'), "w") as f:
-            json.dump(dict, f)
+    if exists(join(project_path, '.pyre_configuration')):
+        os.remove(join(project_path, '.pyre_configuration'))
+        print(f"cleaned pyre config in {project_path} ")
+
+    with open(join(project_path, '.pyre_configuration'), "w") as f:
+        json.dump(dict, f)
 
 
 def pyre_server_shutdown(project_path: str):
@@ -101,3 +109,26 @@ def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> O
         print(f"[PYRE_TIMEOUT] p: {project_path}", te)
     finally:
         return file_types
+
+def pyre_infer(project_path: str):
+    # pyre infer for parameters and return types
+    stdout, stderr, r_code = run(
+        "cd %s; pyre infer; pyre infer -i --annotate-from-existing-stubs" % project_path)
+    print(f"[PYRE_INFER] started at {project_path} ", stdout, stderr)
+
+def clean_config(project_path: str):
+    # clean watchman and pyre configuration files
+    # clean watchman
+    if exists(join(project_path, '.watchmanconfig')):
+        os.remove(join(project_path, '.watchmanconfig'))
+        print(f"[WATCHMAN_CLEAN] config of {project_path} ")
+
+    # clean pyre
+    if exists(join(project_path, '.pyre_configuration')):
+        os.remove(join(project_path, '.pyre_configuration'))
+        print(f"[PYRE_CLEAN] config of {project_path} ")
+
+    # clean pyre folder
+    pyre_dir = join(project_path, '.pyre')
+    if exists(pyre_dir) and isdir(pyre_dir):
+        shutil.rmtree(pyre_dir)
