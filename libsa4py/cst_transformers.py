@@ -5,6 +5,7 @@ from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py import PY_TYPING_MOD, PY_COLLECTION_MOD
 import libcst as cst
 import libcst.matchers as match
+from libcst.metadata import PositionProvider, CodeRange
 import re
 import regex
 
@@ -1234,3 +1235,80 @@ class TypeAnnotationMasker(cst.CSTTransformer):
                 return updated_node
         else:
             return updated_node
+
+
+class TypeQueryGenerator(cst.CSTTransformer):
+    """
+    It removes type annotations for the type and extract corresponding query for the type
+    """
+    METADATA_DEPENDENCIES = (PositionProvider,)
+
+    def __init__(self, tar_dict):
+        super().__init__()
+        self.target = tar_dict
+        self.dt = tar_dict["dt"]
+        self.find = False
+        self.query = ""
+
+    def __get_line_column_no(self, node):
+        lc = self.get_metadata(cst.metadata.PositionProvider, node)
+        return (lc.start.line, lc.start.column), (lc.end.line, lc.end.column)
+
+    def visit_FunctionDef(self, original_node: cst.FunctionDef):
+        fn_pos = self.__get_line_column_no(original_node)
+        if self.find == False and fn_pos == self.target["loc"]:
+
+            # for return types
+            if self.dt == "ret" and original_node.returns is not None:
+                self.find = True
+                new_node = original_node.with_changes(returns=None)
+                self.query = self.__convert_node_to_code(new_node)
+                return
+
+
+            # for parameterss
+            elif self.dt == "param":
+                updated_params = []
+                for param in original_node.params.params:
+                    if param.name.value == self.target["name"]:
+                        self.find = True
+                        param_untyped = param.with_changes(annotation=None)
+                        updated_params.append(param_untyped)
+                    else:
+                        updated_params.append(param)
+                new_node = original_node.with_changes(params=cst.Parameters(updated_params))
+                self.query = self.__convert_node_to_code(new_node)
+                return
+            else:
+                return
+
+        else:
+            return
+
+    def visit_AnnAssign(self, original_node: cst.AnnAssign) -> None:
+        if self.find == False and self.dt == "var" and self.target["func_name"] == "__global__":
+            pos = self.__get_line_column_no(original_node.target)
+            var_name = cst.Module([original_node.target]).code
+            if pos == self.target["loc"] and var_name == self.target["name"]:
+                self.find = True
+                if original_node.value == None:
+                    new_node = cst.Assign(targets=[cst.AssignTarget(target=original_node.target)],
+                                              value=cst.Ellipsis())
+                else:
+                    new_node = cst.Assign(targets=[cst.AssignTarget(target=original_node.target)],
+                                              value=original_node.value)
+                self.query = self.__convert_node_to_code(new_node)
+            else:
+                return
+        else:
+            return
+
+    def __convert_node_to_code(self, node) -> str:
+        """
+        Converts a node to a code string.
+        """
+        # Construct artificial module from single node
+        node_module = cst.Module([node])
+
+        # Return the code representation of that module
+        return node_module.code
