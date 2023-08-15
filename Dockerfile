@@ -35,15 +35,13 @@ RUN wget https://github.com/facebook/watchman/releases/download/v2022.12.12.00/w
 # RUN watchman version
 
 #install pyre
-RUN git clone https://github.com/facebook/pyre-check.git && \
-cd pyre-check/stubs/typeshed/ && \
-unzip typeshed.zip && cd ../../..
+RUN git clone https://github.com/facebook/pyre-check.git
 
 RUN pip install --upgrade pip
 RUN pip install setuptools-rust
 
 # install libsa4py
-RUN git clone https://github.com/saltudelft/libsa4py.git
+RUN git clone https://github.com/LangFeng0912/libsa4py.git
 RUN pip install -r libsa4py/requirements.txt
 RUN pip install libsa4py/
 

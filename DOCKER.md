@@ -15,7 +15,7 @@ docker build -t libsa4py .
 
 ## docker run
 ```
-docker run -it -v [source]:/data/source -v [result]:/data/results libsa4py bash 
+docker run -it -v [source]:/data/source -v [result]:/data/results libsa4py 
 ```
 > `[source]` refers the location for the dataset in the local machine
 > 
@@ -59,7 +59,7 @@ docker run -it -v [source]:/data/source -v [result]:/data/results libsa4py bash
 
 
 
-<!-- docker -it -v /Users/fenglang/Desktop/libsa4py/dataset:/data/source -v /Users/fenglang/Desktop/libsa4py/processedprojects:/data/results libsa4py bash  -->
+<!-- docker -it -v /Users/fenglang/Desktop/libsa4py/dataset:/data/source -v /Users/fenglang/Desktop/libsa4py/processedprojects:/data/results libsa4py -->
 
 [//]: # (### make changes to the libsapy `pipiline` as well as `pyre utils`)
 
