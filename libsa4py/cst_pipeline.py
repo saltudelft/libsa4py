@@ -16,7 +16,7 @@ from libsa4py.exceptions import ParseError, NullProjectException
 from libsa4py.nl_preprocessing import NLPreprocessor
 from libsa4py.utils import read_file, list_files, ParallelExecutor, mk_dir_not_exist, save_json, load_json, write_file
 from libsa4py.pyre import pyre_server_init, pyre_query_types, pyre_server_shutdown, pyre_kill_all_servers, \
-    clean_pyre_config, check_pyre_server, start_watchman, clean_watchman_config, clean_config, pyre_infer
+    clean_pyre_config, check_pyre_server, start_watchman, clean_watchman_config, clean_config, pyre_infer, watchman_server_shutdown, watchman_kill_all_servers
 from libsa4py.type_check import MypyManager, type_check_single_file
 from libsa4py import MAX_TC_TIME
 
@@ -223,6 +223,7 @@ class Pipeline:
 
                 if self.use_pyre:
                     pyre_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
+                    watchman_server_shutdown(join(self.projects_path, project["author"], project["repo"]))
                     clean_config(join(self.projects_path, project["author"], project["repo"]))
 
             else:
@@ -251,6 +252,8 @@ class Pipeline:
 
         if self.use_pyre:
             pyre_kill_all_servers()
+            watchman_kill_all_servers()
+
         logging.shutdown()
 
 

@@ -86,10 +86,19 @@ def pyre_server_shutdown(project_path: str):
     run("cd %s ; pyre stop" % project_path)
     print("Stopped pyre server in ", project_path)
 
+def watchman_server_shutdown(project_path: str):
+    # stop pyre server in the project path
+    run("cd %s ; watch-del ." % project_path)
+    print("Stopped watchman server in ", project_path)
+
 
 def pyre_kill_all_servers():
     run("pyre kill")
     print("Killed all instances of pyre's servers")
+
+def watchman_kill_all_servers():
+    run("watchman watch-del-all")
+    print("Removed all watches and associated triggers.")
 
 
 def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> Optional[PyreData]:
@@ -114,7 +123,7 @@ def pyre_query_types(project_path: str, file_path: str, timeout: int = 600) -> O
 def pyre_infer(project_path: str):
     # pyre infer for parameters and return types
     stdout, stderr, r_code = run(
-        "cd %s; pyre infer; pyre infer -i --annotate-from-existing-stubs" % project_path)
+        "cd %s; pyre infer -i" % project_path)
     print(f"[PYRE_INFER] started at {project_path} ", stdout, stderr)
 
 def clean_config(project_path: str):
