@@ -5,7 +5,7 @@ Helper functions to use pyre in the pipeline
 from typing import Optional
 from pathlib import Path
 from subprocess import TimeoutExpired
-from os.path import join, exists
+from os.path import join, exists, isdir
 from libcst.metadata.type_inference_provider import run_command, PyreData
 import os
 import shutil
