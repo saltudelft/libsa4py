@@ -13,7 +13,7 @@ import pandas as pd
 NLP_P = NLPreprocessor()
 
 
-def merge_jsons_to_dict(json_files: list, limit: int = None) -> dict:
+def merge_jsons_to_dict(json_files: list, output_dir:str, limit: int = None) -> dict:
     """
     Merges all the JSON files of projects into a dictionary
     """
@@ -22,13 +22,20 @@ def merge_jsons_to_dict(json_files: list, limit: int = None) -> dict:
         json_files = json_files[:limit]
 
     all_projects_dict = {'projects': {}}
+    projects_list = []
+
     for f in tqdm(json_files, total=len(json_files), desc="Merging JSONs"):
         with open(f, 'r') as json_f:
             try:
                 d = json.load(json_f)
                 all_projects_dict['projects'][list(d.keys())[0]] = d[list(d.keys())[0]]
+                projects_list.append(list(d.keys())[0])
             except json.JSONDecodeError as err:
                 print("Could not parse file: ", f)
+
+    with open(join(output_dir, "projects_list.json"), mode='w') as txt_file:
+        for p in projects_list:
+            txt_file.write(str(p) + "\n")
 
     return all_projects_dict
 

@@ -66,3 +66,6 @@ Description:
 
 # JSON Output
 After processing each project, a JSON-formatted file is produced, which is described [here](https://github.com/saltudelft/light-sa-type-inf/blob/master/JSONOutput.md).
+
+# Docker Image
+The Dockerfile is deployed, and the instructions for that is mentioned in DOCKER.md [here](https://github.com/LangFeng0912/libsa4py/blob/master/DOCKER.md)
