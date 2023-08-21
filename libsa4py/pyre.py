@@ -88,7 +88,7 @@ def pyre_server_shutdown(project_path: str):
 
 def watchman_server_shutdown(project_path: str):
     # stop pyre server in the project path
-    run("cd %s ; watch-del ." % project_path)
+    run("cd %s ;watchman watch-del ." % project_path)
     print("Stopped watchman server in ", project_path)
 
 
